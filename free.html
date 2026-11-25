@@ -97,6 +97,9 @@
   .rk button{border:0;background:none;color:#999;font-size:18px;cursor:pointer;width:22px}
   textarea.in{resize:none;height:76px;margin-top:6px}
   .center{text-align:center}
+  .ft{margin-top:14px;border:2px solid var(--accent);border-radius:14px;padding:16px;text-align:center;background:#fffaf0}
+  .ft b{font-size:16px}.ft p{font-size:13.5px;color:#555;margin:6px 0 12px}
+  .ft a{display:block;background:#1a1407;color:#f3d48f;border-radius:10px;padding:13px;font-weight:800;text-decoration:none}
 </style>
 </head>
 <body>
@@ -151,7 +154,7 @@
 
     <!-- STEP 1 -->
     <div id="s1">
-      <h3>E-BOOK 받으실 분의 전화번호를 알려주세요.<br>등록하신 번호로 카카오톡 발송해 드립니다.</h3>
+      <h3>E-BOOK 받으실 분의 전화번호를 알려주세요.<br>신청 즉시 E-BOOK을 열어드립니다.</h3>
       <div class="box">
         <label class="lbl" for="name">이름</label>
         <input class="in" id="name" maxlength="20" autocomplete="name">
@@ -164,13 +167,15 @@
           <div class="rel"><input class="in" id="code" inputmode="numeric" maxlength="6" placeholder="인증번호 6자리"><span class="timer" id="timer"></span></div>
           <button class="sbtn" id="checkCode">확인</button>
         </div>
+        <label class="lbl" for="email" style="margin-top:14px">이메일 <span style="font-weight:400;color:#888">(선택 · 이메일로도 받기)</span></label>
+        <input class="in" id="email" type="email" maxlength="100" autocomplete="email" placeholder="example@gmail.com">
         <div class="hint" id="hint1"></div>
         <div class="agree">
           <label class="all"><input type="checkbox" id="agAll"> 전체 동의</label>
           <label><input type="checkbox" class="ag" id="agPrivacy"> [필수] 개인정보 수집·이용 동의 <button type="button" class="v" data-t="t1">보기</button></label>
-          <div class="terms" id="t1">수집 항목: 이름, 휴대전화 번호<br>이용 목적: 무료 E-BOOK 발송(카카오 알림톡·문자), 신청 확인, 상담 예약 안내<br>보유 기간: 동의 철회 시까지(최대 2년)<br>동의를 거부할 수 있으나, 거부 시 E-BOOK을 받을 수 없습니다.</div>
+          <div class="terms" id="t1">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 무료 E-BOOK 제공(카카오 알림톡·문자·이메일), 신청 확인, 상담 예약 안내<br>보유 기간: 동의 철회 시까지(최대 2년)<br>동의를 거부할 수 있으나, 거부 시 E-BOOK을 받을 수 없습니다.</div>
           <label><input type="checkbox" class="ag" id="agMarketing"> [필수] 마케팅 정보 수신 동의 <button type="button" class="v" data-t="t2">보기</button></label>
-          <div class="terms" id="t2">이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자)<br>보유 기간: 수신 거부 시까지<br>언제든 수신 거부할 수 있습니다.</div>
+          <div class="terms" id="t2">이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자·이메일)<br>보유 기간: 수신 거부 시까지<br>언제든 수신 거부할 수 있습니다.</div>
         </div>
       </div>
       <div class="dots"><i class="on"></i><s></s><i></i><s></s><i></i></div>
@@ -179,7 +184,8 @@
 
     <!-- STEP 2 -->
     <div id="s2" style="display:none">
-      <h3>E-BOOK이 카카오톡으로 발송되었습니다.</h3>
+      <h3>E-BOOK이 준비되었습니다.</h3>
+      <a class="main" id="pdfBtn" href="#" target="_blank" rel="noopener" data-track="ebook_open" style="display:block;text-align:center;text-decoration:none;background:var(--red);margin-bottom:16px">E-BOOK 바로 보기</a>
       <div class="box">
         <p class="center" style="font-size:15.5px;font-weight:700;line-height:1.6">E-BOOK 신청자 대상으로 1:1 연애 상담을 진행하고 있습니다.<br>상담을 원하시면 가능한 요일과 시간을 입력해 주세요.</p>
         <div class="pink">* 통화 하루 전에 카카오톡으로 미리 알려드리며, 여러 번 부재중이면 다음 대기자를 위해 신청이 취소될 수 있습니다.</div>
@@ -206,7 +212,12 @@
     <!-- STEP 3 -->
     <div id="s3" style="display:none">
       <h3 id="s3title">신청이 완료되었습니다.</h3>
-      <div class="box center" style="font-size:15px;line-height:1.7" id="s3body">카카오톡에서 E-BOOK을 확인해 주세요.<br>몇 분이 지나도 오지 않으면 문자도 확인해 주세요.</div>
+      <div class="box center" style="font-size:15px;line-height:1.7" id="s3body"><a id="pdfBtn2" href="#" target="_blank" rel="noopener" style="color:#111;font-weight:700">E-BOOK 다시 열기 →</a></div>
+      <div class="ft">
+        <b>혼자서 더 빠르게 바꾸고 싶다면</b>
+        <p>E-BOOK의 내용을 실전에서 그대로 쓰도록 정리한 <strong>패스트트랙</strong></p>
+        <a id="ftBtn" href="https://www.payapp.kr/L/z4oQj1" target="_blank" rel="noopener" data-track="fasttrack_after">패스트트랙 보러가기 · 99,000원</a>
+      </div>
       <div class="dots"><i class="done"></i><s class="done"></s><i class="done"></i><s class="done"></s><i class="on"></i></div>
       <button class="main" id="close3">확인</button>
     </div>
@@ -215,7 +226,8 @@
 
 <script>
 /* ===== 설정 ===== */
-const ENDPOINT = ""; // Apps Script 웹앱 /exec 주소. 비어 있으면 테스트 모드(인증번호 000000)
+const ENDPOINT = "";
+const SMS_VERIFY = false; // 솔라피 연결 후 true 로 바꾸면 문자 인증 사용 // Apps Script 웹앱 /exec 주소. 비어 있으면 테스트 모드(인증번호 000000)
 
 const qs = new URLSearchParams(location.search);
 const SRC = qs.get("src") || qs.get("utm_source") || (document.referrer ? new URL(document.referrer).hostname : "direct");
@@ -226,7 +238,7 @@ async function api(body) {
   if (!ENDPOINT) { // 테스트 모드
     console.log("[api]", body); await new Promise(r => setTimeout(r, 400));
     if (body.kind === "verifyCode") return body.code === "000000" ? { ok: true, token: "test" } : { ok: false, error: "인증번호가 맞지 않습니다." };
-    return { ok: true };
+    return body.kind === "lead" ? { ok: true, token: "test", pdf: "#" } : { ok: true };
   }
   const r = await fetch(ENDPOINT, { method: "POST", body: JSON.stringify(Object.assign({ src: SRC, vid: VID }, body)) });
   return r.json();
@@ -275,13 +287,19 @@ const ags = [...document.querySelectorAll(".ag")];
 $("agAll").onchange = e => { ags.forEach(a => a.checked = e.target.checked); refresh1(); };
 ags.forEach(a => a.onchange = () => { $("agAll").checked = ags.every(x => x.checked); refresh1(); });
 $("name").addEventListener("input", refresh1);
-function refresh1() { $("submit1").disabled = !($("name").value.trim() && token && ags.every(a => a.checked)); }
+function refresh1() { $("submit1").disabled = !($("name").value.trim() && (SMS_VERIFY ? token : /^01[016789]\d{7,8}$/.test(phoneVal())) && ags.every(a => a.checked)); }
+if (!SMS_VERIFY) { $("sendCode").style.display = "none"; }
 
 $("submit1").onclick = async () => {
   $("submit1").disabled = true; $("submit1").textContent = "보내는 중…";
-  const r = await api({ kind: "lead", name: $("name").value.trim(), phone: phoneVal(), token, agreePrivacy: true, agreeMarketing: true }).catch(() => ({ ok: false }));
+  const email = $("email").value.trim();
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { hint($("hint1"), "이메일 주소를 확인해 주세요. (비워둬도 됩니다)"); $("submit1").disabled = false; $("submit1").textContent = "E-BOOK 받아보기"; return; }
+  const r = await api({ kind: "lead", name: $("name").value.trim(), phone: phoneVal(), email, token: SMS_VERIFY ? token : undefined, agreePrivacy: true, agreeMarketing: true }).catch(() => ({ ok: false }));
   if (!r.ok) { hint($("hint1"), r.error || "잠시 후 다시 시도해 주세요."); $("submit1").disabled = false; $("submit1").textContent = "E-BOOK 받아보기"; return; }
   track("submit", "free_ebook");
+  if (r.token) token = r.token;
+  $("pdfBtn").href = $("pdfBtn2").href = r.pdf || "#";
+  if (r.fasttrack) $("ftBtn").href = r.fasttrack;
   $("s1").style.display = "none"; $("s2").style.display = "block";
 };
 
@@ -306,7 +324,7 @@ $("submit2").onclick = async () => {
   if (!r.ok) { hint($("hint2"), "잠시 후 다시 시도해 주세요."); $("submit2").disabled = false; $("submit2").textContent = "상담 신청하기"; return; }
   track("submit", "coaching_booking");
   $("s3title").textContent = "상담 신청이 완료되었습니다.";
-  $("s3body").innerHTML = "희망하신 시간에 맞춰 통화 하루 전 카카오톡으로 안내드릴게요.<br>E-BOOK은 카카오톡에서 먼저 확인해 주세요.";
+  $("s3body").insertAdjacentHTML("afterbegin", "희망하신 시간에 맞춰 통화 하루 전에 연락드릴게요.<br>");
   $("s2").style.display = "none"; $("s3").style.display = "block";
 };
 $("skip2").onclick = () => { track("click", "booking_skip"); $("s2").style.display = "none"; $("s3").style.display = "block"; };
