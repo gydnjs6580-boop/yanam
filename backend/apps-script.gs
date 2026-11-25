@@ -47,7 +47,7 @@ const txt = p => p ? "'" + p : ""; // 시트에서 앞자리 0 유지
 function doPost(e) {
   let d; try { d = JSON.parse(e.postData.contents); } catch (err) { return out({ ok: false, error: "bad json" }); }
   const cache = CacheService.getScriptCache();
-  const now = new Date();
+  const now = Utilities.formatDate(new Date(), "Asia/Seoul", "yyyy-MM-dd HH:mm:ss");
 
   switch (d.kind) {
     case "event":
@@ -126,7 +126,7 @@ function doPost(e) {
 
 /* ===== 발송 ===== */
 function sendKakao_(phone, name) {
-  if (TEST()) return "테스트(미발송)";
+  if (TEST()) return "카톡 미연결";
   const msg = {
     to: phone, from: prop("SMS_FROM"),
     kakaoOptions: { pfId: prop("KAKAO_PFID"), templateId: prop("KAKAO_TEMPLATE_ID"), variables: { "#{이름}": name || "고객", "#{링크}": prop("FREE_PDF_URL") } },
