@@ -164,34 +164,6 @@ function track(type, target) {
 track("view", "page");
 document.querySelectorAll("[data-track]").forEach(a => a.addEventListener("click", () => track("click", a.dataset.track)));
 
-const form = document.getElementById("form"), msg = document.getElementById("msg"), btn = document.getElementById("submitBtn");
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const f = new FormData(form);
-  const email = (f.get("email") || "").trim();
-  msg.className = "msg";
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.textContent = "이메일 주소를 다시 확인해 주세요."; msg.classList.add("err"); return; }
-  const phone = (f.get("phone") || "").replace(/[^0-9]/g, "");
-  if (phone && !/^01[016789]\d{7,8}$/.test(phone)) { msg.textContent = "휴대폰 번호를 다시 확인해 주세요. (비워둬도 됩니다)"; msg.classList.add("err"); return; }
-  if (!f.get("agreePrivacy")) { msg.textContent = "[필수] 개인정보 수집·이용에 동의해 주세요."; msg.classList.add("err"); return; }
-  if (f.get("website")) return; // 스팸봇
-  btn.disabled = true; btn.textContent = "보내는 중…";
-  const payload = { kind: "lead", name: (f.get("name") || "").trim(), email, phone, agreePrivacy: true, agreeMarketing: !!f.get("agreeMarketing"), src: SRC, vid: VID };
-  try {
-    if (ENDPOINT) {
-      const r = await fetch(ENDPOINT, { method: "POST", body: JSON.stringify(payload) });
-      const j = await r.json();
-      if (!j.ok) throw new Error(j.error || "fail");
-    } else { console.log("[lead]", payload); await new Promise(r => setTimeout(r, 600)); }
-    track("submit", "free_ebook");
-    document.getElementById("leadForm").style.display = "none";
-    document.getElementById("done").style.display = "block";
-  } catch (err) {
-    msg.textContent = "잠시 후 다시 시도해 주세요. 계속 안 되면 카페로 문의 주세요.";
-    msg.classList.add("err");
-    btn.disabled = false; btn.textContent = "무료로 받기";
-  }
-});
 </script>
 </body>
 </html>
