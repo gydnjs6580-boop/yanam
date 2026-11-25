@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>야심한 남자 | 남자 최적화</title>
+<meta name="description" content="연애·매력, 감이 아니라 구조로. 야심한 남자의 무료 E-BOOK과 1:1 코칭.">
+<meta property="og:title" content="야심한 남자 | 남자 최적화">
+<meta property="og:description" content="무료 E-BOOK 받기 · 패스트트랙 · 1:1 장기코칭">
+<meta property="og:image" content="https://yt3.ggpht.com/pw5Seg4uBVsknZyVGKemULMm8S301eGLrpT6KOLolBIXeyqCNDEjFWmGWuGCs2Ogjbjbth6roQ=s800-c-k-c0x00ffffff-no-rj">
+<meta name="theme-color" content="#0e0f12">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --bg:#0e0f12; --card:#17191f; --card2:#1d2027; --line:#2a2e37;
+    --text:#f3f1ec; --sub:#a3a7b0; --accent:#d9b15f; --accent-ink:#1a1407;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.5;
+    background-image:radial-gradient(ellipse 80% 40% at 50% -5%, rgba(217,177,95,.14), transparent 70%);
+    min-height:100vh; word-break:keep-all;
+  }
+  .wrap{max-width:460px;margin:0 auto;padding:44px 18px 56px}
+  header{text-align:center;margin-bottom:28px}
+  .avatar{width:92px;height:92px;display:block;margin:0 auto;background:#22252d;color:transparent;overflow:hidden;border-radius:50%;object-fit:cover;border:2px solid var(--accent);box-shadow:0 0 0 6px rgba(217,177,95,.12)}
+  h1{font-size:22px;font-weight:800;margin-top:14px;letter-spacing:-.02em}
+  .handle{color:var(--sub);font-size:13px;margin-top:2px}
+  .tagline{margin-top:12px;font-size:15px;color:#d6d3cc;letter-spacing:-.01em}
+  .stats{display:flex;justify-content:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .chip{font-size:12px;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+
+  .section-label{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.08em;margin:26px 4px 10px}
+
+  /* 무료 자료 블록 */
+  .lead{background:linear-gradient(160deg,#211d14 0%,var(--card) 55%);border:1px solid rgba(217,177,95,.35);border-radius:var(--radius);padding:22px 18px}
+  .badge{display:inline-block;font-size:11px;font-weight:800;color:var(--accent-ink);background:var(--accent);border-radius:6px;padding:3px 8px}
+  .lead h2{font-size:20px;font-weight:800;margin-top:10px;letter-spacing:-.02em;line-height:1.35}
+  .lead p.desc{font-size:14px;color:#cfccc4;margin-top:8px}
+  .lead ul{list-style:none;margin:12px 0 4px}
+  .lead li{font-size:13.5px;color:#d8d5ce;padding-left:18px;position:relative;margin:5px 0}
+  .lead li:before{content:"✓";position:absolute;left:0;color:var(--accent);font-weight:800}
+  form{margin-top:14px}
+  .field{width:100%;background:#0f1014;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:14px;font-size:16px;margin-top:8px;font-family:inherit}
+  .field:focus{outline:none;border-color:var(--accent)}
+  .consent{display:flex;gap:9px;align-items:flex-start;font-size:13px;color:#c9c6bf;margin-top:10px;cursor:pointer}
+  .consent input{margin-top:3px;width:17px;height:17px;accent-color:var(--accent);flex:none}
+  .consent .req{color:var(--accent);font-weight:700}
+  .consent .opt{color:var(--sub)}
+  details.terms{margin:6px 0 0 26px;font-size:12px;color:var(--sub)}
+  details.terms summary{cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+  details.terms div{margin-top:6px;background:#0f1014;border:1px solid var(--line);border-radius:10px;padding:10px;line-height:1.6}
+  .btn-main{width:100%;margin-top:14px;border:0;border-radius:12px;padding:16px;font-size:16px;font-weight:800;background:var(--accent);color:var(--accent-ink);cursor:pointer;font-family:inherit;letter-spacing:-.01em}
+  .btn-main:disabled{opacity:.6;cursor:default}
+  .msg{font-size:13.5px;margin-top:10px;min-height:1em}
+  .msg.ok{color:#9be3a6}.msg.err{color:#ff9a8f}
+  .done{display:none;text-align:center;padding:8px 0}
+  .done h3{font-size:18px;margin-bottom:6px}
+  .done p{font-size:14px;color:#cfccc4}
+
+  /* 링크 버튼 */
+  .links{display:flex;flex-direction:column;gap:10px}
+  a.link{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;transition:transform .12s, border-color .12s, background .12s}
+  a.link:hover{border-color:#3a3f4a;background:var(--card2)}
+  a.link:active{transform:scale(.985)}
+  a.link.primary{border-color:rgba(217,177,95,.55)}
+  .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:#22252d;flex:none}
+  .primary .ico{background:rgba(217,177,95,.16)}
+  .lt{flex:1;min-width:0}
+  .lt b{display:block;font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+  .lt span{display:block;font-size:12.5px;color:var(--sub);margin-top:2px}
+  .price{font-size:13px;font-weight:800;color:var(--accent);white-space:nowrap}
+  .arrow{color:#5d626d;font-size:18px}
+
+  .social{display:flex;justify-content:center;gap:12px;margin-top:30px}
+  .social a{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:1px solid var(--line)}
+  .social svg{width:20px;height:20px;fill:#d6d3cc}
+  footer{text-align:center;color:#6b7079;font-size:11.5px;margin-top:26px;line-height:1.7}
+  footer a{color:#6b7079}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <img class="avatar" src="https://yt3.ggpht.com/pw5Seg4uBVsknZyVGKemULMm8S301eGLrpT6KOLolBIXeyqCNDEjFWmGWuGCs2Ogjbjbth6roQ=s240-c-k-c0x00ffffff-no-rj" alt="야심한 남자">
+    <h1>야심한 남자</h1>
+    <div class="handle">남자 최적화 · @야심한남자</div>
+    <p class="tagline">연애와 매력, 감이 아니라 구조로 바꿉니다.</p>
+    <div class="stats"><span class="chip">유튜브 구독자 8.7만</span><span class="chip">1:1 코칭 진행 중</span></div>
+  </header>
+
+  <!-- ① 무료 자료 (핵심 블록) -->
+  <div class="section-label">FREE · 지금 바로 받기</div>
+  <section class="lead" id="free">
+    <div id="leadForm">
+      <span class="badge">무료 E-BOOK</span>
+      <h2>여자가 먼저 연락하게 만드는<br>남자의 기본기</h2>
+      <p class="desc">영상에서 다 못 한 핵심만 모았습니다. 이메일만 남기면 바로 보내드려요.</p>
+      <ul>
+        <li>첫 만남에서 호감이 갈리는 지점</li>
+        <li>연락이 끊기는 남자들의 공통 실수</li>
+        <li>다음 단계로 넘어가는 대화 구조</li>
+      </ul>
+      <form id="form" novalidate>
+        <input class="field" type="text" name="name" placeholder="이름 (닉네임 가능)" autocomplete="name" maxlength="30">
+        <input class="field" type="email" name="email" placeholder="이메일 주소" autocomplete="email" required maxlength="100">
+        <input class="field" type="tel" name="phone" placeholder="휴대폰 번호 (선택 · 카톡 안내용)" autocomplete="tel" inputmode="numeric" maxlength="13">
+        <label class="consent"><input type="checkbox" name="agreePrivacy" required>
+          <span><span class="req">[필수]</span> 개인정보 수집·이용에 동의합니다.</span></label>
+        <details class="terms"><summary>내용 보기</summary><div>
+          수집 항목: 이메일(필수), 이름·휴대폰 번호(선택)<br>
+          이용 목적: 무료 자료 발송(이메일·카카오톡) 및 신청 확인<br>
+          보유 기간: 수신 거부 또는 동의 철회 시까지 (최대 2년)<br>
+          동의를 거부할 수 있으며, 거부 시 무료 자료를 받을 수 없습니다.
+        </div></details>
+        <label class="consent"><input type="checkbox" name="agreeMarketing">
+          <span><span class="opt">[선택]</span> 새 자료·강의·할인 소식을 이메일로 받겠습니다.</span></label>
+        <details class="terms"><summary>내용 보기</summary><div>
+          이용 목적: 신규 콘텐츠·강의·프로그램 및 할인 안내 (광고성 정보)<br>
+          보유 기간: 수신 거부 시까지<br>
+          동의하지 않아도 무료 자료는 받을 수 있으며, 언제든 메일 하단에서 수신 거부할 수 있습니다.
+        </div></details>
+        <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+        <button class="btn-main" type="submit" id="submitBtn">무료로 받기</button>
+        <div class="msg" id="msg" role="status"></div>
+      </form>
+    </div>
+    <div class="done" id="done">
+      <h3>신청 완료! 📩</h3>
+      <p>입력하신 이메일로 자료를 보냈어요.<br>몇 분 안에 안 보이면 스팸함·프로모션함을 확인해 주세요.</p>
+    </div>
+  </section>
+
+  <!-- ② 상품 -->
+  <div class="section-label">PROGRAM</div>
+  <nav class="links">
+    <a class="link primary" data-track="fasttrack" href="https://www.payapp.kr/L/z4oQj1" target="_blank" rel="noopener">
+      <div class="ico">⚡</div>
+      <div class="lt"><b>패스트트랙</b><span>혼자 빠르게 바꾸고 싶은 분을 위한 실전 가이드</span></div>
+      <div class="price">99,000원</div>
+    </a>
+    <a class="link" data-track="coaching" href="https://www.payapp.kr/L/z4oQl9" target="_blank" rel="noopener">
+      <div class="ico">🎯</div>
+      <div class="lt"><b>1:1 장기코칭</b><span>상담 후 금액이 정해지는 맞춤 코칭</span></div>
+      <div class="arrow">›</div>
+    </a>
+  </nav>
+
+  <!-- ③ 커뮤니티 -->
+  <div class="section-label">COMMUNITY</div>
+  <nav class="links">
+    <a class="link" data-track="cafe" href="https://cafe.naver.com/attrativer" target="_blank" rel="noopener">
+      <div class="ico">☕</div>
+      <div class="lt"><b>네이버 카페 어트랙티버</b><span>후기·질문·자료가 모이는 곳</span></div>
+      <div class="arrow">›</div>
+    </a>
+    <a class="link" data-track="youtube" href="https://www.youtube.com/channel/UCnILmyz1oXc7eZHUBRrlSLA" target="_blank" rel="noopener">
+      <div class="ico">▶</div>
+      <div class="lt"><b>유튜브 야심한 남자</b><span>매주 올라오는 롱폼 영상</span></div>
+      <div class="arrow">›</div>
+    </a>
+  </nav>
+
+  <div class="social">
+    <a data-track="sns_youtube" href="https://www.youtube.com/channel/UCnILmyz1oXc7eZHUBRrlSLA" target="_blank" rel="noopener" aria-label="유튜브">
+      <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg></a>
+    <a data-track="sns_cafe" href="https://cafe.naver.com/attrativer" target="_blank" rel="noopener" aria-label="네이버 카페">
+      <svg viewBox="0 0 24 24"><path d="M16.3 12.8 7.4 0H0v24h7.7V11.2L16.6 24H24V0h-7.7z"/></svg></a>
+  </div>
+
+  <footer>
+    © 야심한 남자 · 문의는 이메일 회신으로 받습니다<br>
+    <a href="#free" onclick="document.querySelector('details.terms').open=true">개인정보 수집·이용 안내</a>
+  </footer>
+</div>
+
+<script>
+/* ===== 설정: 구글 Apps Script 웹앱 주소를 넣으면 신청·클릭이 시트에 쌓입니다 ===== */
+const ENDPOINT = ""; // 예: https://script.google.com/macros/s/XXXX/exec
+
+/* 유입 경로: 링크 뒤에 ?src=shorts_1125 처럼 붙이면 어느 영상에서 왔는지 기록됩니다 */
+const qs = new URLSearchParams(location.search);
+const SRC = qs.get("src") || qs.get("utm_source") || (document.referrer ? new URL(document.referrer).hostname : "direct");
+const VID = (() => { try { let v = localStorage.getItem("ynv"); if (!v) { v = Math.random().toString(36).slice(2, 10); localStorage.setItem("ynv", v); } return v; } catch (e) { return "na"; } })();
+
+function track(type, target) {
+  if (!ENDPOINT) { console.log("[track]", type, target, SRC); return; }
+  const body = JSON.stringify({ kind: "event", type, target, src: SRC, vid: VID, ua: navigator.userAgent.slice(0, 120) });
+  try { navigator.sendBeacon(ENDPOINT, new Blob([body], { type: "text/plain" })); }
+  catch (e) { fetch(ENDPOINT, { method: "POST", body, mode: "no-cors", keepalive: true }); }
+}
+track("view", "page");
+document.querySelectorAll("[data-track]").forEach(a => a.addEventListener("click", () => track("click", a.dataset.track)));
+
+const form = document.getElementById("form"), msg = document.getElementById("msg"), btn = document.getElementById("submitBtn");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = new FormData(form);
+  const email = (f.get("email") || "").trim();
+  msg.className = "msg";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.textContent = "이메일 주소를 다시 확인해 주세요."; msg.classList.add("err"); return; }
+  const phone = (f.get("phone") || "").replace(/[^0-9]/g, "");
+  if (phone && !/^01[016789]\d{7,8}$/.test(phone)) { msg.textContent = "휴대폰 번호를 다시 확인해 주세요. (비워둬도 됩니다)"; msg.classList.add("err"); return; }
+  if (!f.get("agreePrivacy")) { msg.textContent = "[필수] 개인정보 수집·이용에 동의해 주세요."; msg.classList.add("err"); return; }
+  if (f.get("website")) return; // 스팸봇
+  btn.disabled = true; btn.textContent = "보내는 중…";
+  const payload = { kind: "lead", name: (f.get("name") || "").trim(), email, phone, agreePrivacy: true, agreeMarketing: !!f.get("agreeMarketing"), src: SRC, vid: VID };
+  try {
+    if (ENDPOINT) {
+      const r = await fetch(ENDPOINT, { method: "POST", body: JSON.stringify(payload) });
+      const j = await r.json();
+      if (!j.ok) throw new Error(j.error || "fail");
+    } else { console.log("[lead]", payload); await new Promise(r => setTimeout(r, 600)); }
+    track("submit", "free_ebook");
+    document.getElementById("leadForm").style.display = "none";
+    document.getElementById("done").style.display = "block";
+  } catch (err) {
+    msg.textContent = "잠시 후 다시 시도해 주세요. 계속 안 되면 카페로 문의 주세요.";
+    msg.classList.add("err");
+    btn.disabled = false; btn.textContent = "무료로 받기";
+  }
+});
+</script>
+</body>
+</html>
