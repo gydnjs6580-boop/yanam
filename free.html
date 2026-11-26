@@ -75,6 +75,7 @@
   .agree label.all{font-weight:800;border-bottom:1px solid #e3e6ea}
   .agree input{width:19px;height:19px;accent-color:#111;flex:none}
   .agree .v{margin-left:auto;font-size:12px;color:#777;text-decoration:underline;background:none;border:0;cursor:pointer;font-family:inherit}
+  .agree .sub{display:none;padding-left:8px}.agree .sub.on{display:block}.agree .tg{text-decoration:none;font-size:15px}
   .terms{display:none;font-size:12px;color:#666;background:#fff;border-radius:8px;padding:10px;margin:-4px 0 8px;line-height:1.6}
   .dots{display:flex;justify-content:center;align-items:center;margin:20px 0 16px}
   .dots i{width:14px;height:14px;border-radius:50%;background:#ccc;display:block}
@@ -211,11 +212,13 @@
         <input class="in" id="email" type="email" maxlength="100" autocomplete="email" placeholder="example@gmail.com">
         <div class="hint" id="hint1"></div>
         <div class="agree">
-          <label class="all"><input type="checkbox" id="agAll"> 전체 동의</label>
-          <label><input type="checkbox" class="ag" id="agPrivacy"> 개인정보 수집·이용 동의 <button type="button" class="v" data-t="t1">보기</button></label>
+          <label class="all"><input type="checkbox" id="agAll"> 마케팅 정보 수신 동의 <button type="button" class="v tg" id="agTg" aria-label="자세히">▾</button></label>
+          <div class="sub" id="agSub">
+          <label><input type="checkbox" class="ag" id="agPrivacy"> 마케팅 활용을 위한 개인정보 수집·이용 동의 <button type="button" class="v" data-t="t1">보기</button></label>
           <div class="terms" id="t1">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 무료 E-BOOK 제공(문자·카카오톡·이메일), 신청 확인<br>보유 기간: 목적 달성 또는 동의 철회 시 지체 없이 파기(최대 2년)<br>동의를 거부할 수 있으나, 거부 시 E-BOOK을 받을 수 없습니다.</div>
-          <label><input type="checkbox" class="ag" id="agMarketing"> 마케팅 정보 수신 동의(문자·카카오톡·이메일) <button type="button" class="v" data-t="t2">보기</button></label>
+          <label><input type="checkbox" class="ag" id="agMarketing"> 마케팅 수신 동의(문자, 카카오톡, 이메일) <button type="button" class="v" data-t="t2">보기</button></label>
           <div class="terms" id="t2">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자·이메일)<br>보유 기간: 동의일로부터 2년 또는 동의 철회 시까지<br>귀하는 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 무료 E-BOOK 및 관련 정보를 제공받을 수 없습니다. 받은 뒤에는 언제든 수신 거부할 수 있습니다.</div>
+          </div>
         </div>
       </div>
       <div class="dots"><i class="on"></i><s></s><i></i></div>
@@ -268,7 +271,8 @@ document.querySelectorAll("a[data-track]").forEach(a => a.addEventListener("clic
 $("openBtn").onclick = () => { $("modal").classList.add("on"); track("click", "cta_open"); };
 $("closeBtn").onclick = () => $("modal").classList.remove("on");
 $("close3").onclick = () => $("modal").classList.remove("on");
-document.querySelectorAll(".v").forEach(b => b.onclick = e => { e.preventDefault(); const t = $(b.dataset.t); t.style.display = t.style.display === "block" ? "none" : "block"; });
+document.getElementById("agTg").onclick = e => { e.preventDefault(); e.stopPropagation(); document.getElementById("agSub").classList.toggle("on"); };
+document.querySelectorAll(".v:not(.tg)").forEach(b => b.onclick = e => { e.preventDefault(); const t = $(b.dataset.t); t.style.display = t.style.display === "block" ? "none" : "block"; });
 
 /* STEP 1: 휴대폰 인증 */
 let token = null, timerId = null;
