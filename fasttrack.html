@@ -39,14 +39,10 @@
   .vs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
   .vs div{border-radius:14px;padding:14px;font-size:14px}
   .vs .no{background:#1c1e24;color:#9a9ea7}
-  .vs .yes{background:#fff;color:#111;border:2px solid var(--accent)}
+  .vs .yes{background:#211d14;color:var(--text);border:2px solid var(--accent)}
   .vs b{display:block;font-size:13px;margin-bottom:6px}
   .story{font-size:15px;color:#dcd8cf}
   .story p + p{margin-top:12px}
-  .revs{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 6px}
-  .rev{flex:none;width:80%;scroll-snap-align:center;position:relative}
-  .rev img{width:100%;border-radius:14px;display:block}
-  .rev i{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.7);color:#fff;font-style:normal;font-size:11px;padding:2px 8px;border-radius:6px}
   details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 16px}
   details + details{margin-top:8px}
   summary{cursor:pointer;padding:15px 0;font-weight:800;font-size:15px;list-style:none}
@@ -63,6 +59,9 @@
   .coach{margin-top:14px;text-align:center;font-size:14px;color:var(--sub)}
   .coach a{color:var(--accent);font-weight:700}
   .note{text-align:center;color:var(--sub);font-size:12.5px;margin-top:34px}
+  .legal{font-size:12px;color:var(--sub);margin-top:14px;text-align:left}
+  .biz{margin-top:18px;font-size:11.5px;color:#6f737b;text-align:center;line-height:1.8}
+  .biz a{color:#8d9199}
   .cta{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:10}
   .cta a{display:block;max-width:448px;margin:0 auto;border-radius:999px;background:var(--red);color:#fff;text-align:center;text-decoration:none;padding:14px 10px 12px;box-shadow:0 8px 24px rgba(226,72,61,.35)}
   .cta b{display:block;font-size:18px;font-weight:900}
@@ -93,7 +92,7 @@
   <h2><small>다른 점</small>멘트가 아니라<br>남자의 기준부터 바꿉니다</h2>
   <div class="vs">
     <div class="no"><b>흔한 연애 강의</b>외워서 쓰는 멘트<br>첫 만남 한 방 승부<br>"진심으로 다가가라"</div>
-    <div class="yes"><b>패스트트랙</b>선택의 주도권과 생활 세팅<br>에프터 3번 안에 결과<br>상황별로 무엇을 할지 구체적으로</div>
+    <div class="yes"><b>패스트트랙</b>선택의 주도권과 생활 세팅<br>에프터 3번 로드맵(1차 어필·2차 데이트·3차 확인)<br>상황별로 무엇을 할지 구체적으로</div>
   </div>
   <p class="quote">"나는 당신에게 구체적인 해결책을 약속할 테니, 당신은 나에게 '행동'을 약속하라."<span>— 패스트트랙 1부</span></p>
 
@@ -128,41 +127,47 @@
   <h2><small>쓴 사람</small>24살까지 모태솔로였습니다</h2>
   <div class="card story">
     <p>저자 Flash는 학창 시절이 순탄치 않았고, 24살까지 연애를 못 했습니다. 소개팅에서 연속으로 에프터에 실패하면서도 이유를 몰랐습니다.</p>
-    <p>그 뒤 수많은 시행착오와 수강생 코칭을 거쳐 정리한 내용을 공동 저자 김산과 함께 이 책에 담았습니다. 지금은 유튜브 「야심한남자」와 카페 「어트랙티버」를 운영합니다.</p>
+    <p>그 뒤 수많은 시행착오와 수강생 코칭을 거쳐 정리한 내용을 공동 저자 김산과 함께 이 책에 담았습니다. 지금은 유튜브 「야심한남자」(구독자 8.7만)와 네이버 카페 「어트랙티버」를 운영합니다.</p>
   </div>
 
-  <h2><small>후기</small>먼저 바뀐 분들</h2>
-  <div class="revs">
-    <div class="rev"><img src="review1.png" alt="후기 예시 이미지 1"></div>
-    <div class="rev"><img src="review2.png" alt="후기 예시 이미지 2"></div>
-    <div class="rev"><img src="review3.png" alt="후기 예시 이미지 3"></div>
-  </div>
+  <h2><small>후기</small>실제 구매자 후기</h2>
+  <div class="card story"><p>후기는 실제 구매자의 동의를 받아 순차적으로 공개합니다. 지어낸 후기는 올리지 않습니다.</p></div>
 
   <h2><small>자주 묻는 질문</small>망설여진다면</h2>
-  <details><summary>픽업이나 원나잇 책 아닌가요?</summary><p>아닙니다. 책이 먼저 픽업을 비판합니다. 외워서 쓰는 멘트, 첫 만남 한 방 승부를 버리고, 남자 자신의 기준과 생활을 바꾸는 데서 시작합니다.</p></details>
+  <details><summary>픽업이나 원나잇 책 아닌가요?</summary><p>아닙니다. 책이 먼저 픽업을 비판합니다. 외워서 쓰는 멘트, 첫 만남 한 방 승부를 버리고, 남자 자신의 기준과 생활을 바꾸는 데서 시작합니다. 다만 연애 관계 안의 스킨십·성 이야기도 숨기지 않고 다루며, "무례하지 않게, 물어보고, 보수적으로"를 원칙으로 합니다.</p></details>
   <details><summary>외모나 돈이 없으면 소용없지 않나요?</summary><p>외모가 중요하다는 건 책도 인정합니다. 다만 타고난 것을 빼면 대부분 바꿀 수 있는 것들이고, 무엇을 어떻게 바꿀지를 구체적으로 다룹니다.</p></details>
   <details><summary>저는 내성적이고 말주변이 없어요.</summary><p>저자도 내성적이었습니다. 말을 잘하는 법보다, 내성적인 사람이 어디서부터 움직이면 되는지를 단계별로 적었습니다.</p></details>
   <details><summary>읽기만 하고 끝날까 봐 걱정돼요.</summary><p>그래서 미션이 있습니다. 혼자 실천하기 어렵다면 1:1 상담으로 내 상황(카톡, 에프터, 대화)을 함께 보는 방법도 있습니다.</p></details>
   <details><summary>어떻게 받나요?</summary><p>결제가 끝나면 결제 완료 화면에서 1부·2부 열람 링크를 바로 확인할 수 있습니다. 자료에는 개인 식별 코드가 들어 있어 외부 공유는 금지됩니다.</p></details>
 
+  <p class="coach" style="margin-top:44px">아직 확신이 없다면, <a data-t="free" href="free.html?src=fasttrack">무료 E-BOOK부터 →</a><br>먼저 보시고, 마음에 들면 그때 결정하세요.</p>
+
   <h2 id="buy"><small>지금 시작하기</small>패스트트랙</h2>
   <div class="price">
     <small>남자들을 위한 지침서 1부 + 2부</small>
     <div class="p">99,000원</div>
-    <small>결제 즉시 열람</small>
+    <small>결제 즉시 PDF 열람 링크 제공</small>
     <ul>
       <li>1부 마인드·변화·여자 이해·만나는 법 (194쪽)</li>
       <li>2부 카톡·에프터 3번·고백·거절 대처 (91쪽)</li>
       <li>직접 해 볼 실천 미션 포함</li>
     </ul>
+    <p class="legal">디지털 콘텐츠 특성상 열람 링크를 받은 뒤에는 청약철회(환불)가 제한됩니다.</p>
     <a class="pay" data-t="pay" href="https://www.payapp.kr/L/z4oQj1" target="_blank" rel="noopener">99,000원 결제하기</a>
   </div>
   <p class="coach">내 상황에 맞춘 방향이 필요하면 <a data-t="coach" href="free.html">무료 E-BOOK 신청 후 1:1 상담 예약 →</a></p>
 
-  <p class="note">후기 이미지는 예시입니다. 실제 결과는 개인의 실천에 따라 다릅니다.<br>© 야심한 남자</p>
+  <p class="note">결과는 개인의 실천에 따라 다릅니다.</p>
+  <div class="biz">
+    <!-- TODO(효원): 사업자등록번호, 통신판매업 신고번호, 사업장 주소, 연락처를 채운 뒤 공개 홍보 -->
+    상호 라이프빌드업 · 대표 이원준<br>
+    문의: 네이버 카페 「어트랙티버」 <a href="https://cafe.naver.com/attrativer" target="_blank" rel="noopener">cafe.naver.com/attrativer</a><br>
+    <a href="index.html#free">개인정보 수집·이용 안내</a> · 이 페이지는 방문 통계(무작위 방문 ID·브라우저 정보)를 수집합니다.<br>
+    © 야심한 남자
+  </div>
 </div>
 
-<div class="cta"><a data-t="cta" href="#buy"><b>패스트트랙 시작하기</b><span>1부 + 2부 · 99,000원</span></a></div>
+<div class="cta"><a data-t="cta" href="#buy"><b>패스트트랙 시작하기</b><span>혼자서 더 빠르게 바꾸고 싶다면 · 99,000원</span></a></div>
 
 <script>
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
