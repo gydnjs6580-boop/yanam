@@ -216,7 +216,7 @@
       <div class="ft">
         <b>혼자서 더 빠르게 바꾸고 싶다면</b>
         <p>E-BOOK의 내용을 실전에서 그대로 쓰도록 정리한 <strong>패스트트랙</strong></p>
-        <a id="ftBtn" href="https://www.payapp.kr/L/z4oQj1" target="_blank" rel="noopener" data-track="fasttrack_after">패스트트랙 보러가기 · 99,000원</a>
+        <a id="ftBtn" href="fasttrack.html?src=free_done" data-track="fasttrack_after">패스트트랙 보러가기 · 99,000원</a>
       </div>
       <div class="dots"><i class="done"></i><s class="done"></s><i class="done"></i><s class="done"></s><i class="on"></i></div>
       <button class="main" id="close3">확인</button>
@@ -299,7 +299,7 @@ $("submit1").onclick = async () => {
   track("submit", "free_ebook");
   if (r.token) token = r.token;
   $("pdfBtn").href = $("pdfBtn2").href = r.my || r.pdf || "#";
-  if (r.fasttrack) $("ftBtn").href = r.fasttrack;
+  // 패스트트랙 버튼은 결제 전에 판매 페이지(fasttrack.html)를 보여 준다
   $("s1").style.display = "none"; $("s2").style.display = "block";
 };
 
