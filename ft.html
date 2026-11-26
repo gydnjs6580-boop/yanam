@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>패스트트랙 열람 등록 | 야심한 남자</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0e0f12">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{--bg:#0e0f12;--card:#17191f;--line:#2a2e37;--text:#f3f1ec;--sub:#a3a7b0;--accent:#d9b15f;--red:#e2483d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;word-break:keep-all}
+  .wrap{max-width:480px;margin:0 auto;padding:40px 18px}
+  h1{font-size:25px;font-weight:900;letter-spacing:-.02em;text-align:center}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lead{color:var(--sub);text-align:center;margin:10px 0 24px;font-size:15px}
+  .card{background:#fff;color:#111;border-radius:18px;padding:22px 18px}
+  .lbl{font-size:14px;font-weight:700;margin:14px 0 6px;display:block}
+  .lbl:first-child{margin-top:0}
+  .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:13px;font-size:16px;font-family:inherit}
+  .in:focus{outline:none;border-color:#111}
+  .help{font-size:12.5px;color:#777;margin-top:6px}
+  .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--red);color:#fff;padding:16px;font-size:17px;font-weight:800;font-family:inherit;cursor:pointer;margin-top:18px;text-align:center;text-decoration:none}
+  .btn:disabled{background:#bbb}
+  .err{color:#d32f2f;font-size:13.5px;margin-top:10px;min-height:18px}
+  .ok h2{font-size:20px;margin-bottom:8px}
+  .ok p{font-size:14.5px;color:#444}
+  .tips{margin-top:18px;font-size:13px;color:var(--sub)}
+  .tips li{margin:6px 0 6px 18px}
+  .hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>패스트트랙 <em>열람 등록</em></h1>
+  <p class="lead">결제하신 휴대폰 번호와 구글 이메일을 넣으면<br>그 계정에서만 열리도록 바로 열어드려요.</p>
+
+  <div class="card" id="form">
+    <label class="lbl" for="phone">결제한 휴대폰 번호</label>
+    <input class="in" id="phone" inputmode="numeric" maxlength="11" placeholder="01012345678" autocomplete="tel">
+    <label class="lbl" for="email">구글 이메일</label>
+    <input class="in" id="email" type="email" maxlength="100" placeholder="example@gmail.com" autocomplete="email">
+    <p class="help">gmail 같은 구글 계정만 가능해요. 이 계정으로 로그인했을 때만 자료가 열려요.</p>
+    <button class="btn" id="go">패스트트랙 열기</button>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div class="card ok hide" id="done">
+    <h2>등록됐어요 ✓</h2>
+    <p><b id="who"></b> 계정으로 열 수 있어요. 같은 내용을 메일로도 보냈어요.</p>
+    <a class="btn" id="open" href="#" target="_blank" rel="noopener">패스트트랙 1·2부 열기</a>
+  </div>
+
+  <ul class="tips">
+    <li>"액세스 권한 필요"가 뜨면 오른쪽 위 프로필에서 등록한 구글 계정으로 바꿔 주세요.</li>
+    <li>결제 직후에는 확인까지 1~2분 걸릴 수 있어요.</li>
+    <li>링크를 다른 사람에게 보내도 열리지 않아요.</li>
+    <li>문의: 네이버 카페 「어트랙티버」</li>
+  </ul>
+</div>
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
+const $ = id => document.getElementById(id);
+$("go").onclick = async () => {
+  const phone = $("phone").value.replace(/[^0-9]/g, ""), email = $("email").value.trim();
+  if (!/^01[016789]\d{7,8}$/.test(phone)) return $("err").textContent = "휴대폰 번호를 확인해 주세요.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return $("err").textContent = "이메일 주소를 확인해 주세요.";
+  $("go").disabled = true; $("go").textContent = "확인 중…"; $("err").textContent = "";
+  let r; try { r = await (await fetch(ENDPOINT, { method: "POST", body: JSON.stringify({ kind: "ftClaim", phone, email }) })).json(); } catch (e) { r = { ok: false }; }
+  $("go").disabled = false; $("go").textContent = "패스트트랙 열기";
+  if (!r.ok) return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요.";
+  $("who").textContent = email; $("open").href = r.url;
+  $("form").classList.add("hide"); $("done").classList.remove("hide");
+};
+</script>
+</body>
+</html>

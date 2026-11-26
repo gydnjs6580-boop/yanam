@@ -41,6 +41,7 @@ function sheet_(name, headers) {
 }
 const LEADS = () => sheet_("신청자", ["신청시각", "이름", "휴대폰", "이메일", "개인정보동의", "마케팅동의", "유입(src)", "방문자ID", "발송결과", "ID", "진단"]);
 const BOOK = () => sheet_("상담예약", ["신청시각", "이름", "휴대폰", "1순위", "2순위", "3순위", "고민", "유입(src)", "처리상태"]);
+const PAYS = () => sheet_("결제", ["통보시각", "결제번호", "상태", "상품", "금액", "휴대폰", "결제수단", "결제일시", "검증", "권한 이메일", "권한 시각"]);
 const EVENTS = () => sheet_("이벤트", ["시각", "종류", "대상", "유입(src)", "방문자ID", "브라우저"]);
 
 const out = o => ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
@@ -49,6 +50,8 @@ const phoneOk = p => /^01[016789]\d{7,8}$/.test(p);
 const txt = p => p ? "'" + p : ""; // 시트에서 앞자리 0 유지
 
 function doPost(e) {
+  // 페이앱 결제 통보(공통 통보 URL)는 JSON이 아니라 form POST로 온다
+  if (e.parameter && e.parameter.mul_no && e.parameter.linkval !== undefined) return payappFeedback_(e.parameter);
   let d; try { d = JSON.parse(e.postData.contents); } catch (err) { return out({ ok: false, error: "bad json" }); }
   const cache = CacheService.getScriptCache();
   const now = Utilities.formatDate(new Date(), "Asia/Seoul", "yyyy-MM-dd HH:mm:ss");
@@ -118,6 +121,8 @@ function doPost(e) {
         return out({ ok: true, dup, token, id, my: MY_PAGE + "?id=" + id, pdf: prop("FREE_PDF_URL"), fasttrack: FASTTRACK_URL });
       } finally { lock.releaseLock(); }
     }
+
+    case "ftClaim": return ftClaim_(d, cache);
 
     case "booking": {
       let phone = d.token ? (cache.get("tok_" + d.token) || "") : "";
@@ -208,4 +213,66 @@ function myPage_(id) {
     pdf: prop("FREE_PDF_URL"), fasttrack: FASTTRACK_URL,
     coupon: COUPON_URL && COUPON_PRICE ? { url: COUPON_URL, price: COUPON_PRICE } : null,
   });
+}
+
+
+/* ===== 패스트트랙 구매자 전용 열람 =====
+ * 1) 페이앱 '설정 > 연동정보 > 공통 통보 URL'에 이 웹앱 /exec 주소를 넣으면 결제 때마다 '결제' 시트에 기록
+ * 2) 구매자가 ft.html 에서 결제 휴대폰 번호 + 구글 이메일 입력 → 결제 확인되면 그 이메일에만 폴더 보기 권한
+ * 스크립트 속성 PAYAPP_LINKVAL = 페이앱 '연동 VALUE' (효원님이 직접 입력, 코드에 쓰지 않음)
+ */
+const PAYAPP_USERID = "yerpgigi";
+const FT_FOLDER_ID = "1iIKSR3tUUK9A1G5FTA2QmiynKj-WPu4t"; // 드라이브 "패스트트랙 (구매자용)"
+const FT_MATCH = /패스트/; // 결제 상품명에 이 글자가 있으면 패스트트랙
+
+function payappFeedback_(p) {
+  const ok = !!prop("PAYAPP_LINKVAL") && p.linkval === prop("PAYAPP_LINKVAL") && p.userid === PAYAPP_USERID;
+  const now = Utilities.formatDate(new Date(), "Asia/Seoul", "yyyy-MM-dd HH:mm:ss");
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    const sh = PAYS(), last = sh.getLastRow();
+    const nos = last > 1 ? sh.getRange(2, 2, last - 1, 1).getValues().map(r => String(r[0])) : [];
+    const i = nos.indexOf(String(p.mul_no));
+    const row = [now, String(p.mul_no), String(p.pay_state), s(p.goodname, 60), Number(p.price) || 0, txt(s(p.recvphone, 11).replace(/[^0-9]/g, "")), String(p.pay_type || ""), s(p.pay_date, 20), ok ? "Y" : "N"];
+    if (i < 0) sh.appendRow(row.concat(["", ""]));
+    else sh.getRange(i + 2, 1, 1, 9).setValues([row]); // 상태 갱신(결제완료·취소), 권한 칸은 유지
+  } finally { lock.releaseLock(); }
+  return ContentService.createTextOutput("SUCCESS");
+}
+
+function ftClaim_(d, cache) {
+  const phone = s(d.phone, 11).replace(/[^0-9]/g, "");
+  const email = s(d.email, 100).trim().toLowerCase();
+  if (!phoneOk(phone)) return out({ ok: false, error: "결제하신 휴대전화 번호를 확인해 주세요." });
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return out({ ok: false, error: "이메일 주소를 확인해 주세요." });
+  const key = "claim_" + phone, n = +(cache.get(key) || 0);
+  if (n >= 5) return out({ ok: false, error: "잠시 후 다시 시도해 주세요. (10분 제한)" });
+  cache.put(key, String(n + 1), 600);
+
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    const sh = PAYS(), last = sh.getLastRow();
+    const rows = last > 1 ? sh.getRange(2, 1, last - 1, 11).getValues() : [];
+    const paid = rows.map((r, i) => ({ r, i })).filter(x => String(x.r[5]).replace(/'/g, "") === phone && String(x.r[2]) === "4" && x.r[8] === "Y" && FT_MATCH.test(String(x.r[3])));
+    if (!paid.length) return out({ ok: false, error: "이 번호로 확인된 패스트트랙 결제가 없어요. 결제 직후라면 1~2분 뒤 다시 시도해 주세요." });
+    const free = paid.find(x => !x.r[9]) || paid.find(x => String(x.r[9]).toLowerCase() === email);
+    if (!free) return out({ ok: false, error: "이 결제는 이미 다른 이메일로 등록됐어요. 바꾸려면 카페로 문의해 주세요." });
+    try { DriveApp.getFolderById(FT_FOLDER_ID).addViewer(email); }
+    catch (err) { return out({ ok: false, error: "구글 계정 이메일(gmail 등)만 등록할 수 있어요." }); }
+    sh.getRange(free.i + 2, 10, 1, 2).setValues([[email, Utilities.formatDate(new Date(), "Asia/Seoul", "yyyy-MM-dd HH:mm:ss")]]);
+    const url = "https://drive.google.com/drive/folders/" + FT_FOLDER_ID;
+    try {
+      MailApp.sendEmail({ to: email, name: "야심한 남자", subject: "[야심한 남자] 패스트트랙 열람 안내",
+        htmlBody: "<div style='font-family:sans-serif;line-height:1.7'><p>패스트트랙을 구매해 주셔서 감사합니다.</p><p>아래 링크는 <b>이 구글 계정(" + email + ")으로 로그인했을 때만</b> 열립니다.</p><p><a href='" + url + "'>패스트트랙 1·2부 열기</a></p><p style='color:#888;font-size:12px'>링크를 다른 사람에게 보내도 열리지 않습니다.</p></div>" });
+    } catch (err) {}
+    return out({ ok: true, url });
+  } finally { lock.releaseLock(); }
+}
+
+/* 한 번만 편집기에서 실행: 폴더·파일을 '링크 있는 누구나'에서 '제한됨'으로, 뷰어 다운로드 막기 */
+function lockFastTrack() {
+  const f = DriveApp.getFolderById(FT_FOLDER_ID);
+  f.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+  const it = f.getFiles();
+  while (it.hasNext()) { const x = it.next(); x.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE); x.setShareableByEditors(false); Logger.log("잠금: " + x.getName()); }
 }
