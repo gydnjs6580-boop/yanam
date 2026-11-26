@@ -16,6 +16,7 @@
  *       KAKAO_PFID                 : 솔라피에 연동한 카카오 채널 pfId
  *       KAKAO_TEMPLATE_ID          : 승인된 알림톡 템플릿 ID
  *       FREE_PDF_URL               : E-BOOK 링크
+ *       SMS_RELAY                  : AWS 고정 IP 중계 서버 주소 (예: https://3.35.1.2) — relay/ 폴더 참고
  *     솔라피 값이 비어 있으면 '테스트 모드': 인증번호는 000000, 실제 발송 없이 시트에만 기록
  *  3) 배포 > 새 배포 > 웹 앱 (실행: 나 / 액세스: 모든 사용자) → /exec 주소를 두 html 의 ENDPOINT 에 넣기
  */
@@ -171,8 +172,10 @@ function solapi_(message) {
   const salt = Utilities.getUuid().replace(/-/g, "");
   const sig = Utilities.computeHmacSha256Signature(date + salt, prop("SOLAPI_SECRET"))
     .map(b => ("0" + (b & 0xff).toString(16)).slice(-2)).join("");
-  const res = UrlFetchApp.fetch("https://api.solapi.com/messages/v4/send", {
-    method: "post", contentType: "application/json", muteHttpExceptions: true,
+  // 솔라피는 고정 IP에서 온 요청만 받으므로 AWS 중계 서버(SMS_RELAY, 예: https://1.2.3.4)를 거친다. 키는 중계 서버에 두지 않음
+  const relay = prop("SMS_RELAY").replace(/\/$/, "");
+  const res = UrlFetchApp.fetch((relay || "https://api.solapi.com") + "/messages/v4/send", {
+    method: "post", contentType: "application/json", muteHttpExceptions: true, validateHttpsCertificates: !relay,
     headers: { Authorization: "HMAC-SHA256 apiKey=" + prop("SOLAPI_KEY") + ", date=" + date + ", salt=" + salt + ", signature=" + sig },
     payload: JSON.stringify({ message }),
   });
