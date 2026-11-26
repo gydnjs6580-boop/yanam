@@ -276,3 +276,9 @@ function lockFastTrack() {
   const it = f.getFiles();
   while (it.hasNext()) { const x = it.next(); x.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE); x.setShareableByEditors(false); Logger.log("잠금: " + x.getName()); }
 }
+
+/** 한 번만 실행: 드라이브 권한 승인용(아무것도 바꾸지 않고 폴더 이름만 읽음) */
+function authorizeDrive() {
+  Logger.log("폴더 확인: " + DriveApp.getFolderById(FT_FOLDER_ID).getName());
+  Logger.log("PAYAPP_LINKVAL 설정됨: " + !!prop("PAYAPP_LINKVAL"));
+}
