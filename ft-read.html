@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>패스트트랙 읽기 | 야심한 남자</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#111111">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="패스트트랙">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{--red:#e2483d;--gold:#d9b15f;--line:#e6e8ec;--sub:#6b6f76}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:#0e0f12;color:#f3f1ec;line-height:1.6;word-break:keep-all}
+  .wrap{max-width:440px;margin:0 auto;padding:44px 18px 40px}
+  h1{font-size:25px;font-weight:900;text-align:center;letter-spacing:-.02em}
+  h1 em{font-style:normal;color:var(--gold)}
+  .lead{color:#a3a7b0;text-align:center;font-size:14.5px;margin:8px 0 22px}
+  .card{background:#fff;color:#111;border-radius:18px;padding:22px 18px}
+  .lbl{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+  .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:14px;font:inherit;font-size:17px}
+  .in:focus{outline:none;border-color:#111}
+  .code{letter-spacing:.45em;text-align:center;font-weight:800;margin-top:12px}
+  .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--red);color:#fff;padding:16px;font:inherit;font-size:17px;font-weight:800;cursor:pointer;margin-top:14px}
+  .btn:disabled{background:#bbb}
+  .help{font-size:13px;color:#777;margin-top:8px}
+  .err{color:#d32f2f;font-size:13.5px;margin-top:10px;min-height:18px}
+  .tips{margin-top:18px;font-size:13px;color:#a3a7b0}.tips li{margin:5px 0 5px 18px}
+  .hide{display:none!important}
+  /* 읽기 */
+  #reader{background:#2a2c31;min-height:100vh}
+  .top{position:fixed;left:0;right:0;top:0;height:50px;background:#111;display:flex;align-items:center;gap:8px;padding:0 10px;z-index:10}
+  .top button{background:none;border:1px solid #3a3d44;color:#fff;border-radius:8px;padding:6px 10px;font:inherit;font-size:13.5px;cursor:pointer}
+  .seg{display:flex;border:1px solid #3a3d44;border-radius:8px;overflow:hidden;margin:0 auto}
+  .seg button{border:0;border-radius:0;padding:6px 14px}
+  .seg button.on{background:var(--gold);color:#111;font-weight:800}
+  .bar{position:fixed;left:0;top:50px;height:3px;background:var(--red);z-index:10;width:0;transition:width .2s}
+  .pages{max-width:820px;margin:0 auto;padding:58px 0 70px}
+  .pg{position:relative;background:#fff;margin:0 0 8px;aspect-ratio:900/1272;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  .pg canvas{display:block;width:100%;height:auto}
+  .pg .ld{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px}
+  .bot{position:fixed;left:0;right:0;bottom:0;background:#111;display:flex;justify-content:space-between;align-items:center;padding:10px 14px calc(10px + env(safe-area-inset-bottom));font-size:14px;z-index:10}
+  .bot b{color:var(--gold)}
+  .toast{position:fixed;left:12px;right:12px;bottom:64px;max-width:520px;margin:0 auto;background:#fff;color:#111;border-radius:14px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:12;font-size:14.5px}
+  .toast.up{bottom:auto;top:62px}
+  .toast .r{display:flex;gap:8px;margin-top:10px}.toast button{flex:1;border:0;border-radius:10px;padding:11px;font:inherit;font-weight:800;cursor:pointer}
+  .toast .go{background:var(--red);color:#fff}.toast .no{background:#eee;color:#111}
+  .toc{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20}
+  .toc .p{position:absolute;left:0;top:0;bottom:0;width:min(86vw,360px);background:#fff;color:#111;overflow:auto;padding:18px 16px 40px}
+  .toc h3{font-size:15px;margin:16px 0 4px;color:var(--red)}
+  .toc a{display:flex;justify-content:space-between;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);color:#111;text-decoration:none;font-size:14.5px}
+  .toc a small{color:var(--sub);flex:none}
+  .toc a.sec{font-weight:800;background:#f6f6f8;padding-left:6px}
+</style>
+</head>
+<body>
+
+<!-- 로그인 -->
+<div class="wrap" id="login">
+  <h1>패스트트랙 <em>읽기</em></h1>
+  <p class="lead" id="lead">결제하신 휴대폰 번호를 넣어 주세요.<br>한 번 열면 이 기기에서는 90일 동안 바로 열려요.</p>
+  <div class="card">
+    <label class="lbl" for="ph">결제한 휴대폰 번호</label>
+    <input class="in" id="ph" inputmode="numeric" maxlength="11" placeholder="01012345678" autocomplete="tel">
+    <button class="btn" id="go">패스트트랙 열기</button>
+    <div id="codeBox" class="hide">
+      <p class="help" style="margin-top:14px">문자로 받은 인증번호 6자리를 넣어 주세요. 키보드 위에 번호가 뜨면 눌러 주세요.</p>
+      <input class="in code" id="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="● ● ● ● ● ●">
+      <button class="btn" id="verify">확인</button>
+    </div>
+    <div class="err" id="err"></div>
+  </div>
+  <ul class="tips">
+    <li>새 휴대폰이나 PC에서 처음 열 때만 문자 인증을 해요.</li>
+    <li>한 번호로 기기 3대까지 볼 수 있어요. 4번째 기기에서 열면 가장 오래된 기기는 자동으로 로그아웃돼요.</li>
+    <li>모든 쪽에 구매자 번호가 표시돼요. 공유는 삼가 주세요.</li>
+    <li>문의: 네이버 카페 「어트랙티버」</li>
+  </ul>
+</div>
+
+<!-- 읽기 -->
+<div id="reader" class="hide">
+  <div class="top">
+    <button id="tocBtn">☰ 목차</button>
+    <div class="seg"><button data-part="1" class="on">1부</button><button data-part="2">2부</button></div>
+    <button id="homeBtn" title="홈 화면에 추가">＋홈</button>
+  </div>
+  <div class="bar" id="bar"></div>
+  <div class="pages" id="pages"></div>
+  <div class="bot"><span><span id="partName">1부</span> · <b id="cur">1</b> / <span id="tot">194</span>쪽</span><span id="who"></span></div>
+</div>
+<div class="toc hide" id="toc"><div class="p" id="tocP"></div></div>
+
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
+const PARTS = { 1: { n: 194, f: "a", name: "1부" }, 2: { n: 91, f: "b", name: "2부" } };
+const TOC = {
+  1: [["표지·필독", 1], ["목차", 3], ["들어가며", 6], ["＜마인드＞", 25, 1], ["1-1) 당신은 노예다", 25], ["1-2) 솔루션 (Code A)", 31], ["1-3) 솔루션 (Code B)", 40], ["1-4) 남자의 매력의 정의", 47], ["1-5) 이성을 만나게 하는 핵심 키워드 2가지", 58], ["1-6) '결핍'을 활용하는 법", 65],
+      ["＜변화＞", 69, 1], ["2-1) '진정한' 변화", 69], ["2-2) PT 이론", 72], ["2-3) 롤모델링 (Code C)", 75], ["2-4) 라이프 스타일 (Code E)", 78], ["2-5) 텐션(에너지) (Code F)", 85], ["2-6) 캐릭터 Part1", 90], ["2-7) 캐릭터 Part2", 94],
+      ["＜여자: 유혹확률 5배 높이기＞", 100, 1], ["3-1) 여자에 대한 이해 1부", 100], ["3-2) 남성성 (Code F)", 106], ["3-3) 바디랭기지 (Code G)", 108], ["3-4) 여자에 대한 이해 2부", 113], ["3-5) 여자에 대한 이해 3부", 117], ["3-6) 인지 부조화", 123], ["3-7) ★핵심 솔루션 (Code H)", 126], ["3-8) ★핵심 솔루션 2", 129], ["3-9) 실전 예시", 135],
+      ["＜유혹＞", 140, 1], ["4-1) 섹스", 140], ["4-2) 섹스 2부", 145], ["4-3) 이성을 만나는 전략", 149], ["4-4) 어프로치", 160]],
+  2: [["표지·필독", 1], ["목차", 3], ["1) 카드 까기 게임", 4], ["2) 패턴 파악", 12], ["3) 연락(카카오톡)", 17], ["4) 전략 A", 31], ["5) 전략 B", 34], ["6) 장소와 만남", 40], ["7) 돈, 술, 그리고 김치녀", 42], ["8) 에프터", 44], ["9) 멘탈·보너스", 83], ["10) Outro: 당신이 살아야 할 삶", 87]],
+};
+const $ = id => document.getElementById(id), LS = "yanam_ft";
+const api = body => fetch(ENDPOINT, { method: "POST", body: JSON.stringify(body) }).then(r => r.json()).catch(() => ({ ok: false, error: "인터넷 연결을 확인해 주세요." }));
+let S = JSON.parse(localStorage.getItem(LS) || "{}"); // {token, part, p1, p2}
+let KEY = null, LABEL = "", PART = 1, io = null, saveT = null;
+const fromPay = /from=pay/.test(location.search + location.hash);
+if (fromPay) $("lead").innerHTML = "결제가 완료되었어요! 결제하신 휴대폰 번호를 넣으면<br>바로 열려요.";
+
+/* ---- 로그인 ---- */
+$("ph").oninput = () => $("ph").value = $("ph").value.replace(/\D/g, "");
+$("go").onclick = async () => {
+  const phone = $("ph").value;
+  if (!/^01[016789]\d{7,8}$/.test(phone)) return $("err").textContent = "휴대폰 번호를 확인해 주세요.";
+  busy($("go"), "확인 중…");
+  const r = await api({ kind: "ftStart", phone, ua: navigator.userAgent });
+  if (r.ok) return enter(r.token);
+  if (r.need !== "sms") { idle($("go"), "패스트트랙 열기"); return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요."; }
+  const c = await api({ kind: "ftSendCode", phone });
+  idle($("go"), "인증번호 다시 받기");
+  if (!c.ok) return $("err").textContent = c.error || "잠시 후 다시 시도해 주세요.";
+  $("err").textContent = c.test ? "테스트 번호예요. 인증번호 000000을 넣어 주세요." : "";
+  $("codeBox").classList.remove("hide"); $("code").focus();
+  if ("OTPCredential" in window) { // 안드로이드 크롬: 문자 오면 '허용' 한 번으로 자동 입력
+    const ac = new AbortController(); setTimeout(() => ac.abort(), 5 * 60000);
+    navigator.credentials.get({ otp: { transport: ["sms"] }, signal: ac.signal }).then(o => { if (o && o.code) { $("code").value = o.code; verify(); } }).catch(() => {});
+  }
+};
+$("code").oninput = () => { $("code").value = $("code").value.replace(/\D/g, ""); if ($("code").value.length === 6) verify(); };
+$("verify").onclick = () => verify();
+async function verify() {
+  if ($("verify").disabled) return;
+  busy($("verify"), "확인 중…");
+  const r = await api({ kind: "ftVerify", phone: $("ph").value, code: $("code").value, ua: navigator.userAgent });
+  idle($("verify"), "확인");
+  if (!r.ok) return $("err").textContent = r.error || "다시 시도해 주세요.";
+  enter(r.token);
+}
+function busy(b, t) { b.disabled = true; b.textContent = t; $("err").textContent = ""; }
+function idle(b, t) { b.disabled = false; b.textContent = t; }
+
+async function enter(token) {
+  S.token = token; save();
+  const r = await api({ kind: "ftOpen", token });
+  if (!r.ok) { if (r.relogin) { delete S.token; save(); } showLogin(r.error); return; }
+  KEY = await crypto.subtle.importKey("raw", Uint8Array.from(atob(r.key), c => c.charCodeAt(0)), "AES-GCM", false, ["decrypt"]);
+  LABEL = r.label; $("who").textContent = "구매자 " + LABEL;
+  const pos = r.pos || {};
+  const part = pos.part || S.part || 1, page = (part === 1 ? (pos.p1 || S.p1) : (pos.p2 || S.p2)) || 1;
+  $("login").classList.add("hide"); $("reader").classList.remove("hide");
+  openPart(part, page > 1 ? page : 0);
+  if (!localStorage.getItem(LS + "_home") && !matchMedia("(display-mode: standalone)").matches && !navigator.standalone) setTimeout(homeTip, 2500);
+}
+function showLogin(msg) { $("reader").classList.add("hide"); $("login").classList.remove("hide"); if (msg) $("err").textContent = msg; }
+function save() { localStorage.setItem(LS, JSON.stringify(S)); }
+
+/* ---- 읽기 ---- */
+function openPart(part, resumePage) {
+  PART = part; S.part = part; save();
+  document.querySelectorAll(".seg button").forEach(b => b.classList.toggle("on", +b.dataset.part === part));
+  const P = PARTS[part]; $("partName").textContent = P.name; $("tot").textContent = P.n;
+  if (io) io.disconnect();
+  const box = $("pages"); box.innerHTML = "";
+  io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) load(e.target); }), { rootMargin: "1500px 0px" });
+  for (let n = 1; n <= P.n; n++) {
+    const d = document.createElement("div"); d.className = "pg"; d.id = "p" + n; d.dataset.n = n;
+    d.innerHTML = '<div class="ld">' + n + '쪽</div>'; box.appendChild(d); io.observe(d);
+  }
+  scrollTo(0, 0);
+  if (resumePage) {
+    const t = document.createElement("div"); t.className = "toast";
+    t.innerHTML = '지난번 <b>' + P.name + ' ' + resumePage + '쪽</b>까지 읽었어요.<div class="r"><button class="go">이어 읽기</button><button class="no">처음부터</button></div>';
+    t.querySelector(".go").onclick = () => { $("p" + resumePage).scrollIntoView(); t.remove(); };
+    t.querySelector(".no").onclick = () => t.remove();
+    document.querySelectorAll(".toast:not(.up)").forEach(x => x.remove()); document.body.appendChild(t);
+  }
+}
+async function load(d) {
+  if (d.dataset.ok) return; d.dataset.ok = "1";
+  const n = d.dataset.n, f = PARTS[PART].f, part = PART;
+  try {
+    const buf = new Uint8Array(await (await fetch("ft/" + f + "-" + String(n).padStart(3, "0") + ".bin")).arrayBuffer());
+    const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, KEY, buf.slice(12));
+    if (part !== PART) return;
+    const img = await createImageBitmap(new Blob([plain], { type: "image/jpeg" }));
+    const c = document.createElement("canvas"); c.width = img.width; c.height = img.height;
+    const x = c.getContext("2d"); x.drawImage(img, 0, 0);
+    x.save(); x.globalAlpha = .09; x.fillStyle = "#c0392b"; x.font = "bold 44px sans-serif"; x.translate(c.width / 2, c.height / 2); x.rotate(-Math.PI / 6); x.textAlign = "center";
+    for (let y = -2; y <= 2; y++) x.fillText("구매자 " + LABEL, 0, y * 260);
+    x.restore(); x.globalAlpha = .45; x.fillStyle = "#666"; x.font = "15px sans-serif"; x.fillText("야심한남자 패스트트랙 · 구매자 " + LABEL + " 전용", 16, c.height - 14);
+    d.innerHTML = ""; d.appendChild(c);
+  } catch (e) { d.dataset.ok = ""; d.querySelector(".ld") && (d.querySelector(".ld").textContent = "불러오지 못했어요. 스크롤하면 다시 시도해요."); }
+}
+addEventListener("scroll", () => {
+  const mid = innerHeight / 2, el = document.elementFromPoint(innerWidth / 2, mid), pg = el && el.closest && el.closest(".pg");
+  if (!pg) return;
+  const n = +pg.dataset.n, P = PARTS[PART];
+  $("cur").textContent = n; $("bar").style.width = Math.round(n / P.n * 100) + "%";
+  if (S["p" + PART] !== n) { S["p" + PART] = n; save(); clearTimeout(saveT); saveT = setTimeout(sendPos, 4000); }
+}, { passive: true });
+function sendPos() { if (S.token) fetch(ENDPOINT, { method: "POST", keepalive: true, body: JSON.stringify({ kind: "ftPos", token: S.token, part: PART, page: S["p" + PART] }) }).catch(() => {}); }
+addEventListener("pagehide", sendPos);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") sendPos(); });
+document.addEventListener("contextmenu", e => { if (e.target.closest(".pg")) e.preventDefault(); });
+document.querySelectorAll(".seg button").forEach(b => b.onclick = () => { const p = +b.dataset.part; if (p !== PART) { sendPos(); openPart(p, (S["p" + p] || 1) > 1 ? S["p" + p] : 0); } });
+
+/* 목차 */
+$("tocBtn").onclick = () => {
+  let h = "";
+  [1, 2].forEach(p => { h += "<h3>" + PARTS[p].name + "</h3>"; TOC[p].forEach(([t, n, sec]) => h += '<a href="#" data-p="' + p + '" data-n="' + n + '"' + (sec ? ' class="sec"' : "") + '><span>' + t + '</span><small>' + n + '쪽</small></a>'); });
+  $("tocP").innerHTML = h; $("toc").classList.remove("hide");
+};
+$("toc").onclick = e => {
+  const a = e.target.closest("a");
+  if (a) { e.preventDefault(); const p = +a.dataset.p, n = +a.dataset.n; if (p !== PART) openPart(p, 0); setTimeout(() => $("p" + n).scrollIntoView(), 50); }
+  if (a || e.target === $("toc")) $("toc").classList.add("hide");
+};
+
+/* 홈 화면에 추가 안내 */
+let deferred = null; addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; });
+function homeTip() {
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const t = document.createElement("div"); t.className = "toast up";
+  t.innerHTML = "<b>홈 화면에 추가해 두세요</b><br>" + (deferred ? "앱처럼 아이콘을 눌러 바로 이어 읽을 수 있어요." : ios ? "아래 공유 버튼(□↑) → '홈 화면에 추가'를 누르면 앱처럼 바로 열려요." : "브라우저 메뉴(⋮) → '홈 화면에 추가'를 누르면 앱처럼 바로 열려요.") +
+    '<div class="r">' + (deferred ? '<button class="go">추가하기</button>' : "") + '<button class="no">닫기</button></div>';
+  const go = t.querySelector(".go"); if (go) go.onclick = () => { deferred.prompt(); t.remove(); };
+  t.querySelector(".no").onclick = () => t.remove();
+  localStorage.setItem(LS + "_home", "1"); document.body.appendChild(t);
+}
+$("homeBtn").onclick = homeTip;
+
+if (S.token) enter(S.token);
+</script>
+</body>
+</html>

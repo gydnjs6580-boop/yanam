@@ -93,7 +93,7 @@ function doPost(e) {
       if (d.token) { // 휴대폰 인증 신청 (free.html)
         phone = cache.get("tok_" + d.token) || "";
         if (!phone || phone !== s(d.phone, 11)) return out({ ok: false, error: "휴대전화 인증을 다시 해 주세요." });
-      } else if (d.phone && TEST()) { // 문자 인증 없이 (솔라피 연결 전)
+      } else if (d.phone) { // 문자 인증 없이 신청 (free.html SMS_VERIFY=false)
         phone = s(d.phone, 11);
         if (!phoneOk(phone)) return out({ ok: false, error: "휴대전화 번호를 확인해 주세요." });
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
@@ -124,6 +124,7 @@ function doPost(e) {
 
     case "ftClaim": return ftClaim_(d, cache);
     case "demoAuth": return demoAuth_(d);
+    case "ftStart": case "ftSendCode": case "ftVerify": case "ftOpen": case "ftPos": return ftReader_(d, cache);
 
     case "booking": {
       let phone = d.token ? (cache.get("tok_" + d.token) || "") : "";
@@ -143,7 +144,7 @@ function doPost(e) {
 
 /* ===== 발송 ===== */
 function sendKakao_(phone, name) {
-  if (TEST()) return "카톡 미연결";
+  if (TEST() || !prop("KAKAO_PFID")) return "카톡 미연결";
   const msg = {
     to: phone, from: prop("SMS_FROM"),
     kakaoOptions: { pfId: prop("KAKAO_PFID"), templateId: prop("KAKAO_TEMPLATE_ID"), variables: { "#{이름}": name || "고객", "#{링크}": prop("FREE_PDF_URL") } },
@@ -243,6 +244,10 @@ function payappFeedback_(p) {
     const i = nos.indexOf(String(p.mul_no));
     const row = [now, String(p.mul_no), String(p.pay_state), s(p.goodname, 60), Number(p.price) || 0, txt(s(p.recvphone, 11).replace(/[^0-9]/g, "")), String(p.pay_type || ""), s(p.pay_date, 20), ok ? "Y" : "N"];
     if (i < 0) sh.appendRow(row.concat(["", ""]));
+    if (ok && String(p.pay_state) === "4" && FT_MATCH.test(String(p.goodname)) && (i < 0 || !String(sh.getRange(i + 2, 10).getValue()))) {
+      const ph = s(p.recvphone, 11).replace(/[^0-9]/g, ""), r = i < 0 ? sh.getLastRow() : i + 2;
+      if (phoneOk(ph) && !TEST()) { const m = solapi_({ to: ph, from: prop("SMS_FROM"), text: "[야심한남자] 패스트트랙 구매 감사합니다.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 문자를 보관해 두면 언제든 이어서 읽을 수 있어요." }); sh.getRange(r, 10).setValue(m.ok ? "읽기 문자 발송" : "문자 실패"); }
+    }
     else sh.getRange(i + 2, 1, 1, 9).setValues([row]); // 상태 갱신(결제완료·취소), 권한 칸은 유지
   } finally { lock.releaseLock(); }
   return ContentService.createTextOutput("SUCCESS");
@@ -325,4 +330,127 @@ function demoAuth_(d) {
   const t = Utilities.getUuid();
   CacheService.getScriptCache().put("demo_t_" + t, "1", 6 * 3600);
   return out({ ok: true, token: t, total: DEMO_PAGES, label: "010-****-1234" });
+}
+
+
+/* ===== 패스트트랙 ③ 사이트에서 읽기 (ft-read.html) =====
+ * - 결제 직후 첫 기기: 결제 번호만 넣으면 바로 열림(결제 후 FT_FIRST_MIN분 안, 등록 기기 0대일 때)
+ * - 그 외 새 기기: 문자 인증 한 번 → 출입증(토큰) 발급, 기기 FT_MAX_DEVICES대 초과 시 가장 오래된 기기 자동 로그아웃
+ * - 출입증 FT_TOKEN_DAYS일 유효. 읽은 위치는 '열람' 시트에 저장(기기 바뀌어도 이어 읽기)
+ * - 페이지 이미지는 사이트(ft/)에 암호화돼 올라가 있고, 열쇠는 비공개 드라이브 파일(FT_KEY_FILE_ID)에서 읽어 인증된 기기에만 줌
+ * - 테스트 번호: 스크립트 속성 FT_TEST_PHONES(쉼표 구분, 기본 01000001234)는 결제 없이 구매자로 취급
+ */
+const FT_READ_URL = "https://gydnjs6580-boop.github.io/yanam/ft-read.html";
+const FT_MAX_DEVICES = 3, FT_TOKEN_DAYS = 90, FT_FIRST_MIN = 60;
+const FT_KEY_FILE_ID = "1Ut6se732VAlTFg5RdGojTkqBOhky8gt2"; // 비공개 드라이브의 열쇠 파일 ID (파일 내용은 코드에 쓰지 않음)
+const DEVICES = () => sheet_("열람기기", ["발급시각", "휴대폰", "출입증", "마지막 사용", "브라우저", "상태", "방법"]);
+const READS = () => sheet_("열람", ["휴대폰", "마지막 부", "1부 마지막 쪽", "2부 마지막 쪽", "1부 최대 쪽", "2부 최대 쪽", "갱신시각", "처음 연 시각"]);
+const KST = () => Utilities.formatDate(new Date(), "Asia/Seoul", "yyyy-MM-dd HH:mm:ss");
+const mask_ = p => p.slice(0, 3) + "-****-" + p.slice(-4);
+
+function ftBuyer_(phone) { // → {paidAt(ms)} 또는 null
+  const tests = (prop("FT_TEST_PHONES") || "01000001234").split(",").map(x => x.trim());
+  if (tests.indexOf(phone) >= 0) return { paidAt: Date.now(), test: true };
+  const sh = PAYS(), last = sh.getLastRow();
+  if (last < 2) return null;
+  const hit = sh.getRange(2, 1, last - 1, 9).getValues().filter(r => String(r[5]).replace(/'/g, "") === phone && String(r[2]) === "4" && r[8] === "Y" && FT_MATCH.test(String(r[3]))).pop();
+  if (!hit) return null;
+  const t = hit[0] instanceof Date ? hit[0].getTime() : new Date(String(hit[0]).replace(" ", "T") + "+09:00").getTime();
+  return { paidAt: t };
+}
+function ftDevices_(phone) {
+  const sh = DEVICES(), last = sh.getLastRow();
+  return (last > 1 ? sh.getRange(2, 1, last - 1, 7).getValues() : []).map((r, i) => ({ r, row: i + 2 })).filter(x => String(x.r[1]).replace(/'/g, "") === phone && x.r[5] === "사용");
+}
+function ftIssue_(phone, ua, how) {
+  const token = Utilities.getUuid().replace(/-/g, "") + Utilities.getUuid().replace(/-/g, "").slice(0, 8);
+  const sh = DEVICES(), now = KST();
+  sh.appendRow([now, txt(phone), token, now, s(ua, 120), "사용", how]);
+  const act = ftDevices_(phone);
+  act.slice(0, Math.max(0, act.length - FT_MAX_DEVICES)).forEach(x => { sh.getRange(x.row, 6).setValue("만료(기기 " + FT_MAX_DEVICES + "대 초과)"); CacheService.getScriptCache().remove("ftt_" + x.r[2]); });
+  CacheService.getScriptCache().put("ftt_" + token, phone, 21600);
+  return token;
+}
+function ftWho_(token) { // 출입증 → 휴대폰
+  if (!token || String(token).length < 30) return "";
+  const c = CacheService.getScriptCache(), hit = c.get("ftt_" + token);
+  if (hit) return hit;
+  const sh = DEVICES(), last = sh.getLastRow();
+  if (last < 2) return "";
+  const v = sh.getRange(2, 1, last - 1, 6).getValues();
+  for (let i = v.length - 1; i >= 0; i--) if (String(v[i][2]) === String(token)) {
+    if (v[i][5] !== "사용") return "";
+    const t = v[i][0] instanceof Date ? v[i][0].getTime() : new Date(String(v[i][0]).replace(" ", "T") + "+09:00").getTime();
+    if (Date.now() - t > FT_TOKEN_DAYS * 864e5) { sh.getRange(i + 2, 6).setValue("만료(기간)"); return ""; }
+    const ph = String(v[i][1]).replace(/'/g, "");
+    sh.getRange(i + 2, 4).setValue(KST()); c.put("ftt_" + token, ph, 21600);
+    return ph;
+  }
+  return "";
+}
+function ftKey_() {
+  const c = CacheService.getScriptCache(), k = c.get("ft_key");
+  if (k) return k;
+  if (!FT_KEY_FILE_ID) return "";
+  const v = DriveApp.getFileById(FT_KEY_FILE_ID).getBlob().getDataAsString().trim();
+  c.put("ft_key", v, 21600); return v;
+}
+function ftReadRow_(phone) {
+  const sh = READS(), last = sh.getLastRow();
+  const v = last > 1 ? sh.getRange(2, 1, last - 1, 8).getValues() : [];
+  const i = v.findIndex(r => String(r[0]).replace(/'/g, "") === phone);
+  return { sh, i, r: i >= 0 ? v[i] : null };
+}
+function ftReader_(d, cache) {
+  const phone = s(d.phone, 11).replace(/[^0-9]/g, "");
+  switch (d.kind) {
+    case "ftStart": { // 결제 직후 첫 기기는 번호만으로 열기, 아니면 문자 인증 필요
+      if (!phoneOk(phone)) return out({ ok: false, error: "결제하신 휴대폰 번호를 확인해 주세요." });
+      const b = ftBuyer_(phone);
+      if (!b) return out({ ok: false, error: "이 번호로 확인된 패스트트랙 결제가 없어요. 결제 직후라면 1~2분 뒤 다시 시도해 주세요." });
+      const lock = LockService.getScriptLock(); lock.waitLock(20000);
+      try {
+        if (!b.test && Date.now() - b.paidAt < FT_FIRST_MIN * 60000 && ftDevices_(phone).length === 0)
+          return out({ ok: true, token: ftIssue_(phone, d.ua, "결제 직후") });
+      } finally { lock.releaseLock(); }
+      return out({ ok: false, need: "sms" });
+    }
+    case "ftSendCode": {
+      if (!phoneOk(phone) || !ftBuyer_(phone)) return out({ ok: false, error: "이 번호로 확인된 패스트트랙 결제가 없어요." });
+      const k = "ftc_n_" + phone, n = +(cache.get(k) || 0);
+      if (n >= 5) return out({ ok: false, error: "잠시 후 다시 시도해 주세요. (10분 제한)" });
+      cache.put(k, String(n + 1), 600);
+      const test = TEST() || (prop("FT_TEST_PHONES") || "01000001234").split(",").indexOf(phone) >= 0;
+      const code = test ? "000000" : String(Math.floor(100000 + Math.random() * 900000));
+      cache.put("ftc_" + phone, code, 300);
+      if (!test) {
+        const r = solapi_({ to: phone, from: prop("SMS_FROM"), text: "[야심한남자] 패스트트랙 인증번호 " + code + "\n\n@gydnjs6580-boop.github.io #" + code });
+        if (!r.ok) return out({ ok: false, error: "문자 발송에 실패했어요. 잠시 후 다시 시도해 주세요." });
+      }
+      return out({ ok: true, test });
+    }
+    case "ftVerify": {
+      const c = s(d.code, 6), saved = cache.get("ftc_" + phone);
+      if (!saved || saved !== c) return out({ ok: false, error: "인증번호가 맞지 않아요." });
+      cache.remove("ftc_" + phone);
+      const lock = LockService.getScriptLock(); lock.waitLock(20000);
+      try { return out({ ok: true, token: ftIssue_(phone, d.ua, "문자 인증") }); } finally { lock.releaseLock(); }
+    }
+    case "ftOpen": {
+      const ph = ftWho_(d.token);
+      if (!ph) return out({ ok: false, relogin: true });
+      const key = ftKey_(); if (!key) return out({ ok: false, error: "준비 중이에요. 잠시 후 다시 열어 주세요." });
+      const x = ftReadRow_(ph), r = x.r;
+      if (!r) x.sh.appendRow([txt(ph), 1, 1, 1, 1, 1, KST(), KST()]);
+      return out({ ok: true, key, label: mask_(ph), pos: r ? { part: +r[1] || 1, p1: +r[2] || 1, p2: +r[3] || 1 } : null });
+    }
+    case "ftPos": {
+      const ph = ftWho_(d.token); if (!ph) return out({ ok: false });
+      const part = d.part === 2 ? 2 : 1, pg = Math.max(1, Math.min(400, parseInt(d.page, 10) || 1));
+      const x = ftReadRow_(ph); if (!x.r) return out({ ok: false });
+      const row = x.r.slice(); row[1] = part; row[part === 1 ? 2 : 3] = pg; row[part === 1 ? 4 : 5] = Math.max(+row[part === 1 ? 4 : 5] || 1, pg); row[6] = KST();
+      x.sh.getRange(x.i + 2, 2, 1, 6).setValues([row.slice(1, 7)]);
+      return out({ ok: true });
+    }
+  }
 }
