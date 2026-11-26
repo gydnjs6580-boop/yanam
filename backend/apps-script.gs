@@ -39,7 +39,7 @@ function sheet_(name, headers) {
   if (!sh) { sh = ss.insertSheet(name); sh.appendRow(headers); sh.setFrozenRows(1); }
   return sh;
 }
-const LEADS = () => sheet_("신청자", ["신청시각", "이름", "휴대폰", "이메일", "개인정보동의", "마케팅동의", "유입(src)", "방문자ID", "발송결과", "ID"]);
+const LEADS = () => sheet_("신청자", ["신청시각", "이름", "휴대폰", "이메일", "개인정보동의", "마케팅동의", "유입(src)", "방문자ID", "발송결과", "ID", "진단"]);
 const BOOK = () => sheet_("상담예약", ["신청시각", "이름", "휴대폰", "1순위", "2순위", "3순위", "고민", "유입(src)", "처리상태"]);
 const EVENTS = () => sheet_("이벤트", ["시각", "종류", "대상", "유입(src)", "방문자ID", "브라우저"]);
 
@@ -112,7 +112,7 @@ function doPost(e) {
           if (email) res.push(sendMail_(email, name, id));
           result = res.join(" / ");
         }
-        sh.appendRow([now, name, txt(phone), email, "Y", d.agreeMarketing ? "Y" : "N", s(d.src, 60), s(d.vid, 20), result, id]);
+        sh.appendRow([now, name, txt(phone), email, "Y", d.agreeMarketing ? "Y" : "N", s(d.src, 60), s(d.vid, 20), result, id, s(d.quiz, 800)]);
         const token = Utilities.getUuid();
         if (phone) cache.put("tok_" + token, phone, 1800);
         return out({ ok: true, dup, token, id, my: MY_PAGE + "?id=" + id, pdf: prop("FREE_PDF_URL"), fasttrack: FASTTRACK_URL });
@@ -198,12 +198,13 @@ function doGet(e) {
 
 function myPage_(id) {
   const sh = LEADS(), last = sh.getLastRow();
-  const rows = last > 1 ? sh.getRange(2, 1, last - 1, 10).getValues() : [];
+  const rows = last > 1 ? sh.getRange(2, 1, last - 1, 11).getValues() : [];
   const r = rows.find(x => String(x[9]) === id);
+  const q = rows.filter(x => String(x[9]) === id && x[10]).map(x => String(x[10])).pop() || ""; // 가장 최근 진단
   if (!r) return out({ ok: false, error: "not found" });
   const t = r[0] instanceof Date ? r[0].getTime() : new Date(String(r[0]).replace(" ", "T") + "+09:00").getTime();
   return out({
-    ok: true, name: String(r[1]), created: t, deadline: t + COUPON_DAYS * 864e5,
+    ok: true, name: String(r[1]), created: t, diag: q.split(" | ")[0].replace(/^유형:\s*/, ""), deadline: t + COUPON_DAYS * 864e5,
     pdf: prop("FREE_PDF_URL"), fasttrack: FASTTRACK_URL,
     coupon: COUPON_URL && COUPON_PRICE ? { url: COUPON_URL, price: COUPON_PRICE } : null,
   });

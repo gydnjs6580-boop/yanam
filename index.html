@@ -99,8 +99,9 @@
   <section class="lead" id="free">
     <span class="badge">무료 E-BOOK</span>
     <h2>매번 '좋은 사람'에서 끝났다면<br>이것부터 바꾸세요</h2>
-    <p class="desc">영상에서 다 못 한 핵심을 E-BOOK으로 정리했습니다. 휴대폰 번호만 남기면 카카오톡으로 바로 보내드려요.</p>
+    <p class="desc">영상에서 다 못 한 핵심을 14일 동안 5회로 나눠 드립니다. 신청하면 1회차를 바로 열어드려요.</p>
     <a class="btn-main" data-track="free_landing" href="free.html" style="display:block;text-align:center;text-decoration:none">무료로 받기</a>
+    <a data-track="check_landing" href="check.html?src=linkhub" style="display:block;text-align:center;margin-top:12px;font-size:14px;color:#d9b15f;text-decoration:none">뭐부터 봐야 할지 모르겠다면? <b>1분 연애 진단 →</b></a>
   </section>
 
   <!-- ② 상품 -->
@@ -164,6 +165,13 @@ function track(type, target) {
 track("view", "page");
 document.querySelectorAll("[data-track]").forEach(a => a.addEventListener("click", () => track("click", a.dataset.track)));
 
+</script>
+<script>
+/* 이미 신청한 사람이 다시 오면 내 자료 페이지로 안내 */
+(function () { let u; try { u = localStorage.getItem("yanam_my"); } catch (e) {} if (!u || !/^https:\/\/gydnjs6580-boop\.github\.io\/yanam\/my\.html\?id=[\w-]+$/.test(u)) return;
+  const a = document.createElement("a"); a.href = u; a.textContent = "📄 내 무료 자료 페이지로 가기 →";
+  a.style.cssText = "display:block;background:#2fb24c;color:#fff;text-align:center;font-weight:700;font-size:14px;padding:10px;text-decoration:none;position:relative;z-index:50";
+  document.body.prepend(a); })();
 </script>
 </body>
 </html>
