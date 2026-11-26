@@ -329,5 +329,12 @@ $("submit2").onclick = async () => {
 };
 $("skip2").onclick = () => { track("click", "booking_skip"); $("s2").style.display = "none"; $("s3").style.display = "block"; };
 </script>
+<script>
+/* 이미 신청한 사람이 다시 오면 내 자료 페이지로 안내 */
+(function () { let u; try { u = localStorage.getItem("yanam_my"); } catch (e) {} if (!u || !/^https:\/\/gydnjs6580-boop\.github\.io\/yanam\/my\.html\?id=[\w-]+$/.test(u)) return;
+  const a = document.createElement("a"); a.href = u; a.textContent = "📄 내 무료 자료 페이지로 가기 →";
+  a.style.cssText = "display:block;background:#2fb24c;color:#fff;text-align:center;font-weight:700;font-size:14px;padding:10px;text-decoration:none;position:relative;z-index:50";
+  document.body.prepend(a); })();
+</script>
 </body>
 </html>

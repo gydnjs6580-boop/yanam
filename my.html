@@ -60,6 +60,14 @@
   .hint.ok{color:var(--green)}
   .ft{display:block;text-align:center;color:#111;font-size:14px;margin-top:4px}
   .err{text-align:center;padding:60px 20px;color:var(--sub)}
+  .remind h4{font-size:15px;margin-bottom:10px}
+  .remind ul{list-style:none;font-size:14px;margin-bottom:12px}
+  .remind li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line)}
+  .remind li.done{color:#aaa}.remind li b{font-weight:600}
+  .remind .btns{display:flex;gap:8px}
+  .remind .btns a,.remind .btns button{flex:1;text-align:center;font:inherit;font-size:14px;font-weight:700;padding:11px 6px;border-radius:10px;border:1px solid var(--ink);background:#fff;color:var(--ink);text-decoration:none;cursor:pointer}
+  .remind .btns .pri{background:var(--ink);color:#fff}
+  .remind small{display:block;color:var(--sub);font-size:12px;margin-top:8px}
 </style>
 </head>
 <body>
@@ -106,6 +114,15 @@ async function load() {
     <a class="open" id="openBtn" target="_blank" rel="noopener">열기</a>
     <div class="chs" id="chs"></div></div>`;
 
+  // 회차 공개 일정 + 다시 오게 만드는 장치 (알림톡이 없어서 캘린더·링크 저장으로 대신)
+  const upcoming = CHAPTERS.filter(c => c.day > 0);
+  if (!expired && upcoming.some(c => c.day > daysSince)) {
+    const W = "일월화수목금토", fmt = t => { const x = new Date(t); return `${x.getMonth() + 1}/${x.getDate()}(${W[x.getDay()]})`; };
+    html += `<div class="card remind"><h4>📅 다음 자료 공개 일정</h4><ul>${upcoming.map(c => `<li class="${daysSince >= c.day ? "done" : ""}"><b>${esc(c.title)}</b><span>${daysSince >= c.day ? "공개됨" : fmt(d.created + c.day * DAY)}</span></li>`).join("")}</ul>
+      <div class="btns"><a class="pri" id="icsBtn" download="yanam-ebook.ics">캘린더에 알림 넣기</a><button id="copyBtn">내 페이지 링크 복사</button></div>
+      <small>이 페이지는 나만 볼 수 있는 주소예요. 카톡 '나와의 채팅'에 링크를 보내 두면 다음 회차를 놓치지 않아요.</small></div>`;
+  }
+
   if (d.coupon) {
     html += `<div class="coupon ${expired ? "expired" : ""}"><div class="l"><span class="gold">GOLD</span><span class="lim">사용 기한 <b>${expired ? "종료" : "D-" + left}</b></span>
       <h3>패스트트랙 신청자 전용가</h3><small>${esc(d.coupon.price)} · 신청일부터 14일간</small></div>
@@ -127,6 +144,23 @@ async function load() {
     <textarea id="memo" maxlength="300" placeholder="지금 가장 큰 고민 (선택)"></textarea>
     <button class="go" id="go" disabled>상담 신청하기</button><div class="hint" id="hint"></div></div>`;
   $("#app").innerHTML = html;
+
+  try { localStorage.setItem("yanam_my", location.href); } catch (e) {}
+  if ($("#icsBtn")) {
+    const z = t => new Date(t).toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+    // 알림은 공개 시각 이후 첫 '저녁 8시(한국)'에 — 새벽 알림 방지
+    const at = t => { const k = 9 * 36e5, day = Math.floor((t + k) / DAY) * DAY - k, eight = day + 20 * 36e5; return t <= eight ? eight : eight + DAY; };
+    const ev = upcoming.filter(c => c.day > daysSince).map((c, i) => ["BEGIN:VEVENT", "UID:yanam-" + id + "-" + c.day + "@yanam", "DTSTAMP:" + z(now), "DTSTART:" + z(at(d.created + c.day * DAY)), "DTEND:" + z(at(d.created + c.day * DAY) + 18e5),
+      "SUMMARY:[야심한 남자] " + c.title + " 공개", "DESCRIPTION:" + location.href, "URL:" + location.href,
+      "BEGIN:VALARM", "TRIGGER:PT0M", "ACTION:DISPLAY", "DESCRIPTION:" + c.title + " 공개", "END:VALARM", "END:VEVENT"].join("\r\n"));
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//yanam//ebook//KO", ...ev, "END:VCALENDAR"].join("\r\n");
+    $("#icsBtn").href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+    $("#icsBtn").addEventListener("click", () => track("click", "calendar_my"));
+    $("#copyBtn").onclick = async () => {
+      try { await navigator.clipboard.writeText(location.href); } catch (e) { document.querySelector(".remind small").textContent = "주소: " + location.href; return; }
+      $("#copyBtn").textContent = "복사됨 ✓"; track("click", "copy_link_my");
+    };
+  }
 
   // 순차 공개
   const chs = $("#chs");
