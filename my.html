@@ -112,7 +112,7 @@ async function load() {
       <div class="r"><a class="use" data-t="coupon" href="${expired ? "#" : esc(d.coupon.url)}" target="_blank" rel="noopener">사용하기</a><span>${expired ? "기한 종료" : "바로 결제"}</span></div></div>`;
   } else {
     html += `<div class="coupon"><div class="l"><span class="gold">NEXT</span><h3>패스트트랙</h3><small>E-BOOK 내용을 실전에서 그대로 쓰는 가이드 · 99,000원</small></div>
-      <div class="r"><a class="use" data-t="fasttrack" href="${esc(d.fasttrack)}" target="_blank" rel="noopener">보러가기</a></div></div>`;
+      <div class="r"><a class="use" data-t="fasttrack" href="fasttrack.html?src=my">보러가기</a></div></div>`;
   }
 
   if (RESULTS.length) {
