@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>1분 연애 기초 진단 | 야심한 남자</title>
+<meta name="description" content="나는 왜 두 번째 만남이 안 될까? 10개 질문으로 내 연애 유형과 먼저 고칠 것 3가지를 알려드립니다.">
+<meta property="og:title" content="1분 연애 기초 진단 | 야심한 남자">
+<meta property="og:description" content="10개 질문으로 내 연애 유형과 먼저 고칠 것 3가지를 무료로 확인하세요.">
+<meta property="og:image" content="https://yt3.ggpht.com/pw5Seg4uBVsknZyVGKemULMm8S301eGLrpT6KOLolBIXeyqCNDEjFWmGWuGCs2Ogjbjbth6roQ=s800-c-k-c0x00ffffff-no-rj">
+<meta name="theme-color" content="#0e0f12">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{--bg:#0e0f12;--card:#17191f;--line:#2a2e37;--text:#f3f1ec;--sub:#a3a7b0;--accent:#d9b15f;--red:#e2483d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);line-height:1.55;word-break:keep-all;min-height:100vh}
+  .top{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .top img{width:30px;height:30px;border-radius:50%;background:#22252d}
+  .top b{font-size:15px}
+  .wrap{max-width:480px;margin:0 auto;padding:0 18px 40px}
+  /* 시작 화면 */
+  .intro{text-align:center;padding:48px 0 0}
+  .intro .chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
+  .intro h1{font-size:30px;font-weight:900;line-height:1.3;letter-spacing:-.03em;margin:18px 0 14px}
+  .intro h1 em{font-style:normal;color:var(--accent)}
+  .intro p{color:var(--sub);font-size:15.5px}
+  .gets{display:flex;flex-direction:column;gap:10px;margin:30px 0;text-align:left}
+  .get{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center;font-size:15px}
+  .get i{font-style:normal;flex:none;width:28px;height:28px;border-radius:50%;background:rgba(217,177,95,.16);color:var(--accent);display:grid;place-items:center;font-weight:900;font-size:13px}
+  .big{display:block;width:100%;border:0;border-radius:999px;background:var(--red);color:#fff;padding:17px 10px;font-size:19px;font-weight:900;font-family:inherit;cursor:pointer;box-shadow:0 8px 24px rgba(226,72,61,.35);text-align:center;text-decoration:none}
+  .big:disabled{background:#555;box-shadow:none;cursor:default}
+  .small{color:var(--sub);font-size:12.5px;text-align:center;margin-top:10px}
+  /* 질문 카드 */
+  .card{background:#fff;color:#111;border-radius:20px;padding:22px 18px;margin-top:22px}
+  .bar{display:flex;gap:4px;margin-bottom:16px}
+  .bar i{flex:1;height:4px;border-radius:2px;background:#e5e7eb}
+  .bar i.on{background:var(--red)}
+  .qn{font-size:13px;color:var(--red);font-weight:700}
+  .qt{font-size:21px;font-weight:800;line-height:1.4;margin:6px 0 6px;letter-spacing:-.02em}
+  .qs{font-size:13.5px;color:#777;margin-bottom:14px}
+  .opt{display:block;width:100%;text-align:left;border:1px solid #e3e6ea;background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:8px;font-family:inherit;font-size:16px;color:#111;cursor:pointer}
+  .opt small{display:block;font-size:13px;color:#888;margin-top:2px}
+  .opt.on{border-color:#111;background:#f6f6f6;font-weight:700}
+  .nav{display:flex;gap:8px;margin-top:10px}
+  .nav button{flex:1;border:1px solid #ddd;background:#fff;border-radius:12px;padding:13px;font-family:inherit;font-size:15px;cursor:pointer;color:#333}
+  .warn{font-size:12.5px;color:var(--red);text-align:center;margin-top:12px}
+  /* 연락처 */
+  .lbl{font-size:14px;font-weight:700;margin:14px 0 6px;display:block}
+  .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:13px;font-size:16px;font-family:inherit;color:#111;background:#fff}
+  .in:focus{outline:none;border-color:#111}
+  .hint{font-size:13px;margin-top:8px;min-height:18px;color:#d32f2f}
+  .agree{background:#f4f5f7;border-radius:10px;margin-top:14px;padding:4px 14px}
+  .agree label{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:14.5px;cursor:pointer}
+  .agree label.all{font-weight:800;border-bottom:1px solid #e3e6ea}
+  .agree input{width:19px;height:19px;accent-color:#111;flex:none}
+  .agree .v{margin-left:auto;font-size:12px;color:#777;text-decoration:underline;background:none;border:0;cursor:pointer;font-family:inherit}
+  .terms{display:none;font-size:12px;color:#666;background:#fff;border-radius:8px;padding:10px;margin:-4px 0 8px;line-height:1.6}
+  .main{width:100%;border:0;border-radius:12px;background:#2b2b2b;color:#fff;padding:16px;font-size:17px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:14px}
+  .main:disabled{background:#bdbdbd;cursor:default}
+  /* 결과 */
+  .res-type{text-align:center;padding:10px 0 4px}
+  .res-type span{font-size:14px;color:#777}
+  .res-type h2{font-size:28px;font-weight:900;color:var(--red);margin:4px 0 8px;letter-spacing:-.02em}
+  .res-type p{font-size:15.5px;line-height:1.7;color:#333}
+  .fix{border-top:1px solid #eee;margin-top:18px;padding-top:16px}
+  .fix h4{font-size:16px;margin-bottom:10px}
+  .fix li{list-style:none;display:flex;gap:10px;font-size:15px;padding:7px 0;line-height:1.5}
+  .fix li b{flex:none;width:24px;height:24px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-size:13px}
+  .ft{margin-top:14px;border:2px solid var(--accent);border-radius:14px;padding:16px;text-align:center;background:#fffaf0;color:#111}
+  .ft b{font-size:16px}.ft p{font-size:13.5px;color:#555;margin:6px 0 12px}
+  .ft a{display:block;background:#1a1407;color:#f3d48f;border-radius:10px;padding:13px;font-weight:800;text-decoration:none}
+  .hide{display:none}
+  .biz{margin-top:30px;font-size:11.5px;color:#6f737b;text-align:center;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="top"><img src="https://yt3.ggpht.com/pw5Seg4uBVsknZyVGKemULMm8S301eGLrpT6KOLolBIXeyqCNDEjFWmGWuGCs2Ogjbjbth6roQ=s120-c-k-c0x00ffffff-no-rj" alt=""><b>야심한 남자</b></div>
+
+<div class="wrap">
+  <!-- 시작 -->
+  <section id="intro" class="intro">
+    <span class="chip">1분 · 무료</span>
+    <h1>나는 왜<br><em>두 번째 만남</em>이 안 될까?</h1>
+    <p>질문 10개에 답하면<br>내 연애 유형과 먼저 고칠 것 3가지를 알려드려요.</p>
+    <div class="gets">
+      <div class="get"><i>1</i>내 연애 유형 진단 결과</div>
+      <div class="get"><i>2</i>지금 바로 고칠 것 3가지</div>
+      <div class="get"><i>3</i>무료 E-BOOK 함께 제공</div>
+    </div>
+    <button class="big" id="startBtn">내 연애 진단 시작하기</button>
+    <p class="small">설문을 끝까지 완료해야 진단 결과를 받을 수 있어요.</p>
+  </section>
+
+  <!-- 질문 -->
+  <section id="quiz" class="card hide">
+    <div class="bar" id="bar"></div>
+    <div class="qn" id="qn"></div>
+    <div class="qt" id="qt"></div>
+    <div class="qs" id="qs"></div>
+    <div id="opts"></div>
+    <div class="nav"><button id="prevBtn">이전</button></div>
+    <p class="warn">설문을 끝까지 완료해야 진단 결과를 받을 수 있어요.</p>
+  </section>
+
+  <!-- 연락처 -->
+  <section id="contact" class="card hide">
+    <div class="bar" id="bar2"></div>
+    <div class="qt">진단 결과가 준비됐어요.</div>
+    <div class="qs">결과와 무료 E-BOOK을 받으실 분의 이름과 번호를 남겨 주세요. 신청하면 바로 결과를 보여드려요.</div>
+    <label class="lbl" for="name">이름</label>
+    <input class="in" id="name" maxlength="20" autocomplete="name">
+    <label class="lbl" for="phone">휴대전화 번호</label>
+    <input class="in" id="phone" inputmode="numeric" maxlength="11" placeholder="01012345678" autocomplete="tel">
+    <label class="lbl" for="email">이메일 <span style="font-weight:400;color:#888">(선택)</span></label>
+    <input class="in" id="email" type="email" maxlength="100" autocomplete="email" placeholder="example@gmail.com">
+    <div class="agree">
+      <label class="all"><input type="checkbox" id="agAll"> 전체 동의</label>
+      <label><input type="checkbox" class="ag" id="agPrivacy"> [필수] 개인정보 수집·이용 동의 <button type="button" class="v" data-t="t1">보기</button></label>
+      <div class="terms" id="t1">수집 항목: 이름, 휴대전화 번호, 이메일(선택), 진단 응답<br>이용 목적: 진단 결과·무료 E-BOOK 제공, 신청 확인, 상담 안내<br>보유 기간: 동의 철회 시까지(최대 2년)<br>동의를 거부할 수 있으나, 거부 시 결과를 받을 수 없습니다.</div>
+      <label><input type="checkbox" class="ag" id="agMarketing"> [필수] 마케팅 정보 수신 동의 <button type="button" class="v" data-t="t2">보기</button></label>
+      <div class="terms" id="t2">이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자·이메일)<br>보유 기간: 수신 거부 시까지<br>언제든 수신 거부할 수 있습니다.</div>
+    </div>
+    <div class="hint" id="hint"></div>
+    <button class="main" id="submitBtn" disabled>신청하고 진단 결과 보기</button>
+    <div class="nav"><button id="prevBtn2">이전</button></div>
+  </section>
+
+  <!-- 결과 -->
+  <section id="result" class="card hide">
+    <div class="res-type"><span id="rName"></span><h2 id="rType"></h2><p id="rDesc"></p></div>
+    <div class="fix"><h4>지금 바로 고칠 것 3가지</h4><ul id="rFix"></ul></div>
+    <p class="small" style="color:#555;margin-top:16px">이 내용은 무료 E-BOOK 5회차에서 자세히 다룹니다.</p>
+    <a class="big" id="myBtn" href="#" style="margin-top:10px">무료 E-BOOK 1회차 바로 보기</a>
+    <p class="small" style="color:#888">E-BOOK 페이지에서 1:1 상담 신청도 할 수 있어요.</p>
+    <div class="ft">
+      <b>혼자서 더 빠르게 바꾸고 싶다면</b>
+      <p>E-BOOK 내용을 실전에서 그대로 쓰도록 정리한 <strong>패스트트랙</strong></p>
+      <a href="fasttrack.html?src=check_done" id="ftBtn">패스트트랙 보러가기 · 99,000원</a>
+    </div>
+  </section>
+  <div class="biz">상호 라이프빌드업 · 대표 이원준 · 사업자등록번호 403-20-80889 · 통신판매업 신고 2019-서울중랑-1084<br>사업장 서울특별시 성동구 자동차시장1길 85 (JS빌딩) 9층 902호 · 전화 010-5410-7771<br>© 야심한 남자</div>
+</div>
+
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
+
+/* ===== [초안] 질문·점수·결과 문구는 코치님 검토 후 확정 =====
+   유형 키: m = 만남 부족형, f = 첫 만남 탈락형, s = 썸 정체형, c = 자신감 저하형
+   각 보기의 p 에 유형별 점수. 점수가 가장 높은 유형이 결과. */
+const QUESTIONS = [
+  { t: "연애에서 지금 가장 원하는 건 뭔가요?", s: "가장 가까운 것 하나만 골라 주세요.", o: [
+    ["여자친구를 만들고 싶어요", {}], ["썸을 연애로 바꾸고 싶어요", { s: 2 }],
+    ["소개팅·앱에서 성공률을 높이고 싶어요", { f: 1 }], ["연애 자신감을 되찾고 싶어요", { c: 2 }] ] },
+  { t: "최근 6개월 동안 새로 만난 여성은 몇 명인가요?", s: "소개팅, 앱, 모임 등 1:1로 만난 경우만 세 주세요.", o: [
+    ["0명", { m: 3 }], ["1~2명", { m: 1 }], ["3~5명", { f: 1 }], ["6명 이상", { f: 2 }] ] },
+  { t: "주로 어디서 만나나요?", s: "", o: [
+    ["소개팅", { f: 1 }], ["소개팅 앱", { f: 1 }], ["모임·동호회", { s: 1 }], ["직장·학교", { s: 1 }], ["만날 곳이 거의 없어요", { m: 3 }] ] },
+  { t: "첫 만남 뒤 두 번째 약속은 잘 잡히나요?", s: "", o: [
+    ["거의 안 잡혀요", { f: 3 }], ["반반이에요", { f: 1, s: 1 }], ["대부분 잡혀요", { s: 2 }], ["첫 만남 자체가 드물어요", { m: 2 }] ] },
+  { t: "대화하다 정적이 오면 어떻게 되나요?", s: "", o: [
+    ["머리가 하얘져요", { c: 2 }], ["질문만 계속하게 돼요", { f: 2 }], ["자연스럽게 다른 이야기로 넘겨요", { s: 1 }] ] },
+  { t: "카톡에서 자주 생기는 일은 뭔가요?", s: "", o: [
+    ["답장이 점점 느려지다 끊겨요", { f: 1, s: 1 }], ["연락은 잘 되는데 만나자는 말을 못 해요", { s: 2, c: 1 }],
+    ["내가 먼저 보내기가 어려워요", { c: 2 }], ["별문제 없어요", { s: 1 }] ] },
+  { t: "외모·스타일은 얼마나 신경 쓰나요?", s: "머리, 옷, 피부, 체형 등을 떠올려 보세요.", o: [
+    ["거의 신경 안 써요", { f: 2 }], ["기본만 해요", { f: 1 }], ["꽤 신경 써요", {}] ] },
+  { t: "그런데, 어떤 점이 가장 걸리세요?", s: "가장 신경 쓰이는 것 하나를 골라 주세요.", o: [
+    ["뭘 말해야 할지 모르겠어요", { f: 2 }], ["거절당할까 봐 두려워요", { c: 3 }], ["만날 기회가 없어요", { m: 3 }],
+    ["썸에서 더 나아가질 않아요", { s: 3 }], ["외모에 자신이 없어요", { c: 2 }] ] },
+  { t: "연애를 따로 배워 본 적이 있나요?", s: "", o: [
+    ["없어요", {}], ["유튜브로만 봤어요", {}], ["책·강의를 들어 봤어요", {}], ["코칭을 받아 봤어요", {}] ] },
+  { t: "이 정도면 해볼 만한가요?", s: "결과를 받은 뒤 어떻게 하고 싶은지 골라 주세요.", o: [
+    ["하나씩 바로 해볼게요", {}], ["방법부터 자세히 알고 싶어요", {}], ["1:1로 봐줬으면 좋겠어요", {}] ] },
+];
+const TYPES = {
+  m: { name: "만남 부족형", desc: "대화 실력보다 먼저, 여성을 만날 기회 자체가 적은 상태예요. 기회가 적으니 한 번의 만남에 부담이 커지고, 그 부담이 다시 만남을 피하게 만들어요.",
+       fix: ["반경 넓히기: 심리적 장벽이 낮은 것부터(인사, 소모임) 하나씩", "소개를 주고받는 관계를 만들어 만남의 '공급' 늘리기", "프로필 사진과 소개 문구부터 다시 정리하기"] },
+  f: { name: "첫 만남 탈락형", desc: "만남은 생기는데 첫 만남에서 '좋은 사람'으로 분류되고 끝나는 유형이에요. 대화가 면접처럼 흘러가거나, 첫인상에서 이미 점수를 잃고 있을 가능성이 커요.",
+       fix: ["질문만 이어 가지 말고 내 이야기(이상형·열심히 한 경험)를 꺼내기", "텐션은 상대와 같거나 조금 높게 맞추기", "멘트 외우기 대신 상대에게 '집중'하기"] },
+  s: { name: "썸 정체형", desc: "연락과 만남은 이어지는데 연애로 넘어가지 못하는 유형이에요. 편한 사람이 됐지만 '남자'로 느껴질 순간을 만들지 못하고 있어요.",
+       fix: ["카톡의 나와 실제 나의 온도 차 줄이기", "한 명에게 매달리지 말고 여유 있는 연락의 흐름 만들기", "맞춰 주기만 하지 말고 내 기준대로 선택하기"] },
+  c: { name: "자신감 저하형", desc: "방법을 몰라서라기보다 거절이 두려워 먼저 움직이지 못하는 유형이에요. 기회가 와도 스스로 먼저 물러서는 경우가 많아요.",
+       fix: ["상대의 반응이 아니라 내가 통제할 수 있는 행동만 목표로 삼기", "메뉴·커피 같은 사소한 선택부터 내 뜻대로 고르기", "외모처럼 바로 바꿀 수 있는 것부터 바꾸기"] },
+};
+
+const $ = id => document.getElementById(id);
+const qs = new URLSearchParams(location.search);
+const SRC = qs.get("src") || qs.get("utm_source") || (document.referrer ? new URL(document.referrer).hostname : "direct");
+const VID = (() => { try { let v = localStorage.getItem("ynv"); if (!v) { v = Math.random().toString(36).slice(2, 10); localStorage.setItem("ynv", v); } return v; } catch (e) { return "na"; } })();
+function track(type, target) { try { navigator.sendBeacon(ENDPOINT, new Blob([JSON.stringify({ kind: "event", type, target, src: SRC, vid: VID, ua: navigator.userAgent.slice(0, 120) })], { type: "text/plain" })); } catch (e) {} }
+track("view", "check_landing");
+
+const ans = []; let cur = 0;
+const show = id => ["intro", "quiz", "contact", "result"].forEach(x => $(x).classList.toggle("hide", x !== id));
+const bars = n => Array.from({ length: QUESTIONS.length + 1 }, (_, i) => `<i class="${i <= n ? "on" : ""}"></i>`).join("");
+
+function draw() {
+  const q = QUESTIONS[cur];
+  $("bar").innerHTML = bars(cur);
+  $("qn").textContent = `질문 ${cur + 1} / ${QUESTIONS.length}`;
+  $("qt").textContent = q.t; $("qs").textContent = q.s;
+  $("opts").innerHTML = q.o.map((o, i) => `<button class="opt ${ans[cur] === i ? "on" : ""}" data-i="${i}">${o[0]}</button>`).join("");
+  $("prevBtn").style.visibility = cur ? "visible" : "hidden";
+  document.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    ans[cur] = +b.dataset.i; b.classList.add("on");
+    setTimeout(() => { if (cur < QUESTIONS.length - 1) { cur++; draw(); } else { track("click", "check_done_quiz"); $("bar2").innerHTML = bars(QUESTIONS.length); show("contact"); } }, 180);
+  });
+  window.scrollTo(0, 0);
+}
+$("startBtn").onclick = () => { track("click", "check_start"); show("quiz"); draw(); };
+$("prevBtn").onclick = () => { if (cur) { cur--; draw(); } };
+$("prevBtn2").onclick = () => { show("quiz"); draw(); };
+
+function diagnose() {
+  const sc = { m: 0, f: 0, s: 0, c: 0 };
+  ans.forEach((a, i) => { const p = QUESTIONS[i].o[a][1]; for (const k in p) sc[k] += p[k]; });
+  return Object.keys(sc).sort((a, b) => sc[b] - sc[a])[0];
+}
+
+/* 연락처 */
+const phoneVal = () => $("phone").value.replace(/[^0-9]/g, "");
+const ags = [...document.querySelectorAll(".ag")];
+document.querySelectorAll(".v").forEach(b => b.onclick = e => { e.preventDefault(); const t = $(b.dataset.t); t.style.display = t.style.display === "block" ? "none" : "block"; });
+$("agAll").onchange = e => { ags.forEach(a => a.checked = e.target.checked); refresh(); };
+ags.forEach(a => a.onchange = () => { $("agAll").checked = ags.every(x => x.checked); refresh(); });
+["name", "phone"].forEach(id => $(id).addEventListener("input", refresh));
+function refresh() { $("submitBtn").disabled = !($("name").value.trim() && /^01[016789]\d{7,8}$/.test(phoneVal()) && ags.every(a => a.checked)); }
+
+$("submitBtn").onclick = async () => {
+  const email = $("email").value.trim();
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { $("hint").textContent = "이메일 주소를 확인해 주세요. (비워둬도 됩니다)"; return; }
+  $("submitBtn").disabled = true; $("submitBtn").textContent = "결과 만드는 중…";
+  const type = diagnose();
+  const quiz = "유형: " + TYPES[type].name + " | " + ans.map((a, i) => `Q${i + 1}:${QUESTIONS[i].o[a][0]}`).join("; ");
+  let r;
+  try { r = await (await fetch(ENDPOINT, { method: "POST", body: JSON.stringify({ kind: "lead", name: $("name").value.trim(), phone: phoneVal(), email, agreePrivacy: true, agreeMarketing: true, quiz, src: SRC, vid: VID }) })).json(); } catch (e) { r = { ok: false }; }
+  if (!r.ok) { $("hint").textContent = r.error || "잠시 후 다시 시도해 주세요."; $("submitBtn").disabled = false; $("submitBtn").textContent = "신청하고 진단 결과 보기"; return; }
+  track("submit", "check_lead_" + type);
+  const T = TYPES[type];
+  $("rName").textContent = $("name").value.trim() + "님의 연애 유형";
+  $("rType").textContent = T.name; $("rDesc").textContent = T.desc;
+  $("rFix").innerHTML = T.fix.map((f, i) => `<li><b>${i + 1}</b>${f}</li>`).join("");
+  $("myBtn").href = r.my || r.pdf || "#";
+  try { if (r.my) localStorage.setItem("yanam_my", r.my); } catch (e) {}
+  $("myBtn").onclick = () => track("click", "check_to_my");
+  $("ftBtn").onclick = () => track("click", "fasttrack_check");
+  show("result"); window.scrollTo(0, 0);
+};
+</script>
+</body>
+</html>
