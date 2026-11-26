@@ -26,68 +26,115 @@ const K = new URLSearchParams(location.hash.slice(1)).get("k") || "";
 <title>패스트트랙 읽기 (데모)</title>
 <style>
   body.reading{background:#2a2c31}
-  .rd{max-width:760px;margin:0 auto;padding:8px 0 90px;display:none}
+  .rd{max-width:760px;margin:0 auto;padding:54px 0 90px;display:none}
   .pg{position:relative;margin:0 0 10px;background:#fff;min-height:200px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
   .pg img{display:block;width:100%;pointer-events:none}
-  .pg .wm{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;color:rgba(226,72,61,.10);font-weight:900;font-size:6vw;transform:rotate(-30deg);white-space:nowrap}
   .pg .ld{padding:80px 0;text-align:center;color:#999;font-size:14px}
+  .top{position:fixed;left:0;right:0;top:0;background:#111;color:#fff;display:none;align-items:center;justify-content:space-between;padding:10px 14px;font-size:14px;z-index:5}
+  .top button{background:none;border:1px solid #444;color:#fff;border-radius:8px;padding:5px 10px;font:inherit;font-size:13px}
+  .bar{position:fixed;left:0;top:44px;height:3px;background:var(--red);z-index:5;width:0;transition:width .2s}
   .nav{position:fixed;left:0;right:0;bottom:0;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:14px;z-index:5}
   .nav b{color:var(--gold)}
   .resume{position:fixed;left:12px;right:12px;bottom:62px;max-width:520px;margin:0 auto;background:#fff;border-radius:14px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:6;font-size:14.5px}
   .resume .r{display:flex;gap:8px;margin-top:8px}.resume button{flex:1;border:0;border-radius:10px;padding:11px;font:inherit;font-weight:800}
   .resume .go{background:var(--red);color:#fff}.resume .no{background:#eee}
+  .toc{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9;display:none}
+  .toc .p{position:absolute;left:0;top:0;bottom:0;width:min(82vw,340px);background:#fff;padding:18px;overflow:auto}
+  .toc a{display:block;padding:11px 4px;border-bottom:1px solid var(--line);color:#111;text-decoration:none;font-size:14.5px}
+  .toc a small{color:var(--sub);float:right}
+  .sms{position:fixed;left:10px;right:10px;top:10px;max-width:420px;margin:0 auto;background:rgba(40,40,44,.96);color:#fff;border-radius:16px;padding:12px 14px;font-size:14px;z-index:20;box-shadow:0 10px 30px rgba(0,0,0,.35);transform:translateY(-140%);transition:transform .35s}
+  .sms.on{transform:none}.sms small{color:#aaa}
+  .code{letter-spacing:.4em;text-align:center;font-weight:800}
+  .note{background:#fff8e6;border:1px dashed #e0c070;border-radius:10px;padding:10px;font-size:12.5px;color:#7a5b00;margin-top:12px}
 </style></head><body>
-<div class="demo">③ 데모 · 샘플 1부 앞 10쪽</div>
+<div class="demo">③ 데모 · 샘플 1부 앞 10쪽 · 문자는 실제로 가지 않아요</div>
+<div class="sms" id="sms"><small>메시지 · 지금</small><br>[야심한남자] 패스트트랙 인증번호 <b id="smsCode"></b><br><small>@gydnjs6580-boop.github.io #<span id="smsCode2"></span></small></div>
+
 <div class="wrap" id="auth">
-  <div class="card"><h1>패스트트랙 읽기</h1><p class="sub" style="margin-top:4px">결제한 휴대폰 번호로 인증하면 바로 읽을 수 있어요.</p>
-    <input class="in" id="ph" inputmode="numeric" maxlength="11" placeholder="01000001234">
-    <button class="btn" id="go">인증하고 읽기</button><div class="err" id="err"></div>
-    <p class="sub">데모 번호: 01000001234 (실제로는 결제 번호 + 문자 인증)</p></div>
+  <div class="card"><h1>패스트트랙 읽기</h1><p class="sub" style="margin-top:4px">결제한 휴대폰 번호로 인증하면 바로 읽을 수 있어요.<br>한 번 인증한 기기는 90일 동안 다시 묻지 않아요.</p>
+    <div id="s1"><input class="in" id="ph" inputmode="numeric" maxlength="11" placeholder="01000001234" autocomplete="tel">
+    <button class="btn" id="send">인증번호 받기</button></div>
+    <div id="s2" style="display:none"><input class="in code" id="cd" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="● ● ● ● ● ●">
+    <p class="sub" style="margin-top:6px">문자가 오면 키보드 위에 뜬 번호를 한 번 누르세요. 6자리가 채워지면 자동으로 넘어가요.</p></div>
+    <div class="err" id="err"></div>
+    <div class="note">데모 번호: 01000001234 · 데모에서는 문자 대신 화면 위에 가짜 알림이 뜨고 3초 뒤 자동으로 채워져요(실제 안드로이드 "허용" 한 번 / 아이폰 번호 한 번 탭과 같은 결과).</div></div>
   <a class="sub" id="back">← 3가지 비교로 돌아가기</a>
 </div>
+<div class="top" id="top"><button id="tocBtn">☰ 목차</button><span id="who"></span><button id="out">다른 기기 체험</button></div>
+<div class="bar" id="bar"></div>
 <div class="rd" id="rd"></div>
-<div class="nav" id="nav" style="display:none"><span>패스트트랙 1부 · <b id="cur">1</b> / <span id="tot">10</span>쪽</span><span id="who"></span></div>
+<div class="nav" id="nav" style="display:none"><span>패스트트랙 1부 · <b id="cur">1</b> / <span id="tot">10</span>쪽</span><span id="pct">0%</span></div>
+<div class="toc" id="toc"><div class="p"><h2>목차</h2><p class="sub" style="margin-bottom:8px">실제에서는 1부·2부 장 제목이 들어가요.</p><div id="tocList"></div></div></div>
 <script>
-const $ = id => document.getElementById(id), KEY = "yanam_demo_read";
+const $ = id => document.getElementById(id), POS = "yanam_demo_read", DEV = "yanam_demo_device";
+const H = new URLSearchParams(location.hash.slice(1)), FROM_PAY = H.get("from") === "pay";
 $("back").href = "index.html#k=" + K;
 document.addEventListener("contextmenu", e => { if (e.target.closest(".pg")) e.preventDefault(); });
-let S = null; try { S = JSON.parse(sessionStorage.getItem("yanam_demo_tok") || "null"); } catch (e) {}
-if (S) start();
-$("go").onclick = async () => {
-  $("go").disabled = true; $("err").textContent = "";
-  let r; try { r = await (await fetch(ENDPOINT, { method: "POST", body: JSON.stringify({ kind: "demoAuth", phone: $("ph").value, k: K }) })).json(); } catch (e) { r = { ok: false }; }
-  $("go").disabled = false;
-  if (!r.ok) return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요.";
-  S = r; sessionStorage.setItem("yanam_demo_tok", JSON.stringify(r)); start();
+let S = null, dev = null;
+try { dev = JSON.parse(localStorage.getItem(DEV) || "null"); if (dev && dev.exp < Date.now()) dev = null; } catch (e) {}
+async function auth(phone) {
+  let r; try { r = await (await fetch(ENDPOINT, { method: "POST", body: JSON.stringify({ kind: "demoAuth", phone, k: K }) })).json(); } catch (e) { r = { ok: false }; }
+  return r;
+}
+async function enter(phone) {
+  const r = await auth(phone);
+  if (!r.ok) { $("err").textContent = r.error || "잠시 후 다시 시도해 주세요."; return false; }
+  S = r; localStorage.setItem(DEV, JSON.stringify({ phone, exp: Date.now() + 90 * 864e5 })); start(); return true;
+}
+// 결제 직후 또는 이 기기에서 인증한 적이 있으면 바로 열기
+if (FROM_PAY) enter("01000001234");
+else if (dev) enter(dev.phone);
+let CODE = "";
+$("send").onclick = async () => {
+  const ph = $("ph").value.replace(/\D/g, "");
+  if (ph !== "01000001234") return $("err").textContent = "결제 내역이 없는 번호예요. (데모: 01000001234)";
+  $("err").textContent = ""; $("s1").style.display = "none"; $("s2").style.display = "block"; $("cd").focus();
+  CODE = String(Math.floor(100000 + Math.random() * 900000));
+  $("smsCode").textContent = CODE; $("smsCode2").textContent = CODE;
+  setTimeout(() => $("sms").classList.add("on"), 900);
+  setTimeout(() => { $("sms").classList.remove("on"); $("cd").value = CODE; check(); }, 3900);
+  // 실제 구현: 안드로이드 크롬 자동 채우기(WebOTP)
+  if ("OTPCredential" in window) { /* navigator.credentials.get({otp:{transport:["sms"]}}) → 실제 문자에서 번호를 받아 채움 */ }
 };
+$("cd").oninput = () => { if ($("cd").value.replace(/\D/g, "").length === 6) check(); };
+async function check() {
+  if ($("cd").value !== CODE) return $("err").textContent = "인증번호가 맞지 않아요.";
+  $("cd").disabled = true; $("err").textContent = "확인 중…";
+  if (!(await enter("01000001234"))) $("cd").disabled = false;
+}
+$("out").onclick = () => { localStorage.removeItem(DEV); sessionStorage.clear(); location.hash = "k=" + K; location.reload(); };
+$("tocBtn").onclick = () => $("toc").style.display = "block";
+$("toc").onclick = e => { if (e.target === $("toc") || e.target.closest("a")) $("toc").style.display = "none"; };
 function start() {
-  $("auth").style.display = "none"; $("rd").style.display = "block"; $("nav").style.display = "flex"; document.body.classList.add("reading");
+  $("auth").style.display = "none"; $("rd").style.display = "block"; $("nav").style.display = "flex"; $("top").style.display = "flex"; document.body.classList.add("reading");
   $("tot").textContent = S.total; $("who").textContent = S.label + " 님";
-  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) load(e.target); }), { rootMargin: "600px 0px" });
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) load(e.target); }), { rootMargin: "800px 0px" });
+  const chap = { 1: "표지·들어가며", 4: "1장 (예시)", 8: "2장 (예시)" };
   for (let n = 1; n <= S.total; n++) {
-    const d = document.createElement("div"); d.className = "pg"; d.dataset.n = n;
+    const d = document.createElement("div"); d.className = "pg"; d.dataset.n = n; d.id = "p" + n;
     d.innerHTML = '<div class="ld">' + n + '쪽 불러오는 중…</div>';
     $("rd").appendChild(d); io.observe(d);
+    if (chap[n]) $("tocList").insertAdjacentHTML("beforeend", '<a href="#p' + n + '">' + chap[n] + '<small>' + n + '쪽</small></a>');
   }
-  const saved = parseInt(localStorage.getItem(KEY) || "1", 10);
+  const saved = parseInt(localStorage.getItem(POS) || "1", 10);
   if (saved > 1) {
     const el = document.createElement("div"); el.className = "resume";
     el.innerHTML = '지난번 <b>' + saved + '쪽</b>까지 읽었어요.<div class="r"><button class="go">이어 읽기</button><button class="no">처음부터</button></div>';
-    el.querySelector(".go").onclick = () => { document.querySelector('.pg[data-n="' + saved + '"]').scrollIntoView(); el.remove(); };
+    el.querySelector(".go").onclick = () => { $("p" + saved).scrollIntoView(); el.remove(); };
     el.querySelector(".no").onclick = () => el.remove();
     document.body.appendChild(el);
   }
   addEventListener("scroll", () => {
     const pgs = [...document.querySelectorAll(".pg")], mid = innerHeight / 2;
     const cur = pgs.find(p => { const r = p.getBoundingClientRect(); return r.top <= mid && r.bottom >= mid; });
-    if (cur) { $("cur").textContent = cur.dataset.n; localStorage.setItem(KEY, cur.dataset.n); }
+    if (cur) { $("cur").textContent = cur.dataset.n; localStorage.setItem(POS, cur.dataset.n); const p = Math.round(cur.dataset.n / S.total * 100); $("pct").textContent = p + "%"; $("bar").style.width = p + "%"; }
   }, { passive: true });
 }
 async function load(d) {
   if (d.dataset.ok) return; d.dataset.ok = 1;
   try {
     const r = await (await fetch(ENDPOINT + "?demo=page&n=" + d.dataset.n + "&t=" + encodeURIComponent(S.token))).json();
-    if (!r.ok) { if (/인증/.test(r.error || "")) { sessionStorage.removeItem("yanam_demo_tok"); location.reload(); } throw 0; }
+    if (!r.ok) throw 0;
     const img = new Image(); img.alt = ""; img.draggable = false; img.src = "data:image/jpeg;base64," + r.b64;
     d.querySelector(".ld").replaceWith(img);
   } catch (e) { d.dataset.ok = ""; d.querySelector(".ld") && (d.querySelector(".ld").textContent = "불러오지 못했어요. 스크롤하면 다시 시도해요."); }
