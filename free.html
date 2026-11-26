@@ -244,7 +244,7 @@
 <script>
 /* ===== 설정 ===== */
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
-const SMS_VERIFY = false; // 솔라피 연결 후 true 로 바꾸면 문자 인증 사용 // Apps Script 웹앱 /exec 주소. 비어 있으면 테스트 모드(인증번호 000000)
+let SMS_VERIFY = false; // 솔라피 연결 후 true 로 바꾸면 문자 인증 사용 // Apps Script 웹앱 /exec 주소. 비어 있으면 테스트 모드(인증번호 000000)
 
 const qs = new URLSearchParams(location.search);
 const SRC = qs.get("src") || qs.get("utm_source") || (document.referrer ? new URL(document.referrer).hostname : "direct");
@@ -286,6 +286,7 @@ $("sendCode").onclick = async () => {
   $("sendCode").disabled = true;
   const r = await api({ kind: "sendCode", phone: p }).catch(() => ({ ok: false, error: "잠시 후 다시 시도해 주세요." }));
   $("sendCode").disabled = false;
+  if (r.skip) { SMS_VERIFY = false; $("sendCode").style.display = "none"; refresh1(); return hint($("hint1"), "지금은 문자 인증 없이 바로 신청할 수 있어요.", true); }
   if (!r.ok) return hint($("hint1"), r.error || "발송 실패");
   $("sendCode").textContent = "재전송"; $("codeRow").style.display = "flex"; $("code").value = ""; $("code").focus();
   hint($("hint1"), ENDPOINT ? "인증번호를 문자로 보냈습니다." : "테스트 모드: 인증번호 000000", true);

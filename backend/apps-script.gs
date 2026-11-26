@@ -67,11 +67,14 @@ function doPost(e) {
       if (!phoneOk(p)) return out({ ok: false, error: "휴대전화 번호를 확인해 주세요." });
       const cntKey = "cnt_" + p, cnt = +(cache.get(cntKey) || 0);
       if (cnt >= 5) return out({ ok: false, error: "잠시 후 다시 시도해 주세요. (10분 제한)" });
-      cache.put(cntKey, String(cnt + 1), 600);
+      const vKey = "vsms_" + s(d.vid, 20), vCnt = +(cache.get(vKey) || 0); // 같은 브라우저는 6시간에 3번
+      if (d.vid && vCnt >= 3) return out({ ok: false, error: "인증 요청이 너무 많아요. 잠시 후 다시 시도해 주세요." });
+      cache.put(cntKey, String(cnt + 1), 600); if (d.vid) cache.put(vKey, String(vCnt + 1), 21600);
       const code = TEST() ? "000000" : String(Math.floor(100000 + Math.random() * 900000));
       cache.put("code_" + p, code, 300);
       if (!TEST()) {
         const r = solapi_({ to: p, from: prop("SMS_FROM"), text: "[야심한 남자] 인증번호 " + code + " (5분 안에 입력해 주세요)" });
+        if (r.quota) return out({ ok: false, skip: true }); // 오늘 상한 도달 → 인증 없이 신청만
         if (!r.ok) return out({ ok: false, error: "문자 발송에 실패했습니다." });
       }
       return out({ ok: true });
@@ -167,7 +170,24 @@ function sendMail_(email, name, id) {
 }
 
 /* 솔라피 API (HMAC-SHA256 인증) */
+// 문자 폭탄(번호 바꿔 가며 인증 요청) 대비: 하루 총 발송 상한. 넘으면 보내지 않고 효원님께 메일 1통
+function smsQuota_() {
+  const max = +(prop("SMS_DAILY_MAX") || 300), k = "sms_" + Utilities.formatDate(new Date(), "Asia/Seoul", "yyyyMMdd");
+  const lock = LockService.getScriptLock(); lock.waitLock(10000);
+  try {
+    const n = +(P.getProperty(k) || 0);
+    if (n >= max) {
+      if (!P.getProperty(k + "_mail")) { P.setProperty(k + "_mail", "1");
+        try { MailApp.sendEmail(Session.getEffectiveUser().getEmail(), "[야심한 남자] 오늘 문자 상한(" + max + "건) 도달",
+          "오늘 문자 인증 발송이 상한에 닿았어요. 오늘은 문자 인증 없이 신청만 받습니다.\n평소보다 많다면 누가 일부러 반복 요청하는 것일 수 있어요. 신청자 시트를 확인해 주세요.\n상한은 스크립트 속성 SMS_DAILY_MAX 로 바꿀 수 있어요."); } catch (e) {} }
+      return false;
+    }
+    P.setProperty(k, String(n + 1)); return true;
+  } finally { lock.releaseLock(); }
+}
+
 function solapi_(message) {
+  if (!smsQuota_()) return { ok: false, quota: true, error: "daily cap" };
   const date = new Date().toISOString();
   const salt = Utilities.getUuid().replace(/-/g, "");
   const sig = Utilities.computeHmacSha256Signature(date + salt, prop("SOLAPI_SECRET"))
