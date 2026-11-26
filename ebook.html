@@ -20,6 +20,7 @@
   .cover .part{font-size:13px;color:#a3a7b0;margin:6px 0 28px}
   .cover .ct{font-size:30px;line-height:1.35;font-weight:900;letter-spacing:-.02em;margin:0}
   .cover .ed{font-size:13px;color:#a3a7b0;margin:28px 0 0}
+  .savecta{display:inline-block;margin-top:22px;border:1px solid #444;border-radius:999px;padding:9px 16px;color:#f3f1ec;text-decoration:none;font-size:14px}
   .kicker{margin:72px 0 0;font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--red)}
   h1{font-size:26px;line-height:1.4;letter-spacing:-.02em;margin:6px 0 24px;font-weight:900}
   h2{font-size:21px;line-height:1.45;margin:48px 0 16px;font-weight:800}
@@ -41,14 +42,27 @@
   .end{margin-top:60px;padding:28px 20px;background:#0e0f12;color:#f3f1ec;border-radius:16px;text-align:center}
   .end p{margin:0 0 14px}
   footer{max-width:680px;margin:0 auto;padding:24px 20px 48px;font-size:12px;color:var(--sub);line-height:1.7;border-top:1px solid var(--line)}
+  .resume{position:fixed;left:12px;right:12px;bottom:14px;z-index:7;max-width:520px;margin:0 auto;background:#111;color:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:14.5px;line-height:1.5}
+  .resume b{color:#d9b15f}.resume .r{display:flex;gap:8px;margin-top:10px}
+  .resume button{flex:1;border:0;border-radius:10px;padding:11px;font:inherit;font-weight:800;cursor:pointer}
+  .resume .go{background:var(--red);color:#fff}.resume .no{background:#333;color:#ddd}
+  @media print{.resume,.save{display:none}}
+  .save{display:none;position:fixed;inset:0;z-index:9;background:rgba(0,0,0,.45);align-items:flex-end;justify-content:center}
+  .save.on{display:flex}
+  .sv{background:#fff;width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:20px 18px 24px;font-size:15px;line-height:1.6}
+  .sv b{font-size:17px}.sv p{color:var(--sub);font-size:14px;margin:6px 0 12px}
+  .sv button{display:block;width:100%;margin-top:8px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:13px;font:inherit;font-weight:700;cursor:pointer}
+  .sv .pri{background:#fee500;border-color:#fee500;color:#191919}.sv .x{border:0;color:var(--sub);font-weight:400}
+  .sv details{margin-top:10px;font-size:14px}.sv summary{cursor:pointer;font-weight:700;padding:6px 0}
   @media print{.bar,.prog,.end{display:none}body{background:#fff}.cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head>
 <body>
 <div class="prog" id="prog"></div>
-<div class="bar"><b>야심한 남자 · 무료 E-BOOK</b><a href="#목차">목차</a></div>
+<div class="bar"><b>야심한 남자 · 무료 E-BOOK</b><span><a href="#" id="saveBtn" data-t="save_open">링크 저장</a> <a href="#목차">목차</a></span></div>
+<div class="save" id="save"><div class="sv"><b>내 E-BOOK 링크 저장</b><p>유튜브 앱 안에서 열었다면, 창을 닫으면 다시 찾기 어려워요. 하나만 해 두세요.</p><button id="shareBtn" class="pri" data-t="save_share">카카오톡 '나와의 채팅'으로 보내기</button><button id="copyBtn2" data-t="save_copy">링크 복사</button><details><summary>홈 화면에 추가하기</summary><p>오른쪽 위 ⋮ 또는 공유 버튼 → '브라우저로 열기'(Chrome·Safari) → 메뉴에서 '홈 화면에 추가'. 앱처럼 바로 열려요.</p></details><button id="saveClose" class="x">닫기</button></div></div>
 <main>
-<header class="cover"><p class="brand">야심한 남자</p><p class="part">PART 1 · 연애</p><h1 class="ct">나는 나고,<br>여자는 따라오는 것이다.</h1><p class="ed">| 야심한 남자 · 2026년 개정판</p></header>
+<header class="cover"><p class="brand">야심한 남자</p><p class="part">PART 1 · 연애</p><h1 class="ct">나는 나고,<br>여자는 따라오는 것이다.</h1><p class="ed">| 야심한 남자 · 2026년 개정판</p><a href="#" class="savecta" onclick="document.getElementById('save').classList.add('on');track('click','save_cover');return false">📌 다음에 이어 읽게 링크 저장해 두기</a></header>
 <p class="kicker">PUBLICATION / 2026</p>
 <h1 id="copyright-notice">COPYRIGHT NOTICE</h1>
 <p>© 2026 야심한 남자. All rights reserved.</p>
@@ -628,6 +642,47 @@ addEventListener("scroll", () => {
   document.getElementById("prog").style.width = (r * 100).toFixed(1) + "%";
   heads.forEach(k => { if (!seen.has(k.id) && k.getBoundingClientRect().top < innerHeight / 2) { seen.add(k.id); track("read", k.id); } });
 }, { passive: true });
+
+// 링크 저장: 공유 시트(카카오톡 선택) / 복사 / 홈 화면 안내
+const myUrl = location.origin + location.pathname + (vid ? "?id=" + encodeURIComponent(vid) : "");
+const sv = document.getElementById("save");
+document.getElementById("saveBtn").onclick = e => { e.preventDefault(); sv.classList.add("on"); };
+document.getElementById("saveClose").onclick = () => sv.classList.remove("on");
+sv.onclick = e => { if (e.target === sv) sv.classList.remove("on"); };
+async function copy() { try { await navigator.clipboard.writeText(myUrl); return true; } catch (e) { prompt("이 주소를 복사해 두세요", myUrl); return false; } }
+document.getElementById("copyBtn2").onclick = async e => { if (await copy()) e.target.textContent = "복사됨 ✓ 카톡 '나와의 채팅'에 붙여 넣으세요"; };
+document.getElementById("shareBtn").onclick = async e => {
+  if (navigator.share) { try { await navigator.share({ title: "야심한 남자 무료 E-BOOK", text: "나는 나고, 여자는 따라오는 것이다. (내 E-BOOK)", url: myUrl }); return; } catch (err) { if (err.name === "AbortError") return; } }
+  if (await copy()) e.target.textContent = "링크 복사됨 ✓ 카톡 '나와의 채팅'에 붙여 넣으세요";
+};
+
+// 이어 읽기: 같은 기기는 브라우저에 저장, 다른 기기는 개인 링크(id)로 서버에 저장된 마지막 위치
+const KEY = "yanam_ebook_pos", blocks = [...document.querySelectorAll("main > *")];
+const chapterOf = i => { for (let j = i; j >= 0; j--) { const b = blocks[j]; if (b.tagName === "H1") return b.textContent.replace(/\s+/g, " ").trim(); } return ""; };
+const topIndex = () => { const k = blocks.findIndex(b => b.getBoundingClientRect().bottom > 70); return k < 0 ? 0 : k; };
+let lastSaved = -1, sentPos = -1, saveT;
+addEventListener("scroll", () => { clearTimeout(saveT); saveT = setTimeout(() => {
+  const i = topIndex(); if (i === lastSaved) return; lastSaved = i;
+  try { localStorage.setItem(KEY, JSON.stringify({ i, t: Date.now() })); } catch (e) {}
+}, 600); }, { passive: true });
+function sendPos() { if (vid && lastSaved > 5 && lastSaved !== sentPos) { sentPos = lastSaved; track("pos", "i:" + lastSaved); } }
+addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") sendPos(); });
+addEventListener("pagehide", sendPos);
+function offer(i) {
+  if (!(i > 5 && i < blocks.length - 3) || location.hash) return;
+  const el = document.createElement("div"); el.className = "resume";
+  el.innerHTML = '<div>지난번 읽던 곳: <b></b></div><div class="r"><button class="go">이어 읽기</button><button class="no">처음부터</button></div>';
+  el.querySelector("b").textContent = chapterOf(i) || "중간";
+  el.querySelector(".go").onclick = () => { blocks[i].scrollIntoView(); scrollBy(0, -64); el.remove(); track("click", "resume"); };
+  el.querySelector(".no").onclick = () => el.remove();
+  document.body.appendChild(el);
+}
+(async () => {
+  let local = null; try { local = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+  if (local) return offer(local.i);
+  if (!vid) return;
+  try { const r = await (await fetch(ENDPOINT + "?pos=" + encodeURIComponent(vid))).json(); if (r.ok) offer(parseInt(String(r.pos).replace("i:", ""), 10)); } catch (e) {}
+})();
 </script>
 </body>
 </html>

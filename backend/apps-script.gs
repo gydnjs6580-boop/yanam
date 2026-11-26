@@ -190,6 +190,12 @@ function solapi_(message) {
 function doGet(e) {
   const q = e.parameter || {};
   if (q.my) return myPage_(String(q.my));
+  if (q.pos) { // 무료 E-BOOK 이어 읽기: 이 사람의 마지막 읽은 위치(이벤트 시트 'pos' 기록 중 최신)
+    const id = String(q.pos).slice(0, 20), sh = EVENTS(), last = sh.getLastRow(), n = Math.min(last - 1, 5000);
+    if (n > 0) { const v = sh.getRange(last - n + 1, 2, n, 4).getValues();
+      for (let i = v.length - 1; i >= 0; i--) if (v[i][0] === "pos" && String(v[i][3]) === id) return out({ ok: true, pos: String(v[i][1]) }); }
+    return out({ ok: false });
+  }
   if (q.unsub) {
     const email = String(q.unsub).trim().toLowerCase();
     const sh = LEADS(), last = sh.getLastRow();
