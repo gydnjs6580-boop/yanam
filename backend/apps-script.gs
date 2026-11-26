@@ -124,7 +124,7 @@ function doPost(e) {
 
     case "ftClaim": return ftClaim_(d, cache);
     case "demoAuth": return demoAuth_(d);
-    case "ftStart": case "ftCode": case "ftMailCode": case "ftOpen": case "ftPos": return ftReader_(d, cache);
+    case "ftStart": case "ftCode": case "ftMailCode": case "ftForgot": case "ftOpen": case "ftPos": return ftReader_(d, cache);
 
     case "booking": {
       let phone = d.token ? (cache.get("tok_" + d.token) || "") : "";
@@ -404,9 +404,26 @@ function ftReadRow_(phone) {
 }
 function ftCodeRow_(phone) {
   const sh = sheet_("열람코드", ["휴대폰", "열람 코드", "발급시각", "메일"]), last = sh.getLastRow();
-  const v = last > 1 ? sh.getRange(2, 1, last - 1, 2).getValues() : [];
+  const v = last > 1 ? sh.getRange(2, 1, last - 1, 4).getValues() : [];
   const i = v.findIndex(r => String(r[0]).replace(/'/g, "") === phone);
-  return { sh, i, code: i >= 0 ? String(v[i][1]).replace(/'/g, "") : "" };
+  return { sh, i, code: i >= 0 ? String(v[i][1]).replace(/'/g, "") : "", mail: i >= 0 ? String(v[i][3] || "") : "" };
+}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const maskMail_ = m => { const [a, b] = m.split("@"); return a.slice(0, Math.min(2, a.length)) + "***@" + b; };
+function ftEmailFor_(phone) { // 열람코드 탭 메일 → 신청자 시트(무료 E-BOOK 신청 메일) → 결제 시트 권한 이메일
+  const x = ftCodeRow_(phone); if (EMAIL_RE.test(x.mail)) return x.mail;
+  const find = (sh, pc, ec) => { const last = sh.getLastRow(); if (last < 2) return "";
+    const v = sh.getRange(2, 1, last - 1, Math.max(pc, ec)).getValues();
+    for (let k = v.length - 1; k >= 0; k--) if (String(v[k][pc - 1]).replace(/[^0-9]/g, "") === phone && EMAIL_RE.test(String(v[k][ec - 1]).trim())) return String(v[k][ec - 1]).trim().toLowerCase();
+    return ""; };
+  return find(LEADS(), 3, 4) || find(PAYS(), 6, 10);
+}
+function ftSendCodeMail_(email, code) {
+  try {
+    MailApp.sendEmail({ to: email, name: "야심한 남자", subject: "[야심한 남자] 패스트트랙 열람 코드",
+      body: "패스트트랙 열람 코드: " + code + "\n\n새 휴대폰이나 PC에서 열 때 결제하신 휴대폰 번호와 이 코드를 넣으면 이어서 읽을 수 있어요.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 메일을 보관해 주세요. 코드는 다른 사람에게 알려 주지 마세요." });
+    return true;
+  } catch (err) { return false; }
 }
 function ftCodeFor_(phone) { // 없으면 새로 만듦
   const x = ftCodeRow_(phone);
@@ -425,8 +442,10 @@ function ftReader_(d, cache) {
       const lock = LockService.getScriptLock(); lock.waitLock(20000);
       try {
         if (!ftCodeRow_(phone).code && (b.test || ftDevices_(phone).length === 0)) {
-          const code = ftCodeFor_(phone);
-          return out({ ok: true, first: true, code, token: ftIssue_(phone, d.ua, "첫 열람") });
+          const code = ftCodeFor_(phone), token = ftIssue_(phone, d.ua, "첫 열람");
+          const email = ftEmailFor_(phone); let mailed = "";
+          if (email && ftSendCodeMail_(email, code)) { const x = ftCodeRow_(phone); x.sh.getRange(x.i + 2, 4).setValue(email); mailed = maskMail_(email); }
+          return out({ ok: true, first: true, code, token, mailed });
         }
       } finally { lock.releaseLock(); }
       return out({ ok: false, need: "code" });
@@ -437,7 +456,7 @@ function ftReader_(d, cache) {
       if (n >= 5) return out({ ok: false, error: "여러 번 틀렸어요. 10분 뒤 다시 시도해 주세요." });
       cache.put(k, String(n + 1), 600);
       const x = ftCodeRow_(phone);
-      if (!x.code || x.code !== s(d.code, 6)) return out({ ok: false, error: "열람 코드가 맞지 않아요. 잃어버렸다면 카페 「어트랙티버」로 문의해 주세요." });
+      if (!x.code || x.code !== s(d.code, 6)) return out({ ok: false, error: "열람 코드가 맞지 않아요. 잊으셨다면 아래 「코드를 잊었어요」를 눌러 주세요." });
       cache.remove(k);
       const lock = LockService.getScriptLock(); lock.waitLock(20000);
       try { return out({ ok: true, token: ftIssue_(phone, d.ua, "열람 코드") }); } finally { lock.releaseLock(); }
@@ -447,12 +466,22 @@ function ftReader_(d, cache) {
       const email = s(d.email, 100).trim().toLowerCase();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return out({ ok: false, error: "이메일 주소를 확인해 주세요." });
       const x = ftCodeRow_(ph); if (!x.code) return out({ ok: false });
-      try {
-        MailApp.sendEmail({ to: email, name: "야심한 남자", subject: "[야심한 남자] 패스트트랙 열람 코드",
-          body: "패스트트랙 열람 코드: " + x.code + "\n\n새 휴대폰이나 PC에서 열 때 결제 번호와 이 코드를 넣으면 이어서 읽을 수 있어요.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 메일을 보관해 주세요. 코드는 다른 사람에게 알려 주지 마세요." });
-      } catch (err) { return out({ ok: false, error: "지금은 메일을 보낼 수 없어요. 화면을 캡처해 두세요." }); }
+      if (!ftSendCodeMail_(email, x.code)) return out({ ok: false, error: "지금은 메일을 보낼 수 없어요. 화면을 캡처해 두세요." });
       x.sh.getRange(x.i + 2, 4).setValue(email);
       return out({ ok: true });
+    }
+    case "ftForgot": { // 코드 분실: 등록된 메일로 다시 보내기 (번호당 1시간에 3번)
+      if (!phoneOk(phone)) return out({ ok: false, error: "결제하신 휴대폰 번호를 확인해 주세요." });
+      if (!ftBuyer_(phone)) return out({ ok: false, error: "이 번호로 확인된 패스트트랙 결제가 없어요." });
+      const k = "ftf_n_" + phone, n = +(cache.get(k) || 0);
+      if (n >= 3) return out({ ok: false, error: "방금 메일을 보냈어요. 메일함(스팸함 포함)을 확인해 주세요." });
+      const x = ftCodeRow_(phone); if (!x.code) return out({ ok: false, error: "아직 열람 코드가 없어요. 처음 결제한 휴대폰에서 먼저 열어 주세요." });
+      const email = ftEmailFor_(phone);
+      if (!email) return out({ ok: false, nomail: true, error: "등록된 메일이 없어요. 이미 열려 있는 기기가 있다면 🔑 버튼에서 코드를 볼 수 있어요. 없다면 카카오톡 채널 「야심한남자」로 결제 번호를 보내 주세요." });
+      cache.put(k, String(n + 1), 3600);
+      if (!ftSendCodeMail_(email, x.code)) return out({ ok: false, error: "지금은 메일을 보낼 수 없어요. 잠시 후 다시 눌러 주세요." });
+      if (!x.mail) x.sh.getRange(x.i + 2, 4).setValue(email);
+      return out({ ok: true, to: maskMail_(email) });
     }
     case "ftOpen": {
       const ph = ftWho_(d.token);
