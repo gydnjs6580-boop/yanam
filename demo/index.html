@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{--red:#e2483d;--ink:#111;--sub:#6b6f76;--line:#e6e8ec;--gold:#d9b15f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;background:#f4f5f7;color:var(--ink);line-height:1.6;word-break:keep-all}
+  .wrap{max-width:480px;margin:0 auto;padding:24px 16px 60px}
+  .demo{background:#fff3cd;color:#7a5b00;font-size:12.5px;text-align:center;padding:7px 10px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:12px}
+  h1{font-size:22px;font-weight:900;letter-spacing:-.02em}
+  h2{font-size:17px;font-weight:800;margin-bottom:6px}
+  p{font-size:14.5px;color:#333}.sub{color:var(--sub);font-size:13.5px}
+  .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--red);color:#fff;padding:15px;font:inherit;font-size:16px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer;margin-top:14px}
+  .btn.dark{background:#111}.btn:disabled{background:#bbb}
+  .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:13px;font:inherit;font-size:16px;margin-top:8px}
+  .err{color:#d32f2f;font-size:13.5px;margin-top:8px;min-height:18px}
+  .pc{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px dashed var(--line)}.pc:last-child{border:0}
+  ul.l{margin:8px 0 0 18px;font-size:13.5px;color:#444}
+</style>
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
+const K = new URLSearchParams(location.hash.slice(1)).get("k") || "";
+</script>
+<title>패스트트랙 전달 방식 데모</title></head><body>
+<div class="demo">효원님 테스트용 데모 · 실제 판매와 무관 · 샘플은 1부 앞 10쪽</div>
+<div class="wrap">
+  <h1>패스트트랙 전달 방식 3가지</h1>
+  <p class="sub" style="margin:6px 0 16px">구매자 입장에서 하나씩 눌러 보세요.</p>
+  <div class="card"><h2>① 드라이브 · 구매자 구글 계정에만 권한</h2>
+    <p>구매자가 결제한 번호와 구글 이메일을 넣으면, 그 계정으로만 열리는 드라이브 링크를 메일로 받아요.</p>
+    <ul class="l"><li>체험: 메일함의 「패스트트랙 열람 안내 (테스트 2)」 링크</li><li>장점: 링크가 퍼져도 다른 계정은 못 열어요</li><li>단점: 구글 계정이 꼭 있어야 하고, 다른 계정으로 로그인돼 있으면 헤매요</li></ul>
+    <a class="btn dark" href="https://mail.google.com/mail/u/0/#search/%ED%85%8C%EC%8A%A4%ED%8A%B8+2" target="_blank" rel="noopener">메일 찾아 열기</a></div>
+  <div class="card"><h2>② 결제 완료 → 내 번호가 새겨진 PDF 바로 받기</h2>
+    <p>결제 직후 화면에서 바로 PDF를 받아요. 모든 쪽에 구매자 번호가 새겨져 있어서, 퍼지면 누가 퍼뜨렸는지 알 수 있어요.</p>
+    <ul class="l"><li>장점: 가장 간단, 폰에 저장돼서 언제든 봄</li><li>단점: 파일 자체는 복사·공유가 가능(억제만 됨)</li></ul>
+    <a class="btn" id="b2">결제 완료 화면 보기</a></div>
+  <div class="card"><h2>③ 우리 사이트에서 읽기 (번호 인증)</h2>
+    <p>결제한 번호로 인증하면 사이트 안에서 바로 읽어요. 파일을 내려주지 않고, 읽던 쪽을 기억해요.</p>
+    <ul class="l"><li>장점: 파일이 안 퍼짐, 이어 읽기, 읽은 기록 확인 가능</li><li>단점: 인터넷이 있어야 봄, 화면 캡처는 막을 수 없음</li></ul>
+    <a class="btn" id="b3">사이트에서 읽어 보기</a></div>
+  <p class="sub">③의 데모 번호: 010-0000-1234</p>
+</div>
+<script>document.getElementById("b2").href="ft-pay.html#k="+K;document.getElementById("b3").href="ft-read.html#k="+K;</script>
+</body></html>

@@ -123,6 +123,7 @@ function doPost(e) {
     }
 
     case "ftClaim": return ftClaim_(d, cache);
+    case "demoAuth": return demoAuth_(d);
 
     case "booking": {
       let phone = d.token ? (cache.get("tok_" + d.token) || "") : "";
@@ -190,6 +191,7 @@ function solapi_(message) {
 function doGet(e) {
   const q = e.parameter || {};
   if (q.my) return myPage_(String(q.my));
+  if (q.demo) return demoGet_(q);
   if (q.pos) { // 무료 E-BOOK 이어 읽기: 이 사람의 마지막 읽은 위치(이벤트 시트 'pos' 기록 중 최신)
     const id = String(q.pos).slice(0, 20), sh = EVENTS(), last = sh.getLastRow(), n = Math.min(last - 1, 5000);
     if (n > 0) { const v = sh.getRange(last - n + 1, 2, n, 4).getValues();
@@ -288,4 +290,39 @@ function lockFastTrack() {
 function authorizeDrive() {
   Logger.log("폴더 확인: " + DriveApp.getFolderById(FT_FOLDER_ID).getName());
   Logger.log("PAYAPP_LINKVAL 설정됨: " + !!prop("PAYAPP_LINKVAL"));
+}
+
+/* ===== 패스트트랙 전달 방식 데모(효원 테스트용) — 실제 판매 흐름과 무관 =====
+ * 샘플: 1부 앞 10쪽(구매자 표시 새김) — 드라이브 '패스트트랙 전달 방식 데모' 폴더(공유 안 함)
+ * 열쇠: 스크립트 속성 DEMO_KEY (setupDemo() 한 번 실행하면 만들어지고 실행 로그에 나옴). 없으면 데모 꺼짐.
+ */
+const DEMO_FOLDER_ID = "1Ax9L88BN5WK6SX-JF5ou1JwWJAmipYXn", DEMO_PHONE = "01000001234", DEMO_PAGES = 10;
+function setupDemo() {
+  let k = prop("DEMO_KEY");
+  if (!k) { k = Utilities.getUuid().replace(/-/g, "").slice(0, 16); P.setProperty("DEMO_KEY", k); }
+  Logger.log("DEMO_KEY: " + k + " / 폴더: " + DriveApp.getFolderById(DEMO_FOLDER_ID).getName());
+}
+function demoFile_(name) { const it = DriveApp.getFolderById(DEMO_FOLDER_ID).getFilesByName(name); return it.hasNext() ? it.next() : null; }
+function demoGet_(q) {
+  const key = prop("DEMO_KEY"), cache = CacheService.getScriptCache();
+  if (!key) return out({ ok: false, error: "데모가 아직 켜지지 않았어요." });
+  if (q.demo === "pdf") {
+    if (q.k !== key) return out({ ok: false, error: "데모 링크가 올바르지 않아요." });
+    const f = demoFile_("demo_wm.pdf");
+    return out({ ok: true, name: "패스트트랙_1부_샘플(구매자표시).pdf", b64: Utilities.base64Encode(f.getBlob().getBytes()) });
+  }
+  if (q.demo === "page") {
+    if (!q.t || cache.get("demo_t_" + q.t) !== "1") return out({ ok: false, error: "다시 인증해 주세요." });
+    const n = Math.max(1, Math.min(DEMO_PAGES, parseInt(q.n, 10) || 1)), f = demoFile_("p" + ("0" + n).slice(-2) + ".jpg");
+    return out({ ok: true, n, total: DEMO_PAGES, b64: Utilities.base64Encode(f.getBlob().getBytes()) });
+  }
+  return out({ ok: false });
+}
+function demoAuth_(d) {
+  const key = prop("DEMO_KEY");
+  if (!key || d.k !== key) return out({ ok: false, error: "데모 링크가 올바르지 않아요." });
+  if (String(d.phone || "").replace(/\D/g, "") !== DEMO_PHONE) return out({ ok: false, error: "결제 내역이 없는 번호예요. (데모: 01000001234)" });
+  const t = Utilities.getUuid();
+  CacheService.getScriptCache().put("demo_t_" + t, "1", 6 * 3600);
+  return out({ ok: true, token: t, total: DEMO_PAGES, label: "010-****-1234" });
 }

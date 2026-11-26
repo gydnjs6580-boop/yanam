@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{--red:#e2483d;--ink:#111;--sub:#6b6f76;--line:#e6e8ec;--gold:#d9b15f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;background:#f4f5f7;color:var(--ink);line-height:1.6;word-break:keep-all}
+  .wrap{max-width:480px;margin:0 auto;padding:24px 16px 60px}
+  .demo{background:#fff3cd;color:#7a5b00;font-size:12.5px;text-align:center;padding:7px 10px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:12px}
+  h1{font-size:22px;font-weight:900;letter-spacing:-.02em}
+  h2{font-size:17px;font-weight:800;margin-bottom:6px}
+  p{font-size:14.5px;color:#333}.sub{color:var(--sub);font-size:13.5px}
+  .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--red);color:#fff;padding:15px;font:inherit;font-size:16px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer;margin-top:14px}
+  .btn.dark{background:#111}.btn:disabled{background:#bbb}
+  .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:13px;font:inherit;font-size:16px;margin-top:8px}
+  .err{color:#d32f2f;font-size:13.5px;margin-top:8px;min-height:18px}
+  .pc{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px dashed var(--line)}.pc:last-child{border:0}
+  ul.l{margin:8px 0 0 18px;font-size:13.5px;color:#444}
+</style>
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
+const K = new URLSearchParams(location.hash.slice(1)).get("k") || "";
+</script>
+<title>패스트트랙 읽기 (데모)</title>
+<style>
+  body.reading{background:#2a2c31}
+  .rd{max-width:760px;margin:0 auto;padding:8px 0 90px;display:none}
+  .pg{position:relative;margin:0 0 10px;background:#fff;min-height:200px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  .pg img{display:block;width:100%;pointer-events:none}
+  .pg .wm{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;color:rgba(226,72,61,.10);font-weight:900;font-size:6vw;transform:rotate(-30deg);white-space:nowrap}
+  .pg .ld{padding:80px 0;text-align:center;color:#999;font-size:14px}
+  .nav{position:fixed;left:0;right:0;bottom:0;background:#111;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-size:14px;z-index:5}
+  .nav b{color:var(--gold)}
+  .resume{position:fixed;left:12px;right:12px;bottom:62px;max-width:520px;margin:0 auto;background:#fff;border-radius:14px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:6;font-size:14.5px}
+  .resume .r{display:flex;gap:8px;margin-top:8px}.resume button{flex:1;border:0;border-radius:10px;padding:11px;font:inherit;font-weight:800}
+  .resume .go{background:var(--red);color:#fff}.resume .no{background:#eee}
+</style></head><body>
+<div class="demo">③ 데모 · 샘플 1부 앞 10쪽</div>
+<div class="wrap" id="auth">
+  <div class="card"><h1>패스트트랙 읽기</h1><p class="sub" style="margin-top:4px">결제한 휴대폰 번호로 인증하면 바로 읽을 수 있어요.</p>
+    <input class="in" id="ph" inputmode="numeric" maxlength="11" placeholder="01000001234">
+    <button class="btn" id="go">인증하고 읽기</button><div class="err" id="err"></div>
+    <p class="sub">데모 번호: 01000001234 (실제로는 결제 번호 + 문자 인증)</p></div>
+  <a class="sub" id="back">← 3가지 비교로 돌아가기</a>
+</div>
+<div class="rd" id="rd"></div>
+<div class="nav" id="nav" style="display:none"><span>패스트트랙 1부 · <b id="cur">1</b> / <span id="tot">10</span>쪽</span><span id="who"></span></div>
+<script>
+const $ = id => document.getElementById(id), KEY = "yanam_demo_read";
+$("back").href = "index.html#k=" + K;
+document.addEventListener("contextmenu", e => { if (e.target.closest(".pg")) e.preventDefault(); });
+let S = null; try { S = JSON.parse(sessionStorage.getItem("yanam_demo_tok") || "null"); } catch (e) {}
+if (S) start();
+$("go").onclick = async () => {
+  $("go").disabled = true; $("err").textContent = "";
+  let r; try { r = await (await fetch(ENDPOINT, { method: "POST", body: JSON.stringify({ kind: "demoAuth", phone: $("ph").value, k: K }) })).json(); } catch (e) { r = { ok: false }; }
+  $("go").disabled = false;
+  if (!r.ok) return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요.";
+  S = r; sessionStorage.setItem("yanam_demo_tok", JSON.stringify(r)); start();
+};
+function start() {
+  $("auth").style.display = "none"; $("rd").style.display = "block"; $("nav").style.display = "flex"; document.body.classList.add("reading");
+  $("tot").textContent = S.total; $("who").textContent = S.label + " 님";
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) load(e.target); }), { rootMargin: "600px 0px" });
+  for (let n = 1; n <= S.total; n++) {
+    const d = document.createElement("div"); d.className = "pg"; d.dataset.n = n;
+    d.innerHTML = '<div class="ld">' + n + '쪽 불러오는 중…</div>';
+    $("rd").appendChild(d); io.observe(d);
+  }
+  const saved = parseInt(localStorage.getItem(KEY) || "1", 10);
+  if (saved > 1) {
+    const el = document.createElement("div"); el.className = "resume";
+    el.innerHTML = '지난번 <b>' + saved + '쪽</b>까지 읽었어요.<div class="r"><button class="go">이어 읽기</button><button class="no">처음부터</button></div>';
+    el.querySelector(".go").onclick = () => { document.querySelector('.pg[data-n="' + saved + '"]').scrollIntoView(); el.remove(); };
+    el.querySelector(".no").onclick = () => el.remove();
+    document.body.appendChild(el);
+  }
+  addEventListener("scroll", () => {
+    const pgs = [...document.querySelectorAll(".pg")], mid = innerHeight / 2;
+    const cur = pgs.find(p => { const r = p.getBoundingClientRect(); return r.top <= mid && r.bottom >= mid; });
+    if (cur) { $("cur").textContent = cur.dataset.n; localStorage.setItem(KEY, cur.dataset.n); }
+  }, { passive: true });
+}
+async function load(d) {
+  if (d.dataset.ok) return; d.dataset.ok = 1;
+  try {
+    const r = await (await fetch(ENDPOINT + "?demo=page&n=" + d.dataset.n + "&t=" + encodeURIComponent(S.token))).json();
+    if (!r.ok) { if (/인증/.test(r.error || "")) { sessionStorage.removeItem("yanam_demo_tok"); location.reload(); } throw 0; }
+    const img = new Image(); img.alt = ""; img.draggable = false; img.src = "data:image/jpeg;base64," + r.b64;
+    d.querySelector(".ld").replaceWith(img);
+  } catch (e) { d.dataset.ok = ""; d.querySelector(".ld") && (d.querySelector(".ld").textContent = "불러오지 못했어요. 스크롤하면 다시 시도해요."); }
+}
+</script></body></html>

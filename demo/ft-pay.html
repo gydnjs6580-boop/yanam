@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{--red:#e2483d;--ink:#111;--sub:#6b6f76;--line:#e6e8ec;--gold:#d9b15f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;background:#f4f5f7;color:var(--ink);line-height:1.6;word-break:keep-all}
+  .wrap{max-width:480px;margin:0 auto;padding:24px 16px 60px}
+  .demo{background:#fff3cd;color:#7a5b00;font-size:12.5px;text-align:center;padding:7px 10px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:12px}
+  h1{font-size:22px;font-weight:900;letter-spacing:-.02em}
+  h2{font-size:17px;font-weight:800;margin-bottom:6px}
+  p{font-size:14.5px;color:#333}.sub{color:var(--sub);font-size:13.5px}
+  .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--red);color:#fff;padding:15px;font:inherit;font-size:16px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer;margin-top:14px}
+  .btn.dark{background:#111}.btn:disabled{background:#bbb}
+  .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:13px;font:inherit;font-size:16px;margin-top:8px}
+  .err{color:#d32f2f;font-size:13.5px;margin-top:8px;min-height:18px}
+  .pc{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;border-bottom:1px dashed var(--line)}.pc:last-child{border:0}
+  ul.l{margin:8px 0 0 18px;font-size:13.5px;color:#444}
+</style>
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
+const K = new URLSearchParams(location.hash.slice(1)).get("k") || "";
+</script>
+<title>결제 완료 (데모)</title></head><body>
+<div class="demo">② 데모 · 실제 결제 아님</div>
+<div class="wrap">
+  <div class="card" style="text-align:center"><div style="font-size:44px">✅</div><h1>결제가 완료되었습니다</h1><p class="sub">야심한 남자 · 패스트트랙</p></div>
+  <div class="card"><div class="pc"><span>상품</span><b>패스트트랙 1·2부</b></div><div class="pc"><span>결제 금액</span><b>99,000원</b></div><div class="pc"><span>구매자</span><b>홍길동 · 010-****-1234</b></div></div>
+  <div class="card"><h2>📘 바로 받기</h2><p>아래 버튼을 누르면 <b>구매자 번호가 새겨진 PDF</b>가 폰에 저장돼요. (데모는 1부 앞 10쪽)</p>
+    <button class="btn" id="dl">패스트트랙 PDF 받기</button><div class="err" id="err"></div>
+    <p class="sub" style="margin-top:10px">본 자료는 구매자 1인 열람용입니다. 무단 공유 시 법적 책임을 질 수 있습니다.</p></div>
+  <a class="sub" href="index.html#k=">← 3가지 비교로 돌아가기</a>
+</div>
+<script>
+document.querySelector('a[href^="index.html"]').href = "index.html#k=" + K;
+document.getElementById("dl").onclick = async e => {
+  const b = e.target; b.disabled = true; b.textContent = "만드는 중…";
+  try {
+    const r = await (await fetch(ENDPOINT + "?demo=pdf&k=" + encodeURIComponent(K))).json();
+    if (!r.ok) throw new Error(r.error || "실패");
+    const bin = atob(r.b64), u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([u], { type: "application/pdf" }));
+    const a = document.createElement("a"); a.href = url; a.download = r.name; document.body.appendChild(a); a.click();
+    b.textContent = "받기 완료 ✓ (다운로드 폴더)"; 
+    document.getElementById("err").innerHTML = '안 열리면 <a href="' + url + '" target="_blank">여기를 눌러 바로 보기</a>';
+  } catch (err) { b.disabled = false; b.textContent = "패스트트랙 PDF 받기"; document.getElementById("err").textContent = err.message; }
+};
+</script></body></html>
