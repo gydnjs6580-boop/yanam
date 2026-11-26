@@ -194,11 +194,11 @@ function solapi_(message) {
     .map(b => ("0" + (b & 0xff).toString(16)).slice(-2)).join("");
   // 솔라피는 고정 IP에서 온 요청만 받으므로 AWS 중계 서버(SMS_RELAY, 예: https://1.2.3.4)를 거친다. 키는 중계 서버에 두지 않음
   const relay = prop("SMS_RELAY").replace(/\/$/, "");
-  const res = UrlFetchApp.fetch((relay || "https://api.solapi.com") + "/messages/v4/send", {
-    method: "post", contentType: "application/json", muteHttpExceptions: true, validateHttpsCertificates: !relay,
+  let res; try { res = UrlFetchApp.fetch((relay || "https://api.solapi.com") + "/messages/v4/send", {
+    method: "post", contentType: "application/json", muteHttpExceptions: true,
     headers: { Authorization: "HMAC-SHA256 apiKey=" + prop("SOLAPI_KEY") + ", date=" + date + ", salt=" + salt + ", signature=" + sig },
     payload: JSON.stringify({ message }),
-  });
+  }); } catch (err) { return { ok: false, error: String(err).slice(0, 150) }; }
   const code = res.getResponseCode();
   return code < 300 ? { ok: true } : { ok: false, error: code + " " + res.getContentText().slice(0, 150) };
 }
