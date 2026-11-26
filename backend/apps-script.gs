@@ -124,7 +124,7 @@ function doPost(e) {
 
     case "ftClaim": return ftClaim_(d, cache);
     case "demoAuth": return demoAuth_(d);
-    case "ftStart": case "ftSendCode": case "ftVerify": case "ftOpen": case "ftPos": return ftReader_(d, cache);
+    case "ftStart": case "ftCode": case "ftMailCode": case "ftOpen": case "ftPos": return ftReader_(d, cache);
 
     case "booking": {
       let phone = d.token ? (cache.get("tok_" + d.token) || "") : "";
@@ -334,14 +334,15 @@ function demoAuth_(d) {
 
 
 /* ===== 패스트트랙 ③ 사이트에서 읽기 (ft-read.html) =====
- * - 결제 직후 첫 기기: 결제 번호만 넣으면 바로 열림(결제 후 FT_FIRST_MIN분 안, 등록 기기 0대일 때)
- * - 그 외 새 기기: 문자 인증 한 번 → 출입증(토큰) 발급, 기기 FT_MAX_DEVICES대 초과 시 가장 오래된 기기 자동 로그아웃
+ * - 처음 열 때: 결제 번호만 넣으면 바로 열림 + 6자리 '열람 코드' 발급(화면에 보여 주고 원하면 메일로)
+ * - 새 기기: 결제 번호 + 열람 코드 → 출입증(토큰) 발급, 기기 FT_MAX_DEVICES대 초과 시 가장 오래된 기기 자동 로그아웃
+ * - 문자 인증은 안 씀: 솔라피 문자 API는 고정 IP 등록 필수라 Apps Script에서 보낼 수 없음
  * - 출입증 FT_TOKEN_DAYS일 유효. 읽은 위치는 '열람' 시트에 저장(기기 바뀌어도 이어 읽기)
  * - 페이지 이미지는 사이트(ft/)에 암호화돼 올라가 있고, 열쇠는 비공개 드라이브 파일(FT_KEY_FILE_ID)에서 읽어 인증된 기기에만 줌
  * - 테스트 번호: 스크립트 속성 FT_TEST_PHONES(쉼표 구분, 기본 01000001234)는 결제 없이 구매자로 취급
  */
 const FT_READ_URL = "https://gydnjs6580-boop.github.io/yanam/ft-read.html";
-const FT_MAX_DEVICES = 3, FT_TOKEN_DAYS = 90, FT_FIRST_MIN = 60;
+const FT_MAX_DEVICES = 3, FT_TOKEN_DAYS = 90;
 const FT_KEY_FILE_ID = "1Ut6se732VAlTFg5RdGojTkqBOhky8gt2"; // 비공개 드라이브의 열쇠 파일 ID (파일 내용은 코드에 쓰지 않음)
 const DEVICES = () => sheet_("열람기기", ["발급시각", "휴대폰", "출입증", "마지막 사용", "브라우저", "상태", "방법"]);
 const READS = () => sheet_("열람", ["휴대폰", "마지막 부", "1부 마지막 쪽", "2부 마지막 쪽", "1부 최대 쪽", "2부 최대 쪽", "갱신시각", "처음 연 시각"]);
@@ -401,40 +402,57 @@ function ftReadRow_(phone) {
   const i = v.findIndex(r => String(r[0]).replace(/'/g, "") === phone);
   return { sh, i, r: i >= 0 ? v[i] : null };
 }
+function ftCodeRow_(phone) {
+  const sh = sheet_("열람코드", ["휴대폰", "열람 코드", "발급시각", "메일"]), last = sh.getLastRow();
+  const v = last > 1 ? sh.getRange(2, 1, last - 1, 2).getValues() : [];
+  const i = v.findIndex(r => String(r[0]).replace(/'/g, "") === phone);
+  return { sh, i, code: i >= 0 ? String(v[i][1]).replace(/'/g, "") : "" };
+}
+function ftCodeFor_(phone) { // 없으면 새로 만듦
+  const x = ftCodeRow_(phone);
+  if (x.code) return x.code;
+  const code = String(Math.floor(100000 + Math.random() * 900000));
+  x.sh.appendRow([txt(phone), "'" + code, KST(), ""]);
+  return code;
+}
 function ftReader_(d, cache) {
   const phone = s(d.phone, 11).replace(/[^0-9]/g, "");
   switch (d.kind) {
-    case "ftStart": { // 결제 직후 첫 기기는 번호만으로 열기, 아니면 문자 인증 필요
+    case "ftStart": { // 이 번호로 처음 여는 거면(등록 기기 0대, 열람 코드 없음) 바로 열기 + 열람 코드 발급. 아니면 열람 코드 필요
       if (!phoneOk(phone)) return out({ ok: false, error: "결제하신 휴대폰 번호를 확인해 주세요." });
       const b = ftBuyer_(phone);
       if (!b) return out({ ok: false, error: "이 번호로 확인된 패스트트랙 결제가 없어요. 결제 직후라면 1~2분 뒤 다시 시도해 주세요." });
       const lock = LockService.getScriptLock(); lock.waitLock(20000);
       try {
-        if (!b.test && Date.now() - b.paidAt < FT_FIRST_MIN * 60000 && ftDevices_(phone).length === 0)
-          return out({ ok: true, token: ftIssue_(phone, d.ua, "결제 직후") });
+        if (!ftCodeRow_(phone).code && (b.test || ftDevices_(phone).length === 0)) {
+          const code = ftCodeFor_(phone);
+          return out({ ok: true, first: true, code, token: ftIssue_(phone, d.ua, "첫 열람") });
+        }
       } finally { lock.releaseLock(); }
-      return out({ ok: false, need: "sms" });
+      return out({ ok: false, need: "code" });
     }
-    case "ftSendCode": {
-      if (!phoneOk(phone) || !ftBuyer_(phone)) return out({ ok: false, error: "이 번호로 확인된 패스트트랙 결제가 없어요." });
+    case "ftCode": {
+      if (!phoneOk(phone)) return out({ ok: false, error: "휴대폰 번호를 확인해 주세요." });
       const k = "ftc_n_" + phone, n = +(cache.get(k) || 0);
-      if (n >= 5) return out({ ok: false, error: "잠시 후 다시 시도해 주세요. (10분 제한)" });
+      if (n >= 5) return out({ ok: false, error: "여러 번 틀렸어요. 10분 뒤 다시 시도해 주세요." });
       cache.put(k, String(n + 1), 600);
-      const test = TEST() || (prop("FT_TEST_PHONES") || "01000001234").split(",").indexOf(phone) >= 0;
-      const code = test ? "000000" : String(Math.floor(100000 + Math.random() * 900000));
-      cache.put("ftc_" + phone, code, 300);
-      if (!test) {
-        const r = solapi_({ to: phone, from: prop("SMS_FROM"), text: "[야심한남자] 패스트트랙 인증번호 " + code + "\n\n@gydnjs6580-boop.github.io #" + code });
-        if (!r.ok) return out({ ok: false, error: "문자 발송에 실패했어요. 잠시 후 다시 시도해 주세요." });
-      }
-      return out({ ok: true, test });
-    }
-    case "ftVerify": {
-      const c = s(d.code, 6), saved = cache.get("ftc_" + phone);
-      if (!saved || saved !== c) return out({ ok: false, error: "인증번호가 맞지 않아요." });
-      cache.remove("ftc_" + phone);
+      const x = ftCodeRow_(phone);
+      if (!x.code || x.code !== s(d.code, 6)) return out({ ok: false, error: "열람 코드가 맞지 않아요. 잃어버렸다면 카페 「어트랙티버」로 문의해 주세요." });
+      cache.remove(k);
       const lock = LockService.getScriptLock(); lock.waitLock(20000);
-      try { return out({ ok: true, token: ftIssue_(phone, d.ua, "문자 인증") }); } finally { lock.releaseLock(); }
+      try { return out({ ok: true, token: ftIssue_(phone, d.ua, "열람 코드") }); } finally { lock.releaseLock(); }
+    }
+    case "ftMailCode": {
+      const ph = ftWho_(d.token); if (!ph) return out({ ok: false, error: "다시 열어 주세요." });
+      const email = s(d.email, 100).trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return out({ ok: false, error: "이메일 주소를 확인해 주세요." });
+      const x = ftCodeRow_(ph); if (!x.code) return out({ ok: false });
+      try {
+        MailApp.sendEmail({ to: email, name: "야심한 남자", subject: "[야심한 남자] 패스트트랙 열람 코드",
+          body: "패스트트랙 열람 코드: " + x.code + "\n\n새 휴대폰이나 PC에서 열 때 결제 번호와 이 코드를 넣으면 이어서 읽을 수 있어요.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 메일을 보관해 주세요. 코드는 다른 사람에게 알려 주지 마세요." });
+      } catch (err) { return out({ ok: false, error: "지금은 메일을 보낼 수 없어요. 화면을 캡처해 두세요." }); }
+      x.sh.getRange(x.i + 2, 4).setValue(email);
+      return out({ ok: true });
     }
     case "ftOpen": {
       const ph = ftWho_(d.token);
@@ -442,7 +460,7 @@ function ftReader_(d, cache) {
       const key = ftKey_(); if (!key) return out({ ok: false, error: "준비 중이에요. 잠시 후 다시 열어 주세요." });
       const x = ftReadRow_(ph), r = x.r;
       if (!r) x.sh.appendRow([txt(ph), 1, 1, 1, 1, 1, KST(), KST()]);
-      return out({ ok: true, key, label: mask_(ph), pos: r ? { part: +r[1] || 1, p1: +r[2] || 1, p2: +r[3] || 1 } : null });
+      return out({ ok: true, key, label: mask_(ph), code: ftCodeRow_(ph).code, pos: r ? { part: +r[1] || 1, p1: +r[2] || 1, p2: +r[3] || 1 } : null });
     }
     case "ftPos": {
       const ph = ftWho_(d.token); if (!ph) return out({ ok: false });

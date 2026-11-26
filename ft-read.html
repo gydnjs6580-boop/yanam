@@ -44,6 +44,10 @@
   .bot b{color:var(--gold)}
   .toast{position:fixed;left:12px;right:12px;bottom:64px;max-width:520px;margin:0 auto;background:#fff;color:#111;border-radius:14px;padding:14px;box-shadow:0 8px 24px rgba(0,0,0,.35);z-index:12;font-size:14.5px}
   .toast.up{bottom:auto;top:62px}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:30;display:flex;align-items:center;justify-content:center;padding:18px}
+  .modal .m{background:#fff;color:#111;border-radius:18px;padding:22px 18px;max-width:380px;width:100%;text-align:center}
+  .modal .big{font-size:40px;font-weight:900;letter-spacing:.18em;color:var(--red);margin:10px 0 4px}
+  .modal .row{display:flex;gap:8px;margin-top:10px}.modal .row .in{font-size:15px;padding:11px}.modal .row button{flex:none;border:0;border-radius:10px;background:#111;color:#fff;padding:0 14px;font:inherit;font-weight:800}
   .toast .r{display:flex;gap:8px;margin-top:10px}.toast button{flex:1;border:0;border-radius:10px;padding:11px;font:inherit;font-weight:800;cursor:pointer}
   .toast .go{background:var(--red);color:#fff}.toast .no{background:#eee;color:#111}
   .toc{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:20}
@@ -65,14 +69,14 @@
     <input class="in" id="ph" inputmode="numeric" maxlength="11" placeholder="01012345678" autocomplete="tel">
     <button class="btn" id="go">패스트트랙 열기</button>
     <div id="codeBox" class="hide">
-      <p class="help" style="margin-top:14px">문자로 받은 인증번호 6자리를 넣어 주세요. 키보드 위에 번호가 뜨면 눌러 주세요.</p>
-      <input class="in code" id="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="● ● ● ● ● ●">
+      <p class="help" style="margin-top:14px">이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)</p>
+      <input class="in code" id="code" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="● ● ● ● ● ●">
       <button class="btn" id="verify">확인</button>
     </div>
     <div class="err" id="err"></div>
   </div>
   <ul class="tips">
-    <li>새 휴대폰이나 PC에서 처음 열 때만 문자 인증을 해요.</li>
+    <li>처음 열 때 6자리 열람 코드를 드려요. 새 휴대폰이나 PC에서 열 때 필요하니 꼭 캡처해 두세요.</li>
     <li>한 번호로 기기 3대까지 볼 수 있어요. 4번째 기기에서 열면 가장 오래된 기기는 자동으로 로그아웃돼요.</li>
     <li>모든 쪽에 구매자 번호가 표시돼요. 공유는 삼가 주세요.</li>
     <li>문의: 네이버 카페 「어트랙티버」</li>
@@ -84,7 +88,7 @@
   <div class="top">
     <button id="tocBtn">☰ 목차</button>
     <div class="seg"><button data-part="1" class="on">1부</button><button data-part="2">2부</button></div>
-    <button id="homeBtn" title="홈 화면에 추가">＋홈</button>
+    <button id="keyBtn" title="내 열람 코드">🔑</button><button id="homeBtn" title="홈 화면에 추가">＋홈</button>
   </div>
   <div class="bar" id="bar"></div>
   <div class="pages" id="pages"></div>
@@ -105,7 +109,7 @@ const TOC = {
 const $ = id => document.getElementById(id), LS = "yanam_ft";
 const api = body => fetch(ENDPOINT, { method: "POST", body: JSON.stringify(body) }).then(r => r.json()).catch(() => ({ ok: false, error: "인터넷 연결을 확인해 주세요." }));
 let S = JSON.parse(localStorage.getItem(LS) || "{}"); // {token, part, p1, p2}
-let KEY = null, LABEL = "", PART = 1, io = null, saveT = null;
+let KEY = null, LABEL = "", CODE = "", NEWCODE = "", PART = 1, io = null, saveT = null;
 const fromPay = /from=pay/.test(location.search + location.hash);
 if (fromPay) $("lead").innerHTML = "결제가 완료되었어요! 결제하신 휴대폰 번호를 넣으면<br>바로 열려요.";
 
@@ -116,24 +120,17 @@ $("go").onclick = async () => {
   if (!/^01[016789]\d{7,8}$/.test(phone)) return $("err").textContent = "휴대폰 번호를 확인해 주세요.";
   busy($("go"), "확인 중…");
   const r = await api({ kind: "ftStart", phone, ua: navigator.userAgent });
-  if (r.ok) return enter(r.token);
-  if (r.need !== "sms") { idle($("go"), "패스트트랙 열기"); return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요."; }
-  const c = await api({ kind: "ftSendCode", phone });
-  idle($("go"), "인증번호 다시 받기");
-  if (!c.ok) return $("err").textContent = c.error || "잠시 후 다시 시도해 주세요.";
-  $("err").textContent = c.test ? "테스트 번호예요. 인증번호 000000을 넣어 주세요." : "";
-  $("codeBox").classList.remove("hide"); $("code").focus();
-  if ("OTPCredential" in window) { // 안드로이드 크롬: 문자 오면 '허용' 한 번으로 자동 입력
-    const ac = new AbortController(); setTimeout(() => ac.abort(), 5 * 60000);
-    navigator.credentials.get({ otp: { transport: ["sms"] }, signal: ac.signal }).then(o => { if (o && o.code) { $("code").value = o.code; verify(); } }).catch(() => {});
-  }
+  idle($("go"), "패스트트랙 열기");
+  if (r.ok) { NEWCODE = r.code; return enter(r.token); }
+  if (r.need !== "code") return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요.";
+  $("go").classList.add("hide"); $("codeBox").classList.remove("hide"); $("code").focus();
 };
 $("code").oninput = () => { $("code").value = $("code").value.replace(/\D/g, ""); if ($("code").value.length === 6) verify(); };
 $("verify").onclick = () => verify();
 async function verify() {
   if ($("verify").disabled) return;
   busy($("verify"), "확인 중…");
-  const r = await api({ kind: "ftVerify", phone: $("ph").value, code: $("code").value, ua: navigator.userAgent });
+  const r = await api({ kind: "ftCode", phone: $("ph").value, code: $("code").value, ua: navigator.userAgent });
   idle($("verify"), "확인");
   if (!r.ok) return $("err").textContent = r.error || "다시 시도해 주세요.";
   enter(r.token);
@@ -146,12 +143,13 @@ async function enter(token) {
   const r = await api({ kind: "ftOpen", token });
   if (!r.ok) { if (r.relogin) { delete S.token; save(); } showLogin(r.error); return; }
   KEY = await crypto.subtle.importKey("raw", Uint8Array.from(atob(r.key), c => c.charCodeAt(0)), "AES-GCM", false, ["decrypt"]);
-  LABEL = r.label; $("who").textContent = "구매자 " + LABEL;
+  LABEL = r.label; CODE = r.code || ""; $("who").textContent = "구매자 " + LABEL;
   const pos = r.pos || {};
   const part = pos.part || S.part || 1, page = (part === 1 ? (pos.p1 || S.p1) : (pos.p2 || S.p2)) || 1;
   $("login").classList.add("hide"); $("reader").classList.remove("hide");
   openPart(part, page > 1 ? page : 0);
-  if (!localStorage.getItem(LS + "_home") && !matchMedia("(display-mode: standalone)").matches && !navigator.standalone) setTimeout(homeTip, 2500);
+  if (NEWCODE) { showCode(true); NEWCODE = ""; }
+  else if (!localStorage.getItem(LS + "_home") && !matchMedia("(display-mode: standalone)").matches && !navigator.standalone) setTimeout(homeTip, 2500);
 }
 function showLogin(msg) { $("reader").classList.add("hide"); $("login").classList.remove("hide"); if (msg) $("err").textContent = msg; }
 function save() { localStorage.setItem(LS, JSON.stringify(S)); }
@@ -230,6 +228,21 @@ function homeTip() {
   localStorage.setItem(LS + "_home", "1"); document.body.appendChild(t);
 }
 $("homeBtn").onclick = homeTip;
+$("keyBtn").onclick = () => showCode(false);
+function showCode(first) {
+  const m = document.createElement("div"); m.className = "modal";
+  m.innerHTML = '<div class="m">' + (first ? "<b>처음 오셨네요! 내 열람 코드예요</b>" : "<b>내 열람 코드</b>") +
+    '<div class="big">' + CODE + '</div><p class="help" style="color:#444">새 휴대폰이나 PC에서 열 때 결제 번호와 이 코드가 필요해요.<br><b>지금 화면을 캡처해 두세요.</b></p>' +
+    '<div class="row"><input class="in" type="email" placeholder="메일로도 받기 (선택)"><button>보내기</button></div><p class="help mmsg"></p>' +
+    '<button class="btn" style="margin-top:10px">확인했어요</button></div>';
+  m.querySelector(".row button").onclick = async () => {
+    const e = m.querySelector(".row .in").value.trim(); m.querySelector(".mmsg").textContent = "보내는 중…";
+    const r = await api({ kind: "ftMailCode", token: S.token, email: e });
+    m.querySelector(".mmsg").textContent = r.ok ? "보냈어요. 메일함을 확인해 주세요." : (r.error || "보내지 못했어요. 캡처해 두세요.");
+  };
+  m.querySelector(".btn").onclick = () => { m.remove(); if (first && !localStorage.getItem(LS + "_home")) setTimeout(homeTip, 600); };
+  document.body.appendChild(m);
+}
 
 if (S.token) enter(S.token);
 </script>
