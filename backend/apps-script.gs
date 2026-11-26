@@ -466,11 +466,20 @@ function ftReader_(d, cache) {
       try {
         if (!ftCodeRow_(phone).code && (b.test || ftDevices_(phone).length === 0)) {
           const code = ftCodeFor_(phone), token = ftIssue_(phone, d.ua, "첫 열람");
+          if (!TEST()) return out({ ok: true, first: true, token }); // 문자 인증 사용 중이면 열람 코드는 안내하지 않음(예비용으로만 보관)
           const email = ftEmailFor_(phone); let mailed = "";
           if (email && ftSendCodeMail_(email, code)) { const x = ftCodeRow_(phone); x.sh.getRange(x.i + 2, 4).setValue(email); mailed = maskMail_(email); }
           return out({ ok: true, first: true, code, token, mailed });
         }
       } finally { lock.releaseLock(); }
+      if (!TEST() && !b.test) { // 새 기기: 결제 번호로 문자 인증번호 발송 (테스트 번호는 열람 코드로) (번호당 10분 5회)
+        const nk = "ftsn_" + phone, n = +(cache.get(nk) || 0);
+        if (n >= 5) return out({ ok: false, error: "인증 요청이 많아요. 10분 뒤 다시 시도해 주세요." });
+        cache.put(nk, String(n + 1), 600);
+        const sc = String(Math.floor(100000 + Math.random() * 900000));
+        const r = solapi_({ to: phone, from: prop("SMS_FROM"), text: "[야심한 남자] 패스트트랙 인증번호 " + sc + " (5분 안에 입력해 주세요)" });
+        if (r.ok) { cache.put("ftsms_" + phone, sc, 300); return out({ ok: false, need: "code", sms: true }); }
+      }
       return out({ ok: false, need: "code" });
     }
     case "ftCode": {
@@ -478,11 +487,11 @@ function ftReader_(d, cache) {
       const k = "ftc_n_" + phone, n = +(cache.get(k) || 0);
       if (n >= 5) return out({ ok: false, error: "여러 번 틀렸어요. 10분 뒤 다시 시도해 주세요." });
       cache.put(k, String(n + 1), 600);
-      const x = ftCodeRow_(phone);
-      if (!x.code || x.code !== s(d.code, 6)) return out({ ok: false, error: "열람 코드가 맞지 않아요. 잊으셨다면 아래 「코드를 잊었어요」를 눌러 주세요." });
-      cache.remove(k);
+      const x = ftCodeRow_(phone), c = s(d.code, 6), sms = cache.get("ftsms_" + phone);
+      if (!(sms && sms === c) && !(x.code && x.code === c)) return out({ ok: false, error: sms ? "인증번호가 맞지 않아요. 문자를 다시 확인해 주세요." : "열람 코드가 맞지 않아요. 잊으셨다면 아래 「코드를 잊었어요」를 눌러 주세요." });
+      cache.remove(k); if (sms === c) cache.remove("ftsms_" + phone);
       const lock = LockService.getScriptLock(); lock.waitLock(20000);
-      try { return out({ ok: true, token: ftIssue_(phone, d.ua, "열람 코드") }); } finally { lock.releaseLock(); }
+      try { return out({ ok: true, token: ftIssue_(phone, d.ua, "새 기기 인증") }); } finally { lock.releaseLock(); }
     }
     case "ftMailCode": {
       const ph = ftWho_(d.token); if (!ph) return out({ ok: false, error: "다시 열어 주세요." });
@@ -512,7 +521,7 @@ function ftReader_(d, cache) {
       const key = ftKey_(); if (!key) return out({ ok: false, error: "준비 중이에요. 잠시 후 다시 열어 주세요." });
       const x = ftReadRow_(ph), r = x.r;
       if (!r) x.sh.appendRow([txt(ph), 1, 1, 1, 1, 1, KST(), KST()]);
-      return out({ ok: true, key, label: mask_(ph), code: ftCodeRow_(ph).code, pos: r ? { part: +r[1] || 1, p1: +r[2] || 1, p2: +r[3] || 1 } : null });
+      return out({ ok: true, key, label: mask_(ph), code: TEST() ? ftCodeRow_(ph).code : "", pos: r ? { part: +r[1] || 1, p1: +r[2] || 1, p2: +r[3] || 1 } : null });
     }
     case "ftPos": {
       const ph = ftWho_(d.token); if (!ph) return out({ ok: false });

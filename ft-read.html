@@ -70,7 +70,7 @@
     <input class="in" id="ph" inputmode="numeric" maxlength="11" placeholder="01012345678" autocomplete="tel">
     <button class="btn" id="go">패스트트랙 열기</button>
     <div id="codeBox" class="hide">
-      <p class="help" style="margin-top:14px">이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)</p>
+      <p class="help" id="codeHelp" style="margin-top:14px">이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)</p>
       <input class="in code" id="code" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="● ● ● ● ● ●">
       <button class="btn" id="verify">확인</button>
       <button type="button" class="forgot" id="forgot">코드를 잊었어요</button>
@@ -78,7 +78,7 @@
     <div class="err" id="err"></div>
   </div>
   <ul class="tips">
-    <li>처음 열 때 6자리 열람 코드를 드리고, 무료 E-BOOK 신청 때 적은 메일로도 보내 드려요. 잊으면 「코드를 잊었어요」로 다시 받을 수 있어요.</li>
+    <li>새 휴대폰이나 PC에서 열 때는 결제하신 번호로 문자 인증을 한 번 받아요.</li>
     <li>한 번호로 기기 3대까지 볼 수 있어요. 4번째 기기에서 열면 가장 오래된 기기는 자동으로 로그아웃돼요.</li>
     <li>모든 쪽에 구매자 번호가 표시돼요. 공유는 삼가 주세요.</li>
     <li>문의: 네이버 카페 「어트랙티버」</li>
@@ -111,7 +111,7 @@ const TOC = {
 const $ = id => document.getElementById(id), LS = "yanam_ft";
 const api = body => fetch(ENDPOINT, { method: "POST", body: JSON.stringify(body) }).then(r => r.json()).catch(() => ({ ok: false, error: "인터넷 연결을 확인해 주세요." }));
 let S = JSON.parse(localStorage.getItem(LS) || "{}"); // {token, part, p1, p2}
-let MAILED = "", KEY = null, LABEL = "", CODE = "", NEWCODE = "", PART = 1, io = null, saveT = null;
+let FIRST = false, MAILED = "", KEY = null, LABEL = "", CODE = "", NEWCODE = "", PART = 1, io = null, saveT = null;
 const fromPay = /from=pay/.test(location.search + location.hash);
 if (fromPay) $("lead").innerHTML = "결제가 완료되었어요! 결제하신 휴대폰 번호를 넣으면<br>바로 열려요.";
 
@@ -123,13 +123,20 @@ $("go").onclick = async () => {
   busy($("go"), "확인 중…");
   const r = await api({ kind: "ftStart", phone, ua: navigator.userAgent });
   idle($("go"), "패스트트랙 열기");
-  if (r.ok) { NEWCODE = r.code; MAILED = r.mailed || ""; return enter(r.token); }
+  if (r.ok) { NEWCODE = r.code || ""; MAILED = r.mailed || ""; FIRST = !!r.first; return enter(r.token); }
   if (r.need !== "code") return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요.";
+  if (r.sms) {
+    $("codeHelp").innerHTML = "새 기기에서 처음 여시네요. 결제하신 번호로 보낸 <b>문자 인증번호 6자리</b>를 넣어 주세요.";
+    $("code").setAttribute("autocomplete", "one-time-code"); $("forgot").textContent = "인증번호 다시 받기"; $("forgot").dataset.sms = "1";
+  }
   $("go").classList.add("hide"); $("codeBox").classList.remove("hide"); $("code").focus();
 };
 $("code").oninput = () => { $("code").value = $("code").value.replace(/\D/g, ""); if ($("code").value.length === 6) verify(); };
 $("verify").onclick = () => verify();
 $("forgot").onclick = async () => {
+  if ($("forgot").dataset.sms) { busy($("forgot"), "보내는 중…"); const r = await api({ kind: "ftStart", phone: $("ph").value, ua: navigator.userAgent }); idle($("forgot"), "인증번호 다시 받기");
+    if (r.ok) { FIRST = !!r.first; return enter(r.token); }
+    $("err").textContent = r.sms ? "인증번호를 다시 보냈어요." : (r.error || "잠시 후 다시 시도해 주세요."); $("err").style.color = r.sms ? "#1a7f37" : ""; return; }
   busy($("forgot"), "보내는 중…");
   const r = await api({ kind: "ftForgot", phone: $("ph").value });
   idle($("forgot"), "코드를 잊었어요");
@@ -157,6 +164,8 @@ async function enter(token) {
   const part = pos.part || S.part || 1, page = (part === 1 ? (pos.p1 || S.p1) : (pos.p2 || S.p2)) || 1;
   $("login").classList.add("hide"); $("reader").classList.remove("hide");
   openPart(part, page > 1 ? page : 0);
+  $("keyBtn").style.display = CODE ? "" : "none";
+  FIRST = false;
   if (NEWCODE) { showCode(true); NEWCODE = ""; }
   else if (!localStorage.getItem(LS + "_home") && !matchMedia("(display-mode: standalone)").matches && !navigator.standalone) setTimeout(homeTip, 2500);
 }
