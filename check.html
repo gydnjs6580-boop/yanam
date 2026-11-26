@@ -130,7 +130,7 @@
     <div class="res-type"><span id="rName"></span><h2 id="rType"></h2><p id="rDesc"></p></div>
     <div class="fix"><h4>지금 바로 고칠 것 3가지</h4><ul id="rFix"></ul></div>
     <p class="small" style="color:#555;margin-top:16px" id="rCh"></p>
-    <a class="big" id="myBtn" href="#" style="margin-top:10px">무료 E-BOOK 1회차 바로 보기</a>
+    <a class="big" id="myBtn" href="#" style="margin-top:10px">무료 E-BOOK 바로 읽기</a>
     <div class="ft">
       <b>혼자서 더 빠르게 바꾸고 싶다면</b>
       <p>E-BOOK의 원본, <strong>패스트트랙</strong> 전체(1·2부 285쪽)</p>
@@ -172,8 +172,8 @@ const QUESTIONS = [
   { t: "이 정도면 해볼 만한가요?", s: "결과를 받은 뒤 어떻게 하고 싶은지 골라 주세요.", o: [
     ["하나씩 바로 해볼게요", {}], ["방법부터 자세히 알고 싶어요", {}], ["1:1로 봐줬으면 좋겠어요", {}] ] },
 ];
-/* 유형별로 먼저 볼 E-BOOK 회차 (free.html·my.html 회차 제목과 맞출 것) */
-const FIRST_CH = { m: "1회 '왜 좋은 사람에서 끝나는가'", f: "3회 '텐션은 같거나 높게'", s: "4회 '첫 에프터가 시작이자 끝'", c: "2회 '선택의 주도권 되찾기'" };
+/* 유형별로 먼저 볼 E-BOOK 장 (ebook.html 원고 목차 그대로) */
+const FIRST_CH = { m: "5장 ⓐ '좆같은 곳에서 승부하지 마라.'", f: "5장 ⓒ '첫 만남. 1시간. 그거면 된다.'", s: "6장 '끌려갈 것인가? 리드할 것인가?'", c: "3장 '나는 나고, 여자는 따라오는 것이다.'" };
 const TYPES = {
   m: { name: "만남 부족형", desc: "대화 실력보다 먼저, 여성을 만날 기회 자체가 적은 상태예요. 기회가 적으니 한 번의 만남에 부담이 커지고, 그 부담이 다시 만남을 피하게 만들어요.",
        fix: ["반경 넓히기: 심리적 장벽이 낮은 것부터(인사, 소모임) 하나씩", "소개를 주고받는 관계를 만들어 만남의 '공급' 늘리기", "프로필 사진과 소개 문구부터 다시 정리하기"] },
@@ -245,7 +245,7 @@ $("submitBtn").onclick = async () => {
   const T = TYPES[type];
   $("rName").textContent = $("name").value.trim() + "님의 연애 유형";
   $("rType").textContent = T.name; $("rDesc").textContent = T.desc;
-  $("rCh").textContent = "무료 E-BOOK에서는 " + FIRST_CH[type] + "부터 보세요. 5회에 걸쳐 기본기를 다룹니다.";
+  $("rCh").textContent = "무료 E-BOOK에서는 " + FIRST_CH[type] + "부터 보세요. 아래 버튼으로 한 권 전체를 바로 읽을 수 있어요.";
   $("rFix").innerHTML = T.fix.map((f, i) => `<li><b>${i + 1}</b>${f}</li>`).join("");
   $("myBtn").href = r.my || r.pdf || "#";
   try { if (r.my) localStorage.setItem("yanam_my", r.my); } catch (e) {}

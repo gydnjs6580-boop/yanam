@@ -22,7 +22,7 @@
 
 /* ===== 여기만 바꾸면 됨 ===== */
 const SHEET_ID = "1dtGdwYJra7Psu5XZaN1ChAnh8eX8mZ6ndwuiE5hU95M";       // 신청 DB 시트
-const FREE_PDF_URL_DEFAULT = "https://drive.google.com/";             // 무료 E-BOOK 링크 (받으면 교체)
+const FREE_PDF_URL_DEFAULT = "https://gydnjs6580-boop.github.io/yanam/ebook.html"; // 무료 E-BOOK(웹 원고)
 const FASTTRACK_URL = "https://www.payapp.kr/L/z4oQj1";
 const COUPON_DAYS = 14;         // 신청일부터 쿠폰 유효 기간(일)
 const COUPON_PRICE = "";        // 예: "79,000원"  (비어 있으면 쿠폰 숨김)
@@ -156,7 +156,7 @@ function sendMail_(email, name, id) {
     const html = "<div style='font-family:sans-serif;max-width:520px;line-height:1.7;color:#222'>" +
       "<p>" + (name ? name + "님, " : "") + "안녕하세요, 야심한 남자입니다.</p><p>신청하신 무료 E-BOOK을 보내드립니다.</p>" +
       "<p><a href='" + MY_PAGE + "?id=" + id + "' style='display:inline-block;background:#d9b15f;color:#1a1407;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold'>내 E-BOOK 페이지 열기</a></p>" +
-      "<p style='font-size:13px;color:#666'>신청일부터 " + COUPON_DAYS + "일 동안 페이지에서 E-BOOK과 혜택을 확인할 수 있어요.</p>" +
+      "<p style='font-size:13px;color:#666'>이 메일을 보관해 두면 언제든 다시 읽을 수 있어요.</p>" +
       "<p>읽어보고 혼자서 더 빠르게 바꾸고 싶다면 실전 가이드 <a href='" + FASTTRACK_URL + "'>패스트트랙</a>도 준비되어 있습니다.</p><hr style='border:none;border-top:1px solid #eee'><p style='font-size:12px;color:#888'>무료 E-BOOK 신청에 따라 발송된 메일입니다. <a style='color:#888' href='" + ScriptApp.getService().getUrl() + "?unsub=" + encodeURIComponent(email) + "'>수신 거부</a></p></div>";
     MailApp.sendEmail({ to: email, subject: "[야심한 남자] 신청하신 무료 E-BOOK 보내드립니다", htmlBody: html, name: "야심한 남자" });
     return "메일 발송";
