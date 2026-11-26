@@ -79,11 +79,12 @@
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
 /* 순차 공개 자료: day = 신청일로부터 며칠 뒤에 열리는지. url 비어 있으면 E-BOOK 링크 사용, null 이면 '준비 중' */
 const CHAPTERS = [
-  { title: "1회차 무료 E-BOOK", day: 0, url: "" },
-  { title: "2회차", day: 1, url: null },
-  { title: "3회차", day: 3, url: null },
-  { title: "4회차", day: 5, url: null },
-  { title: "5회차", day: 7, url: null },
+  /* [제목 임시] free.html 회차 제목과 같게 유지. 코치님 5개 장 확정 후 교체 */
+  { title: "1회 · 왜 '좋은 사람'에서 끝나는가", day: 0, url: "" },
+  { title: "2회 · 선택의 주도권 되찾기", day: 1, url: null },
+  { title: "3회 · 텐션은 같거나 높게", day: 3, url: null },
+  { title: "4회 · 첫 에프터가 시작이자 끝", day: 5, url: null },
+  { title: "5회 · 한 명에게 매달리지 않는 법", day: 7, url: null },
 ];
 /* 성과 띠 — [예시] 실제 수강생 결과로 교체할 것 (비우면 숨김) */
 const RESULTS = [
@@ -108,6 +109,7 @@ async function load() {
   const daysSince = Math.floor((now - d.created) / DAY);
 
   let html = `<p class="hello"><b>${esc(d.name)}</b>님을 위한 자료가 준비되었습니다.</p>`;
+  if (d.diag) html += `<p class="hello" style="margin-top:-6px;font-size:14px;color:#666">연애 진단 결과: <b style="color:#e2483d">${esc(d.diag)}</b></p>`;
   html += `<div class="card main-card">
     <div class="tagrow"><span class="tag">📄 <span id="chTitle"></span></span><span class="dday">열람 기한 <b>${expired ? "종료" : "D-" + left}</b></span></div>
     <div class="book"><h2>야심한 남자<br>무료 E-BOOK</h2><p id="chDesc">제공되는 무료 자료를 지금 바로 확인하세요.</p></div>
