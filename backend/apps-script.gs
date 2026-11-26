@@ -264,7 +264,7 @@ function ftClaim_(d, cache) {
     try {
       MailApp.sendEmail({ to: email, name: "야심한 남자", subject: "[야심한 남자] 패스트트랙 열람 안내",
         body: "패스트트랙을 구매해 주셔서 감사합니다.\n\n아래 링크는 이 구글 계정(" + email + ")으로 로그인했을 때만 열립니다.\n\n패스트트랙 1·2부 열기:\n" + url + "\n\n링크를 다른 사람에게 보내도 열리지 않습니다.",
-        htmlBody: "<div style='font-family:sans-serif;line-height:1.7'><p>패스트트랙을 구매해 주셔서 감사합니다.</p><p>아래 링크는 <b>이 구글 계정(" + email + ")으로 로그인했을 때만</b> 열립니다.</p><p><a href='" + url + "'><b>▶ 패스트트랙 1·2부 열기</b></a></p><p>버튼이 안 눌리면 이 주소를 누르세요:<br><a href='" + url + "'>" + url + "</a></p><p style='color:#888;font-size:12px'>링크를 다른 사람에게 보내도 열리지 않습니다.</p></div>" });
+        htmlBody: "<div style='font-family:sans-serif;line-height:1.7'><p>패스트트랙을 구매해 주셔서 감사합니다.</p><p>아래 링크는 <b>이 구글 계정(" + email + ")으로 로그인했을 때만</b> 열립니다.</p><p><a href='" + url + "'><b>▶ 패스트트랙 1·2부 열기</b></a></p><p>위 링크가 안 눌리면 이 주소를 누르세요:<br><a href='" + url + "'>" + url + "</a></p><p style='color:#888;font-size:12px'>링크를 다른 사람에게 보내도 열리지 않습니다.</p></div>" });
     } catch (err) {}
     return out({ ok: true, url });
   } finally { lock.releaseLock(); }
