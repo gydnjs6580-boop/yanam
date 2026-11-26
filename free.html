@@ -165,7 +165,7 @@
     <details open><summary>멘트·기술을 알려주는 곳인가요?</summary><p>아닙니다. 픽업은 환상입니다. 앵무새처럼 외운 멘트는 오히려 망칠 가능성을 높입니다. 남자의 기준과 생활을 바꾸는 이야기를 합니다.</p></details>
     <details><summary>외모·돈이 없으면 소용없지 않나요?</summary><p>외모는 중요합니다. 다만 타고난 집안·배경 말고는 대부분 바꿀 수 있습니다. 무엇부터 바꿀지 순서를 알려드립니다.</p></details>
     <details><summary>저는 내성적인데요.</summary><p>코치도 내성적입니다. 성격을 바꾸라는 게 아니라, 반경을 조금씩 넓히는 방법을 다룹니다.</p></details>
-    <details><summary>정말 무료인가요?</summary><p>네. 5회 모두 무료입니다. 먼저 보시고, 마음에 들면 그때 패스트트랙이나 1:1 상담을 결정하세요.</p></details>
+    <details><summary>정말 무료인가요?</summary><p>네. 5회 모두 무료입니다. 먼저 보시고, 마음에 들면 그때 패스트트랙을 결정하세요.</p></details>
   </div>
 
   <div class="promise">
@@ -216,47 +216,21 @@
           <div class="terms" id="t2">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자·이메일)<br>보유 기간: 수신 거부 시까지<br>언제든 수신 거부할 수 있습니다.</div>
         </div>
       </div>
-      <div class="dots"><i class="on"></i><s></s><i></i><s></s><i></i></div>
+      <div class="dots"><i class="on"></i><s></s><i></i></div>
       <button class="main" id="submit1" disabled>E-BOOK 받아보기</button>
-    </div>
-
-    <!-- STEP 2 -->
-    <div id="s2" style="display:none">
-      <h3>E-BOOK이 준비되었습니다.</h3>
-      <a class="main" id="pdfBtn" href="#" target="_blank" rel="noopener" data-track="ebook_open" style="display:block;text-align:center;text-decoration:none;background:var(--red);margin-bottom:16px">내 E-BOOK 페이지 열기</a>
-      <div class="box">
-        <p class="center" style="font-size:15.5px;font-weight:700;line-height:1.6">E-BOOK 신청자 대상으로 1:1 연애 상담을 진행하고 있습니다.<br>상담을 원하시면 가능한 요일과 시간을 입력해 주세요.</p>
-        <div class="pink">* 통화 하루 전에 카카오톡으로 미리 알려드리며, 여러 번 부재중이면 다음 대기자를 위해 신청이 취소될 수 있습니다.</div>
-        <div class="sel3">
-          <div><span>요일</span><select id="day"><option value="">선택</option><option>월</option><option>화</option><option>수</option><option>목</option><option>금</option><option>토</option><option>일</option></select></div>
-          <div><span>시작 시간</span><select id="st"></select></div>
-          <div><span>종료 시간</span><select id="et"></select></div>
-        </div>
-        <button class="add" id="addSlot">+ 희망 시간 추가</button>
-        <div class="ranks">
-          <div class="rk"><b>1순위</b><div id="r0">-</div><button data-i="0" aria-label="삭제">×</button></div>
-          <div class="rk"><b>2순위</b><div id="r1">-</div><button data-i="1" aria-label="삭제">×</button></div>
-          <div class="rk"><b>3순위</b><div id="r2">-</div><button data-i="2" aria-label="삭제">×</button></div>
-        </div>
-        <label class="lbl" for="memo" style="margin-top:14px">지금 가장 큰 고민 (선택)</label>
-        <textarea class="in" id="memo" maxlength="300" placeholder="예) 소개팅 후 두 번째 약속이 안 잡혀요"></textarea>
-        <div class="hint" id="hint2"></div>
-      </div>
-      <div class="dots"><i class="done"></i><s class="done"></s><i class="on"></i><s></s><i></i></div>
-      <button class="main" id="submit2" disabled>상담 신청하기</button>
-      <button class="ghost" id="skip2">상담은 괜찮아요</button>
     </div>
 
     <!-- STEP 3 -->
     <div id="s3" style="display:none">
-      <h3 id="s3title">신청이 완료되었습니다.</h3>
-      <div class="box center" style="font-size:15px;line-height:1.7" id="s3body"><a id="pdfBtn2" href="#" target="_blank" rel="noopener" style="color:#111;font-weight:700">내 E-BOOK 페이지 열기 →</a></div>
+      <h3 id="s3title">E-BOOK이 준비되었습니다.</h3>
+      <a class="main" id="pdfBtn2" href="#" data-track="ebook_open" style="display:block;text-align:center;text-decoration:none;background:var(--red)">1회차 바로 보기 (내 E-BOOK 페이지)</a>
+      <p class="center" style="font-size:13px;color:#777;margin-top:8px">2~5회는 날짜에 맞춰 이 페이지에서 열려요.</p>
       <div class="ft">
         <b>혼자서 더 빠르게 바꾸고 싶다면</b>
         <p>E-BOOK의 원본, <strong>패스트트랙</strong> 전체(1·2부 285쪽)</p>
         <a id="ftBtn" href="fasttrack.html?src=free_done" data-track="fasttrack_after">패스트트랙 보러가기 · 99,000원</a>
       </div>
-      <div class="dots"><i class="done"></i><s class="done"></s><i class="done"></i><s class="done"></s><i class="on"></i></div>
+      <div class="dots"><i class="done"></i><s class="done"></s><i class="on"></i></div>
       <button class="main" id="close3">확인</button>
     </div>
   </div>
@@ -337,36 +311,12 @@ $("submit1").onclick = async () => {
   if (!r.ok) { hint($("hint1"), r.error || "잠시 후 다시 시도해 주세요."); $("submit1").disabled = false; $("submit1").textContent = "E-BOOK 받아보기"; return; }
   track("submit", "free_ebook");
   if (r.token) token = r.token;
-  $("pdfBtn").href = $("pdfBtn2").href = r.my || r.pdf || "#";
+  $("pdfBtn2").href = r.my || r.pdf || "#";
+  try { if (r.my) localStorage.setItem("yanam_my", r.my); } catch (e) {}
   // 패스트트랙 버튼은 결제 전에 판매 페이지(fasttrack.html)를 보여 준다
-  $("s1").style.display = "none"; $("s2").style.display = "block";
+  $("s1").style.display = "none"; $("s3").style.display = "block";
 };
 
-/* STEP 2: 상담 희망 시간 */
-const hours = []; for (let h = 9; h <= 23; h++) hours.push(String(h).padStart(2, "0") + ":00");
-$("st").innerHTML = '<option value="">선택</option>' + hours.map(h => `<option>${h}</option>`).join("");
-$("et").innerHTML = $("st").innerHTML;
-const slots = [];
-function drawSlots() { for (let i = 0; i < 3; i++) $("r" + i).textContent = slots[i] || "-"; $("submit2").disabled = slots.length === 0; }
-$("addSlot").onclick = () => {
-  const d = $("day").value, s = $("st").value, e = $("et").value;
-  if (!d || !s || !e) return hint($("hint2"), "요일과 시간을 모두 선택해 주세요.");
-  if (e <= s) return hint($("hint2"), "종료 시간이 시작 시간보다 늦어야 합니다.");
-  if (slots.length >= 3) return hint($("hint2"), "희망 시간은 3개까지 입력할 수 있습니다.");
-  const v = `${d} ${s}~${e}`; if (slots.includes(v)) return;
-  slots.push(v); hint($("hint2"), "", true); drawSlots();
-};
-document.querySelectorAll(".rk button").forEach(b => b.onclick = () => { slots.splice(+b.dataset.i, 1); drawSlots(); });
-$("submit2").onclick = async () => {
-  $("submit2").disabled = true; $("submit2").textContent = "신청 중…";
-  const r = await api({ kind: "booking", phone: phoneVal(), token, name: $("name").value.trim(), slots, memo: $("memo").value.trim() }).catch(() => ({ ok: false }));
-  if (!r.ok) { hint($("hint2"), "잠시 후 다시 시도해 주세요."); $("submit2").disabled = false; $("submit2").textContent = "상담 신청하기"; return; }
-  track("submit", "coaching_booking");
-  $("s3title").textContent = "상담 신청이 완료되었습니다.";
-  $("s3body").insertAdjacentHTML("afterbegin", "희망하신 시간에 맞춰 통화 하루 전에 연락드릴게요.<br>");
-  $("s2").style.display = "none"; $("s3").style.display = "block";
-};
-$("skip2").onclick = () => { track("click", "booking_skip"); $("s2").style.display = "none"; $("s3").style.display = "block"; };
 </script>
 <script>
 /* 이미 신청한 사람이 다시 오면 내 자료 페이지로 안내 */
