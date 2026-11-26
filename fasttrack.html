@@ -181,5 +181,6 @@ track("view", "fasttrack_page");
 document.querySelectorAll("[data-t]").forEach(a => a.addEventListener("click", () => track("click", "fasttrack_" + a.dataset.t)));
 document.querySelectorAll("details").forEach((d, i) => d.addEventListener("toggle", () => d.open && track("click", "fasttrack_faq" + (i + 1))));
 </script>
+<script src="demo/sim.js"></script>
 </body>
 </html>

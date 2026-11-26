@@ -684,5 +684,6 @@ function offer(i) {
   try { const r = await (await fetch(ENDPOINT + "?pos=" + encodeURIComponent(vid))).json(); if (r.ok) offer(parseInt(String(r.pos).replace("i:", ""), 10)); } catch (e) {}
 })();
 </script>
+<script src="demo/sim.js"></script>
 </body>
 </html>

@@ -28,13 +28,26 @@ const K = new URLSearchParams(location.hash.slice(1)).get("k") || "";
 <div class="wrap">
   <div class="card" style="text-align:center"><div style="font-size:44px">✅</div><h1>결제가 완료되었습니다</h1><p class="sub">야심한 남자 · 패스트트랙</p></div>
   <div class="card"><div class="pc"><span>상품</span><b>패스트트랙 1·2부</b></div><div class="pc"><span>결제 금액</span><b>99,000원</b></div><div class="pc"><span>구매자</span><b>홍길동 · 010-****-1234</b></div></div>
-  <div class="card"><h2>📘 바로 받기</h2><p>아래 버튼을 누르면 <b>구매자 번호가 새겨진 PDF</b>가 폰에 저장돼요. (데모는 1부 앞 10쪽)</p>
+  <div class="card" id="m1" style="display:none"><h2>📧 열람 등록</h2><p>결제한 번호와 <b>구글 이메일</b>을 넣으면, 그 계정으로만 열리는 링크를 보내 드려요.</p>
+    <input class="in" id="em" type="email" placeholder="example@gmail.com" value="gydnjs6580@gmail.com">
+    <button class="btn" id="reg">패스트트랙 열기</button><div class="err" id="err1"></div>
+    <p class="sub" style="margin-top:10px">데모에서는 테스트 폴더 링크를 바로 보여드려요. (효원님 계정에서만 열림, 시크릿 창에서는 "액세스 권한 필요")</p></div>
+  <div class="card" id="m3" style="display:none"><h2>📖 바로 읽기</h2><p>파일을 받지 않고, 결제한 번호로 인증하면 사이트 안에서 바로 읽어요. 읽던 쪽도 기억해요.</p>
+    <a class="btn" id="rd3">패스트트랙 읽으러 가기</a><p class="sub" style="margin-top:10px">데모 번호: 01000001234</p></div>
+  <div class="card" id="m2"><h2>📘 바로 받기</h2><p>아래 버튼을 누르면 <b>구매자 번호가 새겨진 PDF</b>가 폰에 저장돼요. (데모는 1부 앞 10쪽)</p>
     <button class="btn" id="dl">패스트트랙 PDF 받기</button><div class="err" id="err"></div>
     <p class="sub" style="margin-top:10px">본 자료는 구매자 1인 열람용입니다. 무단 공유 시 법적 책임을 질 수 있습니다.</p></div>
   <a class="sub" href="index.html#k=">← 3가지 비교로 돌아가기</a>
 </div>
 <script>
 document.querySelector('a[href^="index.html"]').href = "index.html#k=" + K;
+const M = new URLSearchParams(location.hash.slice(1)).get("m") || "2";
+if (M !== "2") { document.getElementById("m2").style.display = "none"; document.getElementById("m" + M).style.display = "block"; }
+document.getElementById("rd3").href = "ft-read.html#k=" + K;
+document.getElementById("reg").onclick = e => {
+  if (!/@/.test(document.getElementById("em").value)) return document.getElementById("err1").textContent = "이메일을 확인해 주세요.";
+  e.target.outerHTML = '<a class="btn" href="https://drive.google.com/drive/folders/1w3xH6XrMNjZ7W6qA_FZ8seJJgVzTHAJN" target="_blank" rel="noopener">등록됐어요 ✓ 패스트트랙 1·2부 열기</a><p class="sub" style="margin-top:8px">실제로는 같은 링크가 메일로도 가요.</p>';
+};
 document.getElementById("dl").onclick = async e => {
   const b = e.target; b.disabled = true; b.textContent = "만드는 중…";
   try {
