@@ -88,9 +88,7 @@ const CHAPTERS = [
 ];
 /* 성과 띠 — [예시] 실제 수강생 결과로 교체할 것 (비우면 숨김) */
 const RESULTS = [
-  "K○○ | 4주 차 | 소개팅 3번 만에 연애 시작 (예시)",
-  "J○○ | 2주 차 | 두 번째 약속 성공 (예시)",
-  "P○○ | 6주 차 | 앱 매칭 3명 중 2명 약속 (예시)",
+  // 실제 수강생 결과만 넣을 것. 예: "K○○ | 4주 차 | 소개팅 3번 만에 연애 시작"
 ];
 
 const $ = s => document.querySelector(s);
@@ -139,12 +137,9 @@ async function load() {
     html += `<div class="ticker"><div class="track">${items}</div></div>`;
   }
 
-  const opts = ['<option value="">선택하기</option>'];
-  ["월", "화", "수", "목", "금", "토", "일"].forEach(dd => ["10:00~12:00", "13:00~15:00", "15:00~17:00", "17:00~19:00", "19:00~21:00", "21:00~23:00"].forEach(t => opts.push(`<option>${dd} ${t}</option>`)));
-  html += `<div class="card bk"><h4>☝️ 1:1 상담 가능한 요일과 시간을 선택해 주세요.</h4>
-    ${[1, 2, 3].map(n => `<div class="rk"><b>${n} 순위</b><select id="r${n}">${opts.join("")}</select></div>`).join("")}
-    <textarea id="memo" maxlength="300" placeholder="지금 가장 큰 고민 (선택)"></textarea>
-    <button class="go" id="go" disabled>상담 신청하기</button><div class="hint" id="hint"></div></div>`;
+  html += `<div class="card bk"><h4>📘 E-BOOK이 마음에 들었다면</h4>
+    <p style="font-size:15px;line-height:1.7;color:#333">무료 E-BOOK은 패스트트랙에서 뽑은 일부예요. 전체 내용(1·2부 285쪽)과 직접 해 볼 실천 미션은 패스트트랙에 있어요.</p>
+    <a class="go" data-t="fasttrack_bottom" href="fasttrack.html?src=my_bottom" style="display:block;text-align:center;text-decoration:none">패스트트랙 보러가기 · 99,000원</a></div>`;
   $("#app").innerHTML = html;
 
   try { localStorage.setItem("yanam_my", location.href); } catch (e) {}
@@ -189,18 +184,6 @@ async function load() {
   if (next && !expired) $("#chDesc").textContent = `다음 자료는 ${next.day - daysSince}일 뒤에 열립니다.`;
 
   document.querySelectorAll("[data-t]").forEach(a => a.addEventListener("click", () => track("click", a.dataset.t + "_my")));
-
-  // 상담 예약
-  const sel = [1, 2, 3].map(n => $("#r" + n));
-  sel.forEach(s => s.onchange = () => $("#go").disabled = !sel.some(x => x.value));
-  $("#go").onclick = async () => {
-    $("#go").disabled = true; $("#go").textContent = "신청 중…";
-    let r; try { r = await (await fetch(ENDPOINT, { method: "POST", body: JSON.stringify({ kind: "booking", id, slots: sel.map(x => x.value).filter(Boolean), memo: $("#memo").value.trim(), src: "my" }) })).json(); } catch (e) { r = { ok: false }; }
-    if (!r.ok) { $("#hint").textContent = "잠시 후 다시 시도해 주세요."; $("#go").disabled = false; $("#go").textContent = "상담 신청하기"; return; }
-    track("submit", "coaching_booking_my");
-    $("#hint").className = "hint ok"; $("#hint").textContent = "상담 신청이 완료되었습니다. 통화 하루 전에 연락드릴게요.";
-    $("#go").textContent = "신청 완료";
-  };
 }
 load();
 </script>
