@@ -464,7 +464,7 @@ function ftReader_(d, cache) {
       if (!b) return out({ ok: false, error: "이 번호로 확인된 패스트트랙 결제가 없어요. 결제 직후라면 1~2분 뒤 다시 시도해 주세요." });
       const lock = LockService.getScriptLock(); lock.waitLock(20000);
       try {
-        if (!ftCodeRow_(phone).code && (b.test || ftDevices_(phone).length === 0)) {
+        if ((TEST() || b.test) && !ftCodeRow_(phone).code && (b.test || ftDevices_(phone).length === 0)) { // 문자 인증 사용 중이면 첫 기기도 문자 인증(번호만 아는 남이 먼저 여는 것 방지)
           const code = ftCodeFor_(phone), token = ftIssue_(phone, d.ua, "첫 열람");
           if (!TEST()) return out({ ok: true, first: true, token }); // 문자 인증 사용 중이면 열람 코드는 안내하지 않음(예비용으로만 보관)
           const email = ftEmailFor_(phone); let mailed = "";
