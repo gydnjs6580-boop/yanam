@@ -77,7 +77,7 @@ function doPost(e) {
       if (!TEST()) {
         const r = solapi_({ to: p, from: prop("SMS_FROM"), text: "[야심한 남자] 인증번호 " + code + " (5분 안에 입력해 주세요)" });
         if (r.quota) return out({ ok: false, skip: true }); // 오늘 상한 도달 → 인증 없이 신청만
-        if (!r.ok) return out({ ok: false, error: "문자 발송에 실패했습니다." });
+        if (!r.ok) return out({ ok: false, skip: true }); // 솔라피 한도·장애로 실패해도 신청은 막지 않음(인증 없이 신청만)
       }
       return out({ ok: true });
     }
@@ -85,7 +85,13 @@ function doPost(e) {
     case "verifyCode": {
       const p = s(d.phone, 11), c = s(d.code, 6);
       const saved = cache.get("code_" + p);
-      if (!saved || saved !== c) return out({ ok: false, error: "인증번호가 맞지 않습니다." });
+      if (!saved) return out({ ok: false, error: "인증번호가 만료됐어요. 다시 받아 주세요." });
+      if (saved !== c) {
+        const wk = "vbad_" + p, w = +(cache.get(wk) || 0) + 1; cache.put(wk, String(w), 300);
+        if (w >= 5) { cache.remove("code_" + p); cache.remove(wk); return out({ ok: false, error: "여러 번 틀렸어요. 인증번호를 다시 받아 주세요." }); }
+        return out({ ok: false, error: "인증번호가 맞지 않습니다." });
+      }
+      cache.remove("vbad_" + p);
       cache.remove("code_" + p);
       const token = Utilities.getUuid();
       cache.put("tok_" + token, p, 1800);
@@ -113,7 +119,7 @@ function doPost(e) {
         const rows = last > 1 ? sh.getRange(2, 1, last - 1, 10).getValues() : [];
         const hit = rows.find(r => (phone && String(r[2]).replace(/'/g, "") === phone) || (email && String(r[3]) === email));
         const dup = !!hit;
-        const id = hit && hit[9] ? String(hit[9]) : Utilities.getUuid().slice(0, 12);
+        const id = hit && hit[9] && (d.token || !phone) ? String(hit[9]) : Utilities.getUuid().slice(0, 12); // 인증 안 된 번호로 남의 전용 페이지를 받아 가지 못하게
         let result = "중복(재발송 안 함)";
         if (!dup) {
           const res = [];
@@ -174,11 +180,13 @@ function sendMail_(email, name, id) {
 
 /* 솔라피 API (HMAC-SHA256 인증) */
 // 문자 폭탄(번호 바꿔 가며 인증 요청) 대비: 하루 총 발송 상한. 넘으면 보내지 않고 효원님께 메일 1통
-function smsQuota_() {
+function smsQuota_(buyer) { // buyer=true: 구매자 문자(읽기 링크·열람 인증)는 무료 신청 상한과 상관없이 보냄
   const max = +(prop("SMS_DAILY_MAX") || 300), k = "sms_" + Utilities.formatDate(new Date(), "Asia/Seoul", "yyyyMMdd");
+  const freeMax = +(prop("SMS_FREE_MAX") || 30); // 솔라피 일일 한도(현재 약 50건) 안에서 구매자 몫을 남겨 둠. 한도를 올리면 이 속성도 올릴 것
   const lock = LockService.getScriptLock(); lock.waitLock(10000);
   try {
     const n = +(P.getProperty(k) || 0);
+    if (!buyer && n >= freeMax) return false; // 무료 신청 몫 소진 → 오늘은 인증 없이 신청만
     if (n >= max) {
       if (!P.getProperty(k + "_mail")) { P.setProperty(k + "_mail", "1");
         try { MailApp.sendEmail(Session.getEffectiveUser().getEmail(), "[야심한 남자] 오늘 문자 상한(" + max + "건) 도달",
@@ -189,8 +197,8 @@ function smsQuota_() {
   } finally { lock.releaseLock(); }
 }
 
-function solapi_(message) {
-  if (!smsQuota_()) return { ok: false, quota: true, error: "daily cap" };
+function solapi_(message, buyer) {
+  if (!smsQuota_(buyer)) return { ok: false, quota: true, error: "daily cap" };
   const date = new Date().toISOString();
   const salt = Utilities.getUuid().replace(/-/g, "");
   const sig = Utilities.computeHmacSha256Signature(date + salt, prop("SOLAPI_SECRET"))
@@ -270,18 +278,18 @@ function payappFeedback_(p) {
     const i = nos.indexOf(String(p.mul_no));
     const row = [now, String(p.mul_no), String(p.pay_state), s(p.goodname, 60), Number(p.price) || 0, txt(s(p.recvphone, 11).replace(/[^0-9]/g, "")), String(p.pay_type || ""), s(p.pay_date, 20), ok ? "Y" : "N"];
     if (i < 0) sh.appendRow(row.concat(["", ""]));
+    else if (ok) sh.getRange(i + 2, 1, 1, 9).setValues([row]); // 검증된 통보만 상태 갱신(대기→완료·취소), 권한 칸은 유지
     if (ok && String(p.pay_state) === "4" && FT_MATCH.test(String(p.goodname)) && (i < 0 || !String(sh.getRange(i + 2, 10).getValue()))) {
       const ph = s(p.recvphone, 11).replace(/[^0-9]/g, ""), r = i < 0 ? sh.getLastRow() : i + 2;
       if (phoneOk(ph) && !TEST()) { const m = ftReadSms_(ph); sh.getRange(r, 10).setValue(m.ok ? "읽기 문자 발송" : "문자 실패"); }
     }
-    else if (i >= 0 && ok) sh.getRange(i + 2, 1, 1, 9).setValues([row]); // 검증된 통보만 상태 갱신(결제완료·취소), 권한 칸은 유지. 새 줄(i<0)은 위에서 이미 추가됨
   } finally { lock.releaseLock(); }
   return ContentService.createTextOutput("SUCCESS");
 }
 
 // 구매 감사 + 읽기 링크 문자 (페이앱·토스 공용)
 function ftReadSms_(ph) {
-  return solapi_({ to: ph, from: prop("SMS_FROM"), text: "[야심한남자] 패스트트랙 구매 감사합니다.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 문자를 보관해 두면 언제든 이어서 읽을 수 있어요." });
+  return solapi_({ to: ph, from: prop("SMS_FROM"), text: "[야심한남자] 패스트트랙 구매 감사합니다.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 문자를 보관해 두면 언제든 이어서 읽을 수 있어요." }, true);
 }
 
 /* ===== 토스페이먼츠 결제 승인 (pay.html → 토스 결제창 → pay-done.html → 여기) =====
@@ -425,7 +433,7 @@ function demoAuth_(d) {
  * - 문자 인증은 안 씀: 솔라피 문자 API는 고정 IP 등록 필수라 Apps Script에서 보낼 수 없음
  * - 출입증 FT_TOKEN_DAYS일 유효. 읽은 위치는 '열람' 시트에 저장(기기 바뀌어도 이어 읽기)
  * - 페이지 이미지는 사이트(ft/)에 암호화돼 올라가 있고, 열쇠는 비공개 드라이브 파일(FT_KEY_FILE_ID)에서 읽어 인증된 기기에만 줌
- * - 테스트 번호: 스크립트 속성 FT_TEST_PHONES(쉼표 구분, 기본 01000001234)는 결제 없이 구매자로 취급
+ * - 테스트 번호: 스크립트 속성 FT_TEST_PHONES(쉼표 구분, 기본 없음)는 결제 없이 구매자로 취급
  */
 const FT_READ_URL = "https://gydnjs6580-boop.github.io/yanam/ft-read.html";
 const FT_MAX_DEVICES = 3, FT_TOKEN_DAYS = 90;
@@ -436,7 +444,7 @@ const KST = () => Utilities.formatDate(new Date(), "Asia/Seoul", "yyyy-MM-dd HH:
 const mask_ = p => p.slice(0, 3) + "-****-" + p.slice(-4);
 
 function ftBuyer_(phone) { // → {paidAt(ms)} 또는 null
-  const tests = (prop("FT_TEST_PHONES") || "01000001234").split(",").map(x => x.trim());
+  const tests = (prop("FT_TEST_PHONES") || "").split(",").map(x => x.trim()).filter(Boolean); // 기본값 없음(공개된 데모 번호가 구매자로 취급되지 않게)
   if (tests.indexOf(phone) >= 0) return { paidAt: Date.now(), test: true };
   const sh = PAYS(), last = sh.getLastRow();
   if (last < 2) return null;
@@ -496,13 +504,13 @@ function ftCodeRow_(phone) {
 }
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const maskMail_ = m => { const [a, b] = m.split("@"); return a.slice(0, Math.min(2, a.length)) + "***@" + b; };
-function ftEmailFor_(phone) { // 열람코드 탭 메일 → 신청자 시트(무료 E-BOOK 신청 메일) → 결제 시트 권한 이메일
+function ftEmailFor_(phone) { // 열람코드 탭 메일(구매자가 열린 기기에서 직접 등록) → 결제 시트 권한 이메일. 무료 신청 메일은 인증 없이도 들어가므로 쓰지 않음
   const x = ftCodeRow_(phone); if (EMAIL_RE.test(x.mail)) return x.mail;
   const find = (sh, pc, ec) => { const last = sh.getLastRow(); if (last < 2) return "";
     const v = sh.getRange(2, 1, last - 1, Math.max(pc, ec)).getValues();
     for (let k = v.length - 1; k >= 0; k--) if (String(v[k][pc - 1]).replace(/[^0-9]/g, "") === phone && EMAIL_RE.test(String(v[k][ec - 1]).trim())) return String(v[k][ec - 1]).trim().toLowerCase();
     return ""; };
-  return find(LEADS(), 3, 4) || find(PAYS(), 6, 10);
+  return find(PAYS(), 6, 10);
 }
 function ftSendCodeMail_(email, code) {
   try {
@@ -540,8 +548,12 @@ function ftReader_(d, cache) {
         if (n >= 5) return out({ ok: false, error: "인증 요청이 많아요. 10분 뒤 다시 시도해 주세요." });
         cache.put(nk, String(n + 1), 600);
         const sc = String(Math.floor(100000 + Math.random() * 900000));
-        const r = solapi_({ to: phone, from: prop("SMS_FROM"), text: "[야심한 남자] 패스트트랙 인증번호 " + sc + " (5분 안에 입력해 주세요)" });
+        const r = solapi_({ to: phone, from: prop("SMS_FROM"), text: "[야심한 남자] 패스트트랙 인증번호 " + sc + " (5분 안에 입력해 주세요)" }, true);
         if (r.ok) { cache.put("ftsms_" + phone, sc, 300); return out({ ok: false, need: "code", sms: true }); }
+        if (ftDevices_(phone).length === 0) { // 문자가 막힌 날 첫 기기: 돈 낸 구매자가 못 여는 것보다 바로 여는 게 낫다(열람 코드는 열린 화면 🔑에서 확인)
+          const l2 = LockService.getScriptLock(); l2.waitLock(20000);
+          try { ftCodeFor_(phone); return out({ ok: true, first: true, token: ftIssue_(phone, d.ua, "첫 열람(문자 실패)") }); } finally { l2.releaseLock(); }
+        }
       }
       return out({ ok: false, need: "code" });
     }
@@ -585,7 +597,7 @@ function ftReader_(d, cache) {
       const key = ftKey_(); if (!key) return out({ ok: false, error: "준비 중이에요. 잠시 후 다시 열어 주세요." });
       const x = ftReadRow_(ph), r = x.r;
       if (!r) x.sh.appendRow([txt(ph), 1, 1, 1, 1, 1, KST(), KST()]);
-      return out({ ok: true, key, label: mask_(ph), code: TEST() ? ftCodeRow_(ph).code : "", pos: r ? { part: +r[1] || 1, p1: +r[2] || 1, p2: +r[3] || 1 } : null });
+      return out({ ok: true, key, label: mask_(ph), code: ftCodeFor_(ph) /* 본인 기기에서만 보이는 예비 열쇠: 문자가 안 될 때 새 기기에서 입력 */, pos: r ? { part: +r[1] || 1, p1: +r[2] || 1, p2: +r[3] || 1 } : null });
     }
     case "ftPos": {
       const ph = ftWho_(d.token); if (!ph) return out({ ok: false });

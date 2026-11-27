@@ -84,7 +84,7 @@
   <div class="lnav"><button type="button" class="back hide" id="backPh" aria-label="번호 바꾸기"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
   <div id="phStep">
     <h1 class="title">패스트트랙 읽기</h1>
-    <p class="lead" id="lead">결제하신 휴대폰 번호를 넣어 주세요.<br>한 번 열면 이 기기에서는 90일 동안 바로 열려요.</p>
+    <p class="lead" id="lead">결제하신 휴대폰 번호를 넣어 주세요.<br>기간 제한 없이 읽을 수 있고, 한 번 연 기기는 90일 동안 다시 인증하지 않아도 돼요.</p>
     <div class="field">
       <label class="lbl" for="ph">결제한 휴대폰 번호</label>
       <input class="in" id="ph" inputmode="numeric" value="010" placeholder="010" autocomplete="tel" enterkeyhint="go">
@@ -93,13 +93,14 @@
       <li>새 휴대폰이나 PC에서 열 때는 결제하신 번호로 문자 인증을 한 번 받아요.</li>
       <li>한 번호로 기기 3대까지 볼 수 있어요. 4번째 기기에서 열면 가장 오래된 기기는 자동으로 로그아웃돼요.</li>
       <li>모든 쪽에 구매자 번호가 표시돼요. 공유는 삼가 주세요.</li>
+      <li>열람을 시작하면 디지털 콘텐츠 특성상 청약철회(환불)가 제한돼요. <a href="policy.html#refund" style="color:inherit">환불 정책</a></li>
       <li>문의: 네이버 카페 「어트랙티버」</li>
     </ul>
     <div class="cta"><div class="in-cta"><button class="btn" id="go">패스트트랙 열기</button></div></div>
   </div>
   <div id="codeBox" class="hide">
-    <h1 class="title" id="codeTitle">처음 받은 열람 코드 6자리를 입력해 주세요</h1>
-    <p class="lead" id="codeHelp">이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)</p>
+    <h1 class="title" id="codeTitle">열람 코드 6자리를 입력해 주세요</h1>
+    <p class="lead" id="codeHelp">지금은 문자를 보낼 수 없어요. 이미 열려 있는 기기 화면 위 <b>🔑 버튼</b>에서 6자리 열람 코드를 확인해 넣어 주세요.</p>
     <div class="field">
       <label class="lbl" for="code" id="codeLbl">열람 코드</label>
       <input class="in code" id="code" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="6자리">
@@ -163,8 +164,8 @@ $("backPh").onclick = () => { // 번호 바꾸기: 첫 화면으로
   if ($("verify").disabled) return;
   $("codeBox").classList.add("hide"); $("backPh").classList.add("hide"); $("phStep").classList.remove("hide"); $("go").classList.remove("hide");
   $("code").value = ""; $("code").setAttribute("autocomplete", "off"); delete $("forgot").dataset.sms; $("forgot").textContent = "코드를 잊었어요";
-  $("codeTitle").textContent = "처음 받은 열람 코드 6자리를 입력해 주세요"; $("codeLbl").textContent = "열람 코드";
-  $("codeHelp").innerHTML = "이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)";
+  $("codeTitle").textContent = "열람 코드 6자리를 입력해 주세요"; $("codeLbl").textContent = "열람 코드";
+  $("codeHelp").innerHTML = "지금은 문자를 보낼 수 없어요. 이미 열려 있는 기기 화면 위 <b>🔑 버튼</b>에서 6자리 열람 코드를 확인해 넣어 주세요.";
   $("err").textContent = ""; $("err").style.color = ""; $("ph").focus();
 };
 $("code").oninput = () => { $("code").value = $("code").value.replace(/\D/g, ""); if ($("code").value.length === 6) verify(); };
