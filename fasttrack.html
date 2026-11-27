@@ -170,7 +170,9 @@
 <div class="cta"><a data-t="cta" href="#buy"><b>패스트트랙 시작하기</b><span>혼자서 더 빠르게 바꾸고 싶다면 · 99,000원</span></a></div>
 
 <script>
+const PAY_MODE = "payapp"; // "payapp" = 페이앱 결제 링크(지금 실제 결제) / "toss" = pay.html (토스페이먼츠)
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
+if (PAY_MODE === "toss") document.querySelectorAll("a.pay").forEach(a => { a.href = "pay.html"; a.removeAttribute("target"); a.removeAttribute("rel"); }); // data-t 추적은 그대로
 const qs = new URLSearchParams(location.search);
 const SRC = qs.get("src") || qs.get("utm_source") || (document.referrer ? new URL(document.referrer).hostname : "direct");
 const VID = (() => { try { let v = localStorage.getItem("ynv"); if (!v) { v = Math.random().toString(36).slice(2, 10); localStorage.setItem("ynv", v); } return v; } catch (e) { return "na"; } })();

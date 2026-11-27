@@ -7,6 +7,7 @@
  *  - lead       : 신청 저장 ('신청자' 시트) + E-BOOK 발송 (휴대폰이면 알림톡, 이메일이면 메일)
  *  - booking    : 상담 희망 시간 저장 ('상담예약' 시트)
  *  - event      : 페이지 조회·버튼 클릭 기록 ('이벤트' 시트)
+ *  - tossConfirm: 토스페이먼츠 결제 승인 → '결제' 시트 기록 + 읽기 문자 (pay.html, pay-done.html)
  *
  * 설치
  *  1) 구글 시트 > 확장 프로그램 > Apps Script 에 이 파일 붙여넣기
@@ -17,6 +18,7 @@
  *       KAKAO_TEMPLATE_ID          : 승인된 알림톡 템플릿 ID
  *       FREE_PDF_URL               : E-BOOK 링크
  *       SMS_RELAY                  : AWS 고정 IP 중계 서버 주소 (예: https://3.35.1.2) — relay/ 폴더 참고
+ *       TOSS_SECRET_KEY            : 토스페이먼츠 시크릿 키 (pay.html 결제 승인용, 비우면 토스 결제는 "준비 중")
  *     솔라피 값이 비어 있으면 '테스트 모드': 인증번호는 000000, 실제 발송 없이 시트에만 기록
  *  3) 배포 > 새 배포 > 웹 앱 (실행: 나 / 액세스: 모든 사용자) → /exec 주소를 두 html 의 ENDPOINT 에 넣기
  */
@@ -126,6 +128,7 @@ function doPost(e) {
       } finally { lock.releaseLock(); }
     }
 
+    case "tossConfirm": return tossConfirm_(d);
     case "ftClaim": return ftClaim_(d, cache);
     case "demoAuth": return demoAuth_(d);
     case "ftStart": case "ftCode": case "ftMailCode": case "ftForgot": case "ftOpen": case "ftPos": return ftReader_(d, cache);
@@ -269,11 +272,71 @@ function payappFeedback_(p) {
     if (i < 0) sh.appendRow(row.concat(["", ""]));
     if (ok && String(p.pay_state) === "4" && FT_MATCH.test(String(p.goodname)) && (i < 0 || !String(sh.getRange(i + 2, 10).getValue()))) {
       const ph = s(p.recvphone, 11).replace(/[^0-9]/g, ""), r = i < 0 ? sh.getLastRow() : i + 2;
-      if (phoneOk(ph) && !TEST()) { const m = solapi_({ to: ph, from: prop("SMS_FROM"), text: "[야심한남자] 패스트트랙 구매 감사합니다.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 문자를 보관해 두면 언제든 이어서 읽을 수 있어요." }); sh.getRange(r, 10).setValue(m.ok ? "읽기 문자 발송" : "문자 실패"); }
+      if (phoneOk(ph) && !TEST()) { const m = ftReadSms_(ph); sh.getRange(r, 10).setValue(m.ok ? "읽기 문자 발송" : "문자 실패"); }
     }
     else if (i >= 0 && ok) sh.getRange(i + 2, 1, 1, 9).setValues([row]); // 검증된 통보만 상태 갱신(결제완료·취소), 권한 칸은 유지. 새 줄(i<0)은 위에서 이미 추가됨
   } finally { lock.releaseLock(); }
   return ContentService.createTextOutput("SUCCESS");
+}
+
+// 구매 감사 + 읽기 링크 문자 (페이앱·토스 공용)
+function ftReadSms_(ph) {
+  return solapi_({ to: ph, from: prop("SMS_FROM"), text: "[야심한남자] 패스트트랙 구매 감사합니다.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 문자를 보관해 두면 언제든 이어서 읽을 수 있어요." });
+}
+
+/* ===== 토스페이먼츠 결제 승인 (pay.html → 토스 결제창 → pay-done.html → 여기) =====
+ * 스크립트 속성 TOSS_SECRET_KEY = 토스페이먼츠 시크릿 키 (테스트: test_gsk_…, 실결제: live_gsk_…). 코드에 쓰지 않음
+ *  - 비어 있으면 결제 승인을 하지 않고 "준비 중" 응답
+ *  - pay.html 의 TOSS_CLIENT_KEY 와 같은 상점·같은 모드(test/live)의 짝이어야 승인됨
+ * 금액은 클라이언트 값을 믿지 않고 TOSS_PRICE 와 비교. 승인 응답의 금액·주문번호도 한 번 더 확인
+ * TODO: 결제 취소·환불 반영 — 토스 개발자센터 웹훅(PAYMENT_STATUS_CHANGED)을 이 /exec 로 받아
+ *       결제번호(paymentKey) 줄의 상태를 "4"가 아닌 값(예: "CANCELED")으로 바꾸면 ftBuyer_ 가 자동으로 막음.
+ *       웹훅 본문은 믿지 말고 GET /v1/payments/{paymentKey} 로 다시 조회해서 반영할 것
+ */
+const TOSS_PRICE = 99000;
+const TOSS_API = "https://api.tosspayments.com/v1/payments/";
+
+function tossFetch_(path, body) {
+  const opt = { method: body ? "post" : "get", muteHttpExceptions: true,
+    headers: { Authorization: "Basic " + Utilities.base64Encode(prop("TOSS_SECRET_KEY") + ":") } };
+  if (body) { opt.contentType = "application/json"; opt.payload = JSON.stringify(body); }
+  try { const res = UrlFetchApp.fetch(TOSS_API + path, opt); return { code: res.getResponseCode(), j: JSON.parse(res.getContentText() || "{}") }; }
+  catch (err) { return { code: 0, j: { message: String(err).slice(0, 150) } }; }
+}
+
+function tossConfirm_(d) {
+  const key = prop("TOSS_SECRET_KEY");
+  if (!key) return out({ ok: false, final: true, error: "결제 기능을 준비 중이에요. 잠시 후 다시 시도해 주세요." });
+  const paymentKey = s(d.paymentKey, 200), orderId = s(d.orderId, 64), amount = Number(d.amount);
+  const phone = s(d.phone, 11).replace(/[^0-9]/g, "");
+  if (!paymentKey || !/^[A-Za-z0-9_-]{6,64}$/.test(orderId)) return out({ ok: false, final: true, error: "결제 정보가 올바르지 않아요." });
+  if (amount !== TOSS_PRICE) return out({ ok: false, final: true, error: "결제 금액이 올바르지 않아요." }); // 금액 위변조 차단 (승인 전이라 돈은 빠져나가지 않음)
+  if (!phoneOk(phone)) return out({ ok: false, final: true, error: "휴대폰 번호를 확인해 주세요." });
+
+  const lock = LockService.getScriptLock(); lock.waitLock(25000);
+  try {
+    const sh = PAYS(), last = sh.getLastRow();
+    const nos = last > 1 ? sh.getRange(2, 2, last - 1, 1).getValues().map(r => String(r[0])) : [];
+    if (nos.indexOf(paymentKey) >= 0 || nos.indexOf(orderId) >= 0) return out({ ok: true, again: true }); // 이미 처리됨(새로고침·재시도)
+
+    let r = tossFetch_("confirm", { paymentKey, orderId, amount: TOSS_PRICE });
+    if (r.code !== 200 && r.j.code === "ALREADY_PROCESSED_PAYMENT") r = tossFetch_(encodeURIComponent(paymentKey)); // 승인은 됐는데 기록 전에 끊긴 경우: 조회로 이어서 기록
+    const p = r.j || {};
+    if (r.code !== 200 || p.status !== "DONE") {
+      const msg = r.code === 0 ? "결제 서버와 연결하지 못했어요. 다시 확인해 주세요." : (p.message || "결제 승인에 실패했어요.");
+      return out({ ok: false, final: r.code >= 400 && r.code < 500 && p.code !== "PROVIDER_ERROR", error: msg, code: p.code || "" });
+    }
+    if (Number(p.totalAmount) !== TOSS_PRICE || String(p.orderId) !== orderId) return out({ ok: false, final: true, error: "결제 정보가 일치하지 않아요. 카페로 문의해 주세요." });
+
+    // 테스트 키로 승인된 결제는 상품명에 '테스트'를 붙여 구분. FT_MATCH(/패스트/)에는 그대로 걸려서 테스트 중엔 열람도 됨
+    // → 실결제 전환 후 테스트 줄로 열람을 막으려면 시트에서 그 줄을 지우거나 상태를 바꿀 것
+    const product = key.indexOf("test_") === 0 ? "패스트트랙 (토스 테스트)" : "패스트트랙 (토스)";
+    const at = p.approvedAt ? Utilities.formatDate(new Date(p.approvedAt), "Asia/Seoul", "yyyy-MM-dd HH:mm:ss") : KST();
+    sh.appendRow([KST(), paymentKey, "4", product, TOSS_PRICE, txt(phone), s(p.method, 20), at, "Y", "", ""]);
+    let sms = false;
+    if (!TEST()) { const m = ftReadSms_(phone); sms = m.ok; sh.getRange(sh.getLastRow(), 10).setValue(m.ok ? "읽기 문자 발송" : "문자 실패"); }
+    return out({ ok: true, sms });
+  } finally { lock.releaseLock(); }
 }
 
 function ftClaim_(d, cache) {

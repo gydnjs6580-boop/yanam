@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>패스트트랙 결제 | 야심한 남자</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{--bg:#ffffff;--surface:#f2f4f6;--text:#191f28;--sub:#6b7684;--line:#e5e8eb;--primary:#e2483d;--primary-press:#c93b31;--primary-disabled:#f6c6c2;--err:#f04452}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);line-height:1.55;font-size:16px;word-break:keep-all;min-height:100vh}
+  .hide{display:none!important}
+  .lg{max-width:480px;margin:0 auto;padding:0 22px calc(120px + env(safe-area-inset-bottom))}
+  .lnav{height:56px;display:flex;align-items:center;justify-content:space-between;margin:0 -10px}
+  .back{width:44px;height:44px;border:0;background:none;border-radius:12px;display:grid;place-items:center;cursor:pointer}
+  .back:active{background:var(--surface)}
+  .back.off{visibility:hidden}
+  .badge{margin-right:10px;font-size:12px;font-weight:700;color:#8b5a00;background:#fff4d6;border-radius:999px;padding:4px 10px}
+  .title{font-size:25px;font-weight:700;line-height:1.35;letter-spacing:-.02em;margin-top:12px}
+  .lead{font-size:16px;color:var(--sub);margin-top:8px}
+  .lead b{color:var(--text);font-weight:600}
+  .field{margin-top:36px}
+  .lbl{display:block;font-size:14px;font-weight:600;color:var(--sub);margin-bottom:4px}
+  .in{width:100%;height:56px;border:0;border-bottom:2px solid var(--line);border-radius:0;background:none;padding:0 2px;font-family:inherit;font-size:18px;font-weight:500;color:var(--text);transition:border-color .15s}
+  .in::placeholder{color:#b0b8c1;font-weight:400}
+  .in:focus{outline:none;border-bottom-color:var(--text)}
+  .err{color:var(--err);font-size:14px;margin-top:12px;min-height:20px}
+  .tips{margin-top:40px;background:var(--surface);border-radius:16px;padding:16px 18px 16px 34px;font-size:13.5px;color:var(--sub);line-height:1.6}
+  .tips li{margin:4px 0}
+  /* 주문 요약 */
+  .sum{margin-top:28px;border-radius:16px;background:var(--surface);padding:18px 20px}
+  .sum .r{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:15px;color:var(--sub)}
+  .sum .r+.r{margin-top:10px}
+  .sum .r b{color:var(--text);font-weight:600;text-align:right}
+  .sum .r.total{margin-top:14px;padding-top:14px;border-top:1px solid #e1e4e8}
+  .sum .r.total b{font-size:20px;font-weight:700}
+  .widget{margin:20px -22px 0}
+  .widget .ph{margin:0 22px;border-radius:16px;background:var(--surface);color:var(--sub);font-size:14px;text-align:center;padding:40px 0}
+  /* 결과 화면 */
+  .icon{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin-top:48px}
+  .icon.warn{background:#fdecec}
+  /* 하단 버튼 */
+  .cta{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:16px 0 calc(12px + env(safe-area-inset-bottom));background:linear-gradient(rgba(255,255,255,0),#fff 22px)}
+  .cta .in-cta{max-width:480px;margin:0 auto;padding:0 20px}
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;height:56px;border:0;border-radius:14px;background:var(--primary);color:#fff;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;transition:background .15s}
+  .btn:active{background:var(--primary-press)}
+  .btn:disabled{background:var(--primary-disabled);cursor:default}
+</style>
+</head>
+<body>
+<div class="lg">
+  <div class="lnav">
+    <button type="button" class="back" id="back" aria-label="뒤로"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span class="badge hide" id="testBadge">테스트 결제</span>
+  </div>
+
+  <!-- 1. 휴대폰 번호 -->
+  <section id="phStep">
+    <h1 class="title">열람 링크를 받을<br>휴대폰 번호를 알려 주세요</h1>
+    <p class="lead">결제가 끝나면 이 번호로 바로 읽을 수 있어요.</p>
+    <div class="field">
+      <label class="lbl" for="ph">휴대폰 번호</label>
+      <input class="in" id="ph" inputmode="numeric" value="010" placeholder="010" autocomplete="tel" enterkeyhint="next">
+    </div>
+    <ul class="tips">
+      <li>이 번호가 패스트트랙을 여는 열쇠예요. 꼭 본인 번호를 넣어 주세요.</li>
+      <li>결제 후 문자로 읽기 링크를 보내 드려요.</li>
+      <li>문의: 네이버 카페 「어트랙티버」</li>
+    </ul>
+  </section>
+
+  <!-- 2. 결제 수단 (토스페이먼츠 결제위젯) -->
+  <section id="payStep" class="hide">
+    <h1 class="title">결제 수단을 골라 주세요</h1>
+    <div class="sum">
+      <div class="r"><span>상품</span><b>패스트트랙 (1부·2부)</b></div>
+      <div class="r"><span>받는 번호</span><b id="phView"></b></div>
+      <div class="r total"><span>결제 금액</span><b>99,000원</b></div>
+    </div>
+    <div class="widget">
+      <div id="payment-method"><div class="ph">결제 수단을 불러오는 중…</div></div>
+      <div id="agreement"></div>
+    </div>
+  </section>
+
+  <!-- 결제 실패 -->
+  <section id="failStep" class="hide">
+    <div class="icon warn"><svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v6" stroke="#f04452" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="17" r="1.4" fill="#f04452"/></svg></div>
+    <h1 class="title" id="failTitle">결제가 완료되지 않았어요</h1>
+    <p class="lead" id="failMsg">다시 시도해 주세요.</p>
+    <p class="lead" style="font-size:14px;margin-top:20px">돈이 빠져나갔는데 이 화면이 보인다면 네이버 카페 「어트랙티버」로 알려 주세요.</p>
+  </section>
+
+  <div class="err" id="err" role="alert"></div>
+</div>
+<div class="cta"><div class="in-cta"><button class="btn" id="go">다음</button></div></div>
+
+<script src="https://js.tosspayments.com/v2/standard"></script>
+<script>
+/* 토스페이먼츠 클라이언트 키 (공개 키라 코드에 둬도 됨. 시크릿 키는 Apps Script 스크립트 속성 TOSS_SECRET_KEY 에만)
+ * 지금 값은 토스페이먼츠 개발자 문서의 '결제위젯 연동 키' 테스트 키. 실제 결제를 받을 때 상점 관리자의 라이브 키(live_gck_…)로 교체 */
+const TOSS_CLIENT_KEY = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyDikW7vC9o-0FAMhvntntr0zPU2HVy_aYtXc7LqE_jA26Kvat0uEQg-gNoHl8ecbMK/exec";
+const AMOUNT = 99000, ORDER_NAME = "패스트트랙 (1부·2부)", LS = "yanam_pay";
+
+const $ = id => document.getElementById(id), qs = new URLSearchParams(location.search);
+const fmt = p => p.replace(/^(\d{3})(\d{3,4})(\d{4})$/, "$1-$2-$3");
+const VID = (() => { try { let v = localStorage.getItem("ynv"); if (!v) { v = Math.random().toString(36).slice(2, 10); localStorage.setItem("ynv", v); } return v; } catch (e) { return "na"; } })();
+function track(type, target) { try { navigator.sendBeacon(ENDPOINT, new Blob([JSON.stringify({ kind: "event", type, target, src: qs.get("src") || "pay", vid: VID, ua: navigator.userAgent.slice(0, 120) })], { type: "text/plain" })); } catch (e) {} }
+const saved = (() => { try { return JSON.parse(localStorage.getItem(LS) || "{}"); } catch (e) { return {}; } })();
+if (TOSS_CLIENT_KEY.startsWith("test_")) $("testBadge").classList.remove("hide");
+
+let step = "ph", widgets = null, ready = false;
+function show(s) {
+  step = s;
+  ["phStep", "payStep", "failStep"].forEach(id => $(id).classList.toggle("hide", id !== s + "Step"));
+  $("err").textContent = "";
+  $("back").classList.toggle("off", s === "fail");
+  const b = $("go");
+  if (s === "ph") { b.disabled = false; b.textContent = "다음"; }
+  if (s === "pay") { b.disabled = !ready; b.textContent = "99,000원 결제하기"; }
+  if (s === "fail") { b.disabled = false; b.textContent = "다시 결제하기"; }
+  window.scrollTo(0, 0);
+}
+
+/* ---- 1. 번호 (ft-read.html 로그인과 같은 입력 방식) ---- */
+if (saved.phone) $("ph").value = saved.phone;
+$("ph").oninput = () => { let v = $("ph").value.replace(/\D/g, ""); if (v.length > 11 && /^01001[016789]/.test(v)) v = v.slice(3); $("ph").value = v.slice(0, 11); }; // 010 위에 번호 전체를 붙여넣어도 정리
+$("ph").onfocus = () => { const v = $("ph"); setTimeout(() => v.setSelectionRange(v.value.length, v.value.length), 0); }; // 010 뒤에 커서
+$("ph").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); $("go").click(); } });
+
+async function toPay() {
+  const phone = $("ph").value;
+  if (!/^01[016789]\d{7,8}$/.test(phone)) return $("err").textContent = "휴대폰 번호를 확인해 주세요.";
+  localStorage.setItem(LS, JSON.stringify({ phone }));
+  $("phView").textContent = fmt(phone);
+  show("pay"); track("click", "pay_phone");
+  if (widgets) return;
+  try {
+    if (typeof TossPayments !== "function") throw new Error("sdk");
+    widgets = TossPayments(TOSS_CLIENT_KEY).widgets({ customerKey: TossPayments.ANONYMOUS }); // 비회원 결제
+    await widgets.setAmount({ currency: "KRW", value: AMOUNT });
+    await Promise.all([
+      widgets.renderPaymentMethods({ selector: "#payment-method", variantKey: "DEFAULT" }),
+      widgets.renderAgreement({ selector: "#agreement", variantKey: "AGREEMENT" }),
+    ]);
+    ready = true; if (step === "pay") $("go").disabled = false;
+  } catch (e) {
+    widgets = null;
+    $("payment-method").innerHTML = '<div class="ph">결제 수단을 불러오지 못했어요.<br>잠시 후 다시 시도해 주세요.</div>';
+  }
+}
+
+/* ---- 2. 결제 ---- */
+async function pay() {
+  if (!widgets || !ready) return;
+  const phone = $("ph").value;
+  const orderId = "ft" + Date.now() + Math.random().toString(36).slice(2, 8); // 6~64자, 영문·숫자
+  localStorage.setItem(LS, JSON.stringify({ phone, orderId }));
+  const b = $("go"); b.disabled = true; b.textContent = "결제창 여는 중…"; $("err").textContent = "";
+  track("click", "pay_request");
+  try {
+    await widgets.requestPayment({
+      orderId, orderName: ORDER_NAME, customerMobilePhone: phone,
+      successUrl: new URL("pay-done.html", location.href).href,
+      failUrl: new URL("pay.html?fail=1", location.href).href,
+    });
+    // 리다이렉트 방식이라 보통 여기 오기 전에 페이지가 바뀜. 버튼은 그대로 비활성 유지(깜빡임 방지)
+  } catch (e) {
+    b.disabled = false; b.textContent = "99,000원 결제하기";
+    $("err").textContent = e && e.code === "USER_CANCEL" ? "" : (e && e.message) || "결제를 시작하지 못했어요. 다시 시도해 주세요.";
+  }
+}
+
+/* ---- 결제 실패로 돌아온 경우 (failUrl: ?fail=1&code=…&message=…&orderId=…) ---- */
+if (qs.get("fail")) {
+  const code = qs.get("code") || "";
+  const canceled = /CANCEL/.test(code);
+  $("failTitle").textContent = canceled ? "결제를 취소했어요" : "결제가 완료되지 않았어요";
+  $("failMsg").textContent = canceled ? "언제든 다시 결제할 수 있어요." : (qs.get("message") || "잠시 후 다시 시도해 주세요.");
+  show("fail"); track("view", "pay_fail_" + code.slice(0, 30));
+} else { show("ph"); track("view", "pay_page"); }
+
+$("go").onclick = () => { if (step === "ph") toPay(); else if (step === "pay") pay(); else { history.replaceState(null, "", "pay.html"); show("ph"); } };
+$("back").onclick = () => { if ($("go").disabled && step === "pay" && ready) return; if (step === "pay") show("ph"); else location.href = "fasttrack.html"; };
+</script>
+</body>
+</html>
