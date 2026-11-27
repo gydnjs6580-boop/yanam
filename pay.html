@@ -146,6 +146,7 @@ async function toPay() {
       widgets.renderPaymentMethods({ selector: "#payment-method", variantKey: "DEFAULT" }),
       widgets.renderAgreement({ selector: "#agreement", variantKey: "AGREEMENT" }),
     ]);
+    document.querySelector("#payment-method > .ph")?.remove(); // 위젯이 뜨면 '불러오는 중' 상자 지우기
     ready = true; if (step === "pay") $("go").disabled = false;
   } catch (e) {
     widgets = null;
