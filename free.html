@@ -8,114 +8,161 @@
 <meta property="og:title" content="무료 E-BOOK 먼저 받아보세요 | 야심한 남자">
 <meta property="og:description" content="먼저 보시고, 마음에 들면 그때 결정하세요.">
 <meta property="og:image" content="https://yt3.ggpht.com/pw5Seg4uBVsknZyVGKemULMm8S301eGLrpT6KOLolBIXeyqCNDEjFWmGWuGCs2Ogjbjbth6roQ=s800-c-k-c0x00ffffff-no-rj">
-<meta name="theme-color" content="#0e0f12">
+<meta name="theme-color" content="#ffffff">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-  :root{--bg:#0e0f12;--card:#17191f;--line:#2a2e37;--text:#f3f1ec;--sub:#a3a7b0;--accent:#d9b15f;--ink:#1a1407;--red:#e2483d}
+  :root{--bg:#ffffff;--surface:#f2f4f6;--text:#191f28;--sub:#6b7684;--line:#e5e8eb;--primary:#e2483d;--primary-press:#c93b31;--primary-disabled:#f6c6c2;--err:#f04452;--r-card:16px;--r-btn:14px}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);line-height:1.55;word-break:keep-all;padding-bottom:110px}
-  .top{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(14,15,18,.92);backdrop-filter:blur(8px);z-index:5}
-  .top img{width:30px;height:30px;border-radius:50%;background:#22252d}
-  .top b{font-size:15px}
-  .wrap{max-width:480px;margin:0 auto;padding:0 20px}
-  .hero{text-align:center;padding:44px 0 30px}
-  .hero h1{font-size:30px;font-weight:900;line-height:1.3;letter-spacing:-.03em}
-  .hero h1 em{font-style:normal;color:var(--accent)}
-  .hero .hl{display:inline;background:#f3f1ec;color:#111;font-weight:800;font-size:17px;padding:2px 6px;line-height:2.1;box-decoration-break:clone;-webkit-box-decoration-break:clone}
-  .hero .sub{margin-top:22px}
-  .ba{margin:8px 0 0}
-  .before{background:#24262c;border-radius:22px 22px 0 0;padding:20px 20px 40px;text-align:center;margin:0 22px}
-  .before h3,.after h3{font-size:22px;font-style:italic;font-weight:800}
-  .before h3{color:#8d9199}
-  .before hr,.after hr{border:none;border-top:1px solid #444;margin:12px 0 14px}
-  .before p{color:#cfccc4;font-size:16px;line-height:1.8}
-  .after{background:#fff;color:#111;border:3px solid var(--accent);border-radius:22px;padding:20px;text-align:center;margin-top:-24px;position:relative}
-  .after h3{color:#b88a2c}
-  .after hr{border-color:#e7d3a6}
-  .after .big{font-size:19px;font-weight:900;margin-bottom:4px}
-  .proof{margin-top:10px}
-  .proof img{width:100%;border-radius:10px;display:block}
-  h2.sec{font-size:22px;font-weight:900;text-align:center;margin:52px 0 18px;letter-spacing:-.02em}
-  .gets{display:flex;flex-direction:column;gap:10px}
-  .get{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
-  .get .n{flex:none;width:30px;height:30px;border-radius:50%;background:rgba(217,177,95,.16);color:var(--accent);display:grid;place-items:center;font-weight:900;font-size:14px}
-  .get b{display:block;font-size:16px}
-  .get span{font-size:13.5px;color:var(--sub)}
-  .who{background:var(--card);border-radius:16px;padding:18px 20px;border:1px solid var(--line)}
-  .who li{list-style:none;padding:6px 0 6px 26px;position:relative;font-size:15px}
-  .who li:before{content:"✔";position:absolute;left:0;color:var(--accent)}
-  .revs{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -20px;padding:0 20px 6px}
-  .revs img{width:82%;flex:none;border-radius:14px;scroll-snap-align:center}
-  .note{text-align:center;color:var(--sub);font-size:13px;margin-top:40px}
-  /* 하단 고정 버튼 */
-  .cta{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 70%,transparent);z-index:10}
-  .cta button{display:block;width:100%;max-width:448px;margin:0 auto;border:0;border-radius:999px;background:var(--red);color:#fff;padding:15px 10px 13px;font-family:inherit;cursor:pointer;box-shadow:0 8px 24px rgba(226,72,61,.35)}
-  .cta b{display:block;font-size:19px;font-weight:900;letter-spacing:-.02em}
-  .cta span{display:block;font-size:12.5px;opacity:.9;margin-top:2px}
-  /* 팝업 */
-  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;z-index:20}
+  html{-webkit-text-size-adjust:100%}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;word-break:keep-all;letter-spacing:-.01em;padding-bottom:calc(112px + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
+  button,input{font-family:inherit;letter-spacing:inherit}
+  .top{display:flex;align-items:center;gap:8px;height:52px;padding:0 20px;position:sticky;top:0;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:5}
+  .top img{width:26px;height:26px;border-radius:50%;background:var(--surface)}
+  .top b{font-size:15px;font-weight:700}
+  .wrap{max-width:480px;margin:0 auto;padding:0 22px}
+
+  /* 히어로 */
+  .hero{padding:20px 0 28px}
+  .hero .kick{color:var(--sub);font-size:16px;margin-bottom:6px}
+  .hero h1{font-size:28px;font-weight:700;line-height:1.35;letter-spacing:-.03em}
+  .hero .sub{margin-top:12px;color:var(--sub);font-size:16px;line-height:1.55}
+  .hero .sub b{color:var(--text);font-weight:600}
+
+  /* Before / After */
+  .ba{background:var(--surface);border-radius:var(--r-card);padding:20px}
+  .tag{display:inline-block;font-size:13px;font-weight:700;padding:3px 9px;border-radius:8px;margin-bottom:8px}
+  .before .tag{background:#e5e8eb;color:var(--sub)}
+  .after .tag{background:var(--text);color:#fff}
+  .before p{color:var(--sub);font-size:15px;line-height:1.7}
+  .arrow{display:block;margin:12px 0 12px 2px;color:#b0b8c1}
+  .after .big{font-size:19px;font-weight:700;line-height:1.4}
+  .after .asub{font-size:14.5px;color:var(--sub);margin-top:4px}
+
+  h2.sec{font-size:22px;font-weight:700;line-height:1.35;margin:36px 0 10px;letter-spacing:-.02em}
+  .who{list-style:none}
+  .who li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;font-size:16px;line-height:1.5}
+  .who li svg{flex:none;margin-top:2px}
+
+  /* 리스트 행(토스식) */
+  .row-link{display:flex;align-items:center;gap:12px;margin-top:28px;background:var(--surface);border-radius:var(--r-card);padding:16px 18px;color:var(--text);text-decoration:none}
+  .row-link div{flex:1;min-width:0}
+  .row-link small{display:block;color:var(--sub);font-size:13.5px}
+  .row-link b{font-size:16px;font-weight:700}
+  .chev{flex:none;color:#b0b8c1}
+
+  .more{margin-top:10px;border-radius:var(--r-card);border:1px solid var(--line)}
+  .more>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;font-size:15.5px;font-weight:600}
+  .more>summary::-webkit-details-marker{display:none}
+  .more>summary span{flex:1}
+  .more>summary .chev{transition:transform .2s}
+  .more[open]>summary .chev{transform:rotate(90deg)}
+  .more .in-more{padding:0 18px 20px}
+  .more h4{font-size:17px;font-weight:700;margin:22px 0 4px}
+  .more h4:first-child{margin-top:4px}
+  .more .cap{font-size:13.5px;color:var(--sub);margin-bottom:6px}
+  .toc{list-style:none}
+  .toc li{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .toc li:last-child{border-bottom:0}
+  .toc .n{flex:none;width:24px;font-weight:700;color:var(--sub);font-size:14.5px;line-height:1.55}
+  .toc b{display:block;font-size:15.5px;font-weight:600}
+  .toc span{display:block;font-size:13.5px;color:var(--sub);margin-top:4px;line-height:1.65}
+  .qt{background:var(--surface);border-radius:12px;padding:14px 16px;margin-top:8px;font-size:15.5px;font-weight:600;line-height:1.6}
+  .qt small{display:block;font-size:12.5px;color:var(--sub);font-weight:400;margin-top:4px}
+  .qt b{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq summary{list-style:none;display:flex;align-items:center;gap:10px;padding:13px 0;font-weight:600;font-size:15.5px;cursor:pointer}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary span{flex:1}
+  .faq summary .chev{transition:transform .2s;transform:rotate(90deg)}
+  .faq details[open] summary .chev{transform:rotate(-90deg)}
+  .faq p{color:var(--sub);font-size:15px;padding:0 0 14px}
+  .small{color:var(--sub);font-size:13.5px;margin-top:8px}
+
+  .note{color:var(--sub);font-size:13.5px;margin-top:32px;line-height:1.6}
+  .biz{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:11.5px;color:#8b95a1;line-height:1.75}
+  .biz a{color:#8b95a1}
+
+  /* 버튼 */
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;height:56px;border:0;border-radius:var(--r-btn);background:var(--primary);color:#fff;font-size:17px;font-weight:700;cursor:pointer;text-decoration:none;transition:background-color .15s,transform .1s}
+  .btn:active{background:var(--primary-press);transform:scale(.985)}
+  .btn:disabled,.btn.busy{background:var(--primary-disabled);color:#fff;cursor:default;transform:none}
+  .btn.busy{transition:none}
+  .btn.gray{background:var(--surface);color:var(--text)}
+  .btn.gray:active{background:#e5e8eb}
+
+  /* 하단 고정 CTA */
+  .cta{position:fixed;left:0;right:0;bottom:0;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,#fff 78%,rgba(255,255,255,0));z-index:10}
+  .cta .btn{max-width:440px;margin:0 auto;height:60px;flex-direction:column;gap:0}
+  .cta .btn b{font-size:17px;font-weight:700;line-height:1.3}
+  .cta .btn span{font-size:12.5px;font-weight:500;opacity:.88;line-height:1.3}
+
+  /* 바텀시트 */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
   .modal.on{display:flex}
-  .sheet{background:#fff;color:#111;width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto;position:relative}
-  .x{position:absolute;right:14px;top:12px;background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:#111}
-  .sheet h3{font-size:18px;font-weight:800;text-align:center;line-height:1.5;margin:14px 6px 18px}
-  .box{border:1px solid #e3e6ea;border-radius:14px;padding:16px}
-  .lbl{font-size:14px;font-weight:700;margin:4px 0 6px;display:block}
-  .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:13px;font-size:16px;font-family:inherit;color:#111;background:#fff}
-  .in:focus{outline:none;border-color:#111}
-  .row{display:flex;gap:8px;margin-top:8px}
-  .row .in{flex:1;min-width:0}
-  .sbtn{flex:none;width:76px;border:1px solid #dde1e6;background:#f4f5f7;border-radius:10px;font-family:inherit;font-size:15px;color:#333;cursor:pointer}
-  .sbtn:disabled{color:#aaa;cursor:default}
-  .timer{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px;color:#333}
-  .rel{position:relative;flex:1}
-  .hint{font-size:13px;margin-top:8px;min-height:18px}
-  .hint.ok{color:#2e7d32}.hint.err{color:#d32f2f}
-  .agree{background:#f4f5f7;border-radius:10px;margin-top:14px;padding:4px 14px}
-  .agree label{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:14.5px;cursor:pointer}
-  .agree label.all{font-weight:800;border-bottom:1px solid #e3e6ea}
-  .agree input{width:19px;height:19px;accent-color:#111;flex:none}
-  .agree .v{margin-left:auto;font-size:12px;color:#777;text-decoration:underline;background:none;border:0;cursor:pointer;font-family:inherit}
-  .agree .sub{display:none;padding-left:8px}.agree .sub.on{display:block}.agree .tg{text-decoration:none;font-size:15px}
-  .terms{display:none;font-size:12px;color:#666;background:#fff;border-radius:8px;padding:10px;margin:-4px 0 8px;line-height:1.6}
-  .dots{display:flex;justify-content:center;align-items:center;margin:20px 0 16px}
-  .dots i{width:14px;height:14px;border-radius:50%;background:#ccc;display:block}
-  .dots i.on{background:var(--red);box-shadow:0 0 0 4px rgba(226,72,61,.2)}
-  .dots i.done{background:var(--red)}
-  .dots s{width:60px;height:3px;background:#ddd;display:block}
-  .dots s.done{background:var(--red)}
-  .main{width:100%;border:0;border-radius:12px;background:#2b2b2b;color:#fff;padding:16px;font-size:17px;font-weight:700;font-family:inherit;cursor:pointer}
-  .main:disabled{background:#bdbdbd;cursor:default}
-  .ghost{width:100%;border:0;background:none;color:#888;font-size:14px;padding:12px;margin-top:4px;font-family:inherit;cursor:pointer;text-decoration:underline}
-  .pink{background:#fdf3f2;border-radius:10px;padding:12px 14px;font-size:13.5px;color:#444;margin:12px 0 16px;line-height:1.6}
-  .sel3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center}
-  .sel3 span{font-size:13.5px;color:#444;display:block;margin-bottom:6px}
-  .sel3 select{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:12px 6px;font-size:15px;font-family:inherit;background:#fff;color:#111}
-  .add{width:100%;margin-top:10px;border:1px solid #111;background:#fff;border-radius:10px;padding:11px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer}
-  .ranks{border:1px solid #e3e6ea;border-radius:14px;padding:12px 14px;margin-top:12px}
-  .rk{display:flex;align-items:center;gap:12px;margin:6px 0}
-  .rk b{width:48px;font-size:15px;font-weight:600}
-  .rk div{flex:1;border:1px solid #dde1e6;border-radius:10px;padding:11px;text-align:center;font-size:15px;min-height:44px}
-  .rk button{border:0;background:none;color:#999;font-size:18px;cursor:pointer;width:22px}
-  textarea.in{resize:none;height:76px;margin-top:6px}
-  .center{text-align:center}
-  .ft{margin-top:14px;border:2px solid var(--accent);border-radius:14px;padding:16px;text-align:center;background:#fffaf0}
-  .ft b{font-size:16px}.ft p{font-size:13.5px;color:#555;margin:6px 0 12px}
-  .ft a{display:block;background:#1a1407;color:#f3d48f;border-radius:10px;padding:13px;font-weight:800;text-decoration:none}
-  .hero .kick{color:var(--sub);font-size:16px;margin-bottom:8px}
-  .after .asub{font-size:14px;color:#555}
-  .quote{text-align:center;font-size:17px;font-weight:700;line-height:1.6;margin:22px 0 0;color:var(--accent)}
-  .quote small{display:block;font-size:12px;color:var(--sub);font-weight:400;margin-top:6px}
-  .small{color:var(--sub);font-size:12.5px;text-align:center;margin-top:10px}
-  .faq details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:8px}
-  .faq summary{font-weight:700;font-size:15.5px;cursor:pointer}
-  .faq p{color:var(--sub);font-size:14.5px;margin-top:8px}
-  .promise{margin:48px 0 0;border:1px solid var(--accent);border-radius:18px;padding:22px 18px;text-align:center}
-  .promise p{font-size:17px;line-height:1.7}.promise b{color:var(--accent)}
-  .promise small{display:block;color:var(--sub);font-size:12.5px;margin-top:8px}
-  .alt{display:block;margin-top:22px;background:var(--card);border:1px dashed var(--accent);border-radius:14px;padding:14px;text-align:center;color:var(--text);text-decoration:none;font-size:14.5px}
-  .alt b{color:var(--accent)}
-  .biz{margin-top:18px;font-size:11.5px;color:#6f737b;text-align:center;line-height:1.8}
-  .biz a{color:#8d9199}
+  .sheet{background:#fff;color:var(--text);width:100%;max-width:480px;border-radius:24px 24px 0 0;max-height:92vh;max-height:92dvh;min-height:440px;display:flex;flex-direction:column;animation:up .28s cubic-bezier(.2,.8,.2,1)}
+  @keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+  .sh-top{flex:none;display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px}
+  .ic{width:44px;height:44px;border:0;background:none;display:grid;place-items:center;cursor:pointer;color:var(--text);border-radius:12px}
+  .ic:active{background:var(--surface)}
+  .ic.hide{visibility:hidden}
+  .bar{flex:1;height:4px;background:var(--line);border-radius:4px;margin:0 10px;overflow:hidden}
+  .bar i{display:block;height:100%;width:25%;background:var(--text);border-radius:4px;transition:width .3s}
+  #s1{display:flex;flex-direction:column;flex:1;min-height:0}
+  .sh-body{flex:1;overflow:auto;padding:12px 24px 16px}
+  .sh-foot{flex:none;padding:8px 20px calc(16px + env(safe-area-inset-bottom))}
+  .sh-foot .btn{display:none}
+  .sh-foot .btn.on{display:flex}
+  .step{display:none}
+  .step.on{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+  .step h3,#s3 h3{font-size:24px;font-weight:700;line-height:1.35;letter-spacing:-.02em}
+  .step .desc{color:var(--sub);font-size:15.5px;margin-top:6px}
+  .field{margin-top:32px;position:relative}
+  .field label{display:block;font-size:14px;color:var(--sub);margin-bottom:2px}
+  .in{width:100%;height:56px;border:0;border-bottom:2px solid var(--line);border-radius:0;background:transparent;font-size:18px;font-weight:500;color:var(--text);padding:0 2px;outline:none;transition:border-color .15s;-webkit-appearance:none;appearance:none}
+  .in:focus{border-bottom-color:var(--text)}
+  .in::placeholder{color:#b0b8c1;font-weight:400}
+  #codeRow{position:relative}
+  #codeRow .in{padding-right:64px;letter-spacing:.2em}
+  .timer{position:absolute;right:2px;bottom:16px;font-size:15px;font-weight:600;color:var(--err)}
+  .resend{display:inline-block;margin-top:14px;background:none;border:0;color:var(--sub);font-size:14.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px 0}
+  .resend:disabled{opacity:.5;cursor:default}
+  .hint{font-size:13.5px;margin-top:8px;min-height:20px;line-height:1.5}
+  .hint.err{color:var(--err)}.hint.ok{color:var(--sub)}
+
+  /* 동의 */
+  .agree{margin-top:28px}
+  .ck{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;-webkit-user-select:none}
+  .ck input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+  .ck .box{flex:none;width:26px;height:26px;border-radius:50%;background:var(--line);display:grid;place-items:center;transition:background .15s}
+  .ck .box svg{opacity:1}
+  .ck input:checked+.box{background:var(--text)}
+  .ck input:focus-visible+.box{outline:2px solid var(--text);outline-offset:2px}
+  .ck .t{flex:1;min-width:0}
+  .ck.all{background:var(--surface);border-radius:var(--r-card);padding:18px 12px 18px 16px;font-size:17px;font-weight:700}
+  .ck.all .box{width:28px;height:28px;background:#d1d6db}
+  .tg{width:36px;height:36px;border:0;background:none;display:grid;place-items:center;color:var(--sub);cursor:pointer;transition:transform .2s}
+  .agSubOn .tg{transform:rotate(180deg)}
+  #agSub{display:none;padding:6px 0 0}
+  #agSub.on{display:block}
+  .sub-row{padding:0 4px 0 16px}
+  .sub-row .ck{padding:12px 0;font-size:15px;color:var(--text)}
+  .sub-row .ck .box{width:22px;height:22px;background:transparent}
+  .sub-row .ck .box svg path{stroke:#d1d6db}
+  .sub-row .ck input:checked+.box{background:transparent}
+  .sub-row .ck input:checked+.box svg path{stroke:var(--text)}
+  .v{flex:none;background:none;border:0;color:var(--sub);font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:6px 2px}
+  .terms{display:none;font-size:13px;color:var(--sub);background:var(--surface);border-radius:12px;padding:12px 14px;margin:0 0 8px 34px;line-height:1.65}
+  .opt{margin-top:22px}
+
+  /* 완료 */
+  #s3{padding:8px 24px calc(20px + env(safe-area-inset-bottom));overflow:auto}
+  .done-ic{width:56px;height:56px;border-radius:50%;background:var(--surface);display:grid;place-items:center;margin:8px 0 18px}
+  #s3 .desc{color:var(--sub);font-size:15px;margin:6px 0 24px}
+  .ft{margin-top:24px;background:var(--surface);border-radius:var(--r-card);padding:18px}
+  .ft b{font-size:16px;font-weight:700}.ft p{font-size:14.5px;color:var(--sub);margin:4px 0 14px}
+  .ft a{display:flex;align-items:center;justify-content:space-between;background:#fff;color:var(--text);border-radius:12px;padding:14px 16px;font-weight:700;font-size:15.5px;text-decoration:none}
+  #close3{margin-top:12px}
 </style>
 </head>
 <body>
@@ -125,17 +172,18 @@
   <!-- [문구 근거] 패스트트랙 1부 맥락 파일(alexhacker/yanam_context) 원문·개념. 목차는 무료 E-BOOK 원고(11-26 효원님 전달) 그대로 -->
   <section class="hero">
     <p class="kick">모두가 "괜찮은 사람"이라는데</p>
-    <h1>왜 나는<br><em>친구 이상</em>이 안 될까?</h1>
-    <p class="sub"><span class="hl">24살까지 모태솔로였던 Flash(이원준)가 찾은 답,</span><br><span class="hl">무료 E-BOOK 한 권으로 먼저 보세요</span></p>
+    <h1>왜 나는 친구 이상이<br>안 될까?</h1>
+    <p class="sub"><b>24살까지 모태솔로였던 Flash(이원준)</b>가 찾은 답, 무료 E-BOOK 한 권으로 먼저 보세요</p>
   </section>
 
   <div class="ba">
     <div class="before">
-      <h3>Before</h3><hr>
+      <span class="tag">Before</span>
       <p>다들 괜찮은 사람이라는데 연애는 안 됨<br>카톡은 되는데 만나면 굳음<br>뭘 잘못하는지 전혀 모름</p>
     </div>
+    <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v15m0 0-6-6m6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <div class="after">
-      <h3>After</h3><hr>
+      <span class="tag">After</span>
       <p class="big">첫 에프터를 다음 약속으로 잇는 순서</p>
       <p class="asub">멘트를 외우는 대신, 내 기준과 행동을 바꿉니다</p>
     </div>
@@ -143,40 +191,43 @@
 
   <h2 class="sec">혹시 이런 적 있나요?</h2>
   <ul class="who">
-    <li>소개팅·앱 만남이 늘 한 번으로 끝난다</li>
-    <li>맞춰 주고 배려하는데 "좋은 오빠"에서 멈춘다</li>
-    <li>할 말이 없어서 일·여행·음식 얘기만 돌다 끝난다</li>
-    <li>멘트를 외워 갔는데 오히려 더 어색해졌다</li>
+    <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#f2f4f6"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>소개팅·앱 만남이 늘 한 번으로 끝난다</li>
+    <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#f2f4f6"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>맞춰 주고 배려하는데 "좋은 오빠"에서 멈춘다</li>
+    <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#f2f4f6"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>할 말이 없어서 일·여행·음식 얘기만 돌다 끝난다</li>
+    <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#f2f4f6"/><path d="m7.5 12.3 3 3 6-6.3" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>멘트를 외워 갔는데 오히려 더 어색해졌다</li>
   </ul>
-  <p class="quote">"공감 잘해주는 사람은 그녀의 동성 친구다.<br>당신은 남자다."<small>패스트트랙 1부 중</small></p>
-  <p class="quote">"가장 나를 미치게 하는 것은<br>내가 무엇을 잘못하고 있는지 전혀 모르는 것"<small>패스트트랙 1부 중</small></p>
 
-  <h2 class="sec">무료 E-BOOK 목차</h2>
-  <p class="small" style="margin-top:-6px">《나는 나고, 여자는 따라오는 것이다.》 PART 1 연애 · 2026년 개정판</p>
-  <div class="gets">
-    <div class="get"><div class="n">01</div><div><b>유튜브만 몇 년째 보고 있는 당신에게</b></div></div>
-    <div class="get"><div class="n">02</div><div><b>여자 앞에서 새로운 사람이 되지 말라.</b></div></div>
-    <div class="get"><div class="n">03</div><div><b>나는 나고, 여자는 따라오는 것이다.</b></div></div>
-    <div class="get"><div class="n">04</div><div><b>실제 무엇이 바뀌었는가?</b><span>CASE 1. 여자에게 거절당하는 것이 두려웠던 남자의 5개월<br>CASE 2. 택시조차 잡지 못했던 남자<br>CASE 3. 자신의 목소리를 듣고 다른 사람인 줄 알았던 남자<br>CASE 4. 회색분자 인간</span></div></div>
-    <div class="get"><div class="n">05</div><div><b>여자에 대한 이야기.</b><span>ⓐ 좆같은 곳에서 승부하지 마라.<br>ⓑ 여자에게 당신을 좋아할 이유를 줘라.<br>ⓒ 첫 만남. 1시간. 그거면 된다.<br>ⓓ 당신도 여자를 선택하는 사람이다.</span></div></div>
-    <div class="get"><div class="n">06</div><div><b>끌려갈 것인가? 리드할 것인가?</b></div></div>
-  </div>
-  <p class="small">신청 즉시 한 권 전체를 열어드립니다.</p>
+  <a class="row-link" href="check.html?src=free_alt" data-track="to_check"><div><small>뭐부터 봐야 할지 모르겠다면?</small><b>1분 연애 진단 먼저 하기</b></div><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
 
-  <h2 class="sec">또 픽업 장사 아니냐고요?</h2>
-  <div class="faq">
-    <details open><summary>멘트·기술을 알려주는 곳인가요?</summary><p>아닙니다. 픽업은 환상입니다. 앵무새처럼 외운 멘트는 오히려 망칠 가능성을 높입니다. 남자의 기준과 생활을 바꾸는 이야기를 합니다.</p></details>
-    <details><summary>외모·돈이 없으면 소용없지 않나요?</summary><p>외모는 중요합니다. 다만 타고난 집안·배경 말고는 대부분 바꿀 수 있습니다. 무엇부터 바꿀지 순서를 알려드립니다.</p></details>
-    <details><summary>저는 내성적인데요.</summary><p>코치도 내성적입니다. 성격을 바꾸라는 게 아니라, 반경을 조금씩 넓히는 방법을 다룹니다.</p></details>
-    <details><summary>정말 무료인가요?</summary><p>네. 한 권 전체가 무료입니다. 먼저 보시고, 마음에 들면 그때 패스트트랙을 결정하세요.</p></details>
-  </div>
+  <details class="more">
+    <summary><span>E-BOOK 목차·자주 묻는 질문 자세히 보기</span><svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+    <div class="in-more">
+      <p class="qt">"공감 잘해주는 사람은 그녀의 동성 친구다.<br>당신은 남자다."<small>패스트트랙 1부 중</small></p>
+      <p class="qt">"가장 나를 미치게 하는 것은<br>내가 무엇을 잘못하고 있는지 전혀 모르는 것"<small>패스트트랙 1부 중</small></p>
 
-  <div class="promise">
-    <p>"나는 당신에게 구체적인 해결책을 약속할 테니,<br>당신은 나에게 <b>행동</b>을 약속하라."</p>
-    <small>Flash(이원준) · 야심한 남자</small>
-  </div>
+      <h4>무료 E-BOOK 목차</h4>
+      <p class="cap">《나는 나고, 여자는 따라오는 것이다.》 PART 1 연애 · 2026년 개정판</p>
+      <ol class="toc">
+        <li><span class="n">01</span><div><b>유튜브만 몇 년째 보고 있는 당신에게</b></div></li>
+        <li><span class="n">02</span><div><b>여자 앞에서 새로운 사람이 되지 말라.</b></div></li>
+        <li><span class="n">03</span><div><b>나는 나고, 여자는 따라오는 것이다.</b></div></li>
+        <li><span class="n">04</span><div><b>실제 무엇이 바뀌었는가?</b><span>CASE 1. 여자에게 거절당하는 것이 두려웠던 남자의 5개월<br>CASE 2. 택시조차 잡지 못했던 남자<br>CASE 3. 자신의 목소리를 듣고 다른 사람인 줄 알았던 남자<br>CASE 4. 회색분자 인간</span></div></li>
+        <li><span class="n">05</span><div><b>여자에 대한 이야기.</b><span>ⓐ 좆같은 곳에서 승부하지 마라.<br>ⓑ 여자에게 당신을 좋아할 이유를 줘라.<br>ⓒ 첫 만남. 1시간. 그거면 된다.<br>ⓓ 당신도 여자를 선택하는 사람이다.</span></div></li>
+        <li><span class="n">06</span><div><b>끌려갈 것인가? 리드할 것인가?</b></div></li>
+      </ol>
+      <p class="small">신청 즉시 한 권 전체를 열어드립니다.</p>
 
-  <a class="alt" href="check.html?src=free_alt" data-track="to_check">뭐부터 봐야 할지 모르겠다면? <b>1분 연애 진단 먼저 하기 →</b></a>
+      <h4>또 픽업 장사 아니냐고요?</h4>
+      <div class="faq">
+        <details><summary><span>멘트·기술을 알려주는 곳인가요?</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>아닙니다. 픽업은 환상입니다. 앵무새처럼 외운 멘트는 오히려 망칠 가능성을 높입니다. 남자의 기준과 생활을 바꾸는 이야기를 합니다.</p></details>
+        <details><summary><span>외모·돈이 없으면 소용없지 않나요?</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>외모는 중요합니다. 다만 타고난 집안·배경 말고는 대부분 바꿀 수 있습니다. 무엇부터 바꿀지 순서를 알려드립니다.</p></details>
+        <details><summary><span>저는 내성적인데요.</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>코치도 내성적입니다. 성격을 바꾸라는 게 아니라, 반경을 조금씩 넓히는 방법을 다룹니다.</p></details>
+        <details><summary><span>정말 무료인가요?</span><svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><p>네. 한 권 전체가 무료입니다. 먼저 보시고, 마음에 들면 그때 패스트트랙을 결정하세요.</p></details>
+      </div>
+
+      <p class="qt" style="margin-top:22px">"나는 당신에게 구체적인 해결책을 약속할 테니,<br>당신은 나에게 <b>행동</b>을 약속하라."<small>Flash(이원준) · 야심한 남자</small></p>
+    </div>
+  </details>
 
   <p class="note">먼저 보시고, 마음에 들면 그때 결정하세요.<br>결과는 개인의 실천에 따라 다릅니다.</p>
   <div class="biz">
@@ -187,56 +238,75 @@
   </div>
 </div>
 
-<div class="cta"><button id="openBtn" data-track="cta_open"><b>먼저 보시고 마음에 들면 결정하세요</b><span>*신청 즉시 E-BOOK 전체를 무료로 열어드립니다</span></button></div>
+<div class="cta"><button class="btn" id="openBtn" data-track="cta_open"><b>무료 E-BOOK 받기</b><span>신청 즉시 전체를 열어드려요</span></button></div>
 
-<div class="modal" id="modal" role="dialog" aria-modal="true">
-  <div class="sheet">
-    <button class="x" id="closeBtn" aria-label="닫기">×</button>
-
-    <!-- STEP 1 -->
-    <div id="s1">
-      <h3>E-BOOK 받으실 분의 전화번호를 알려주세요.<br>신청 즉시 E-BOOK을 열어드립니다.</h3>
-      <div class="box">
-        <label class="lbl" for="name">이름</label>
-        <input class="in" id="name" maxlength="20" autocomplete="name">
-        <label class="lbl" for="phone" style="margin-top:14px">휴대전화 번호</label>
-        <div class="row" style="margin-top:0">
-          <input class="in" id="phone" inputmode="numeric" maxlength="11" placeholder="01012345678" autocomplete="tel">
-          <button class="sbtn" id="sendCode">인증</button>
-        </div>
-        <div class="row" id="codeRow" style="display:none">
-          <div class="rel"><input class="in" id="code" inputmode="numeric" maxlength="6" placeholder="인증번호 6자리"><span class="timer" id="timer"></span></div>
-          <button class="sbtn" id="checkCode">확인</button>
-        </div>
-        <label class="lbl" for="email" style="margin-top:14px">이메일 <span style="font-weight:400;color:#888">(선택 · 이메일로도 받기)</span></label>
-        <input class="in" id="email" type="email" maxlength="100" autocomplete="email" placeholder="example@gmail.com">
-        <div class="hint" id="hint1"></div>
-        <div class="agree">
-          <label class="all"><input type="checkbox" id="agAll"> 마케팅 정보 수신 동의 <button type="button" class="v tg" id="agTg" aria-label="자세히">▾</button></label>
-          <div class="sub" id="agSub">
-          <label><input type="checkbox" class="ag" id="agPrivacy"> 마케팅 활용을 위한 개인정보 수집·이용 동의 <button type="button" class="v" data-t="t1">보기</button></label>
-          <div class="terms" id="t1">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 무료 E-BOOK 제공(문자·카카오톡·이메일), 신청 확인<br>보유 기간: 목적 달성 또는 동의 철회 시 지체 없이 파기(최대 2년)<br>동의를 거부할 수 있으나, 거부 시 E-BOOK을 받을 수 없습니다.</div>
-          <label><input type="checkbox" class="ag" id="agMarketing"> 마케팅 수신 동의(문자, 카카오톡, 이메일) <button type="button" class="v" data-t="t2">보기</button></label>
-          <div class="terms" id="t2">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자·이메일)<br>보유 기간: 동의일로부터 2년 또는 동의 철회 시까지<br>귀하는 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 무료 E-BOOK 및 관련 정보를 제공받을 수 없습니다. 받은 뒤에는 언제든 수신 거부할 수 있습니다.</div>
-          </div>
-        </div>
-      </div>
-      <div class="dots"><i class="on"></i><s></s><i></i></div>
-      <button class="main" id="submit1" disabled>E-BOOK 받아보기</button>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="stepTitle">
+  <div class="sheet" id="sheet">
+    <div class="sh-top">
+      <button class="ic hide" id="backBtn" aria-label="이전"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m15 5-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="bar" aria-hidden="true"><i id="barFill"></i></div>
+      <button class="ic" id="closeBtn" aria-label="닫기"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
     </div>
 
-    <!-- STEP 3 -->
+    <!-- 신청 단계 (한 화면에 한 질문) -->
+    <div id="s1">
+      <div class="sh-body" id="shBody">
+        <section class="step on" data-step="1">
+          <h3 id="stepTitle">이름을 알려주세요</h3>
+          <div class="field"><label for="name">이름</label><input class="in" id="name" maxlength="20" autocomplete="name" enterkeyhint="next" placeholder="홍길동"></div>
+        </section>
+
+        <section class="step" data-step="2">
+          <h3>휴대폰 번호를 알려주세요</h3>
+          <p class="desc">신청 즉시 E-BOOK을 열어드려요</p>
+          <div class="field"><label for="phone">휴대폰 번호</label><input class="in" id="phone" type="tel" inputmode="numeric" maxlength="20" value="010" autocomplete="tel" enterkeyhint="done"></div>
+        </section>
+
+        <section class="step" data-step="3">
+          <h3>문자로 받은<br>인증번호 6자리</h3>
+          <p class="desc" id="codeDesc">입력하면 바로 확인해요</p>
+          <div class="field"><label for="code">인증번호</label><div id="codeRow"><input class="in" id="code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000"><span class="timer" id="timer"></span></div></div>
+          <button type="button" class="resend" id="resend">인증번호 다시 받기</button>
+        </section>
+
+        <section class="step" data-step="4">
+          <h3>마지막으로<br>동의해 주세요</h3>
+          <div class="agree">
+            <label class="ck all agSubOn"><input type="checkbox" id="agAll"><span class="box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">전체 동의</span><button type="button" class="tg" id="agTg" aria-label="자세히"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></label>
+            <div id="agSub" class="on">
+              <div class="sub-row">
+                <label class="ck"><input type="checkbox" class="ag" id="agPrivacy"><span class="box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">마케팅 활용을 위한 개인정보 수집·이용 동의</span><button type="button" class="v" data-t="t1">보기</button></label>
+                <div class="terms" id="t1">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 무료 E-BOOK 제공(문자·카카오톡·이메일), 신청 확인<br>보유 기간: 목적 달성 또는 동의 철회 시 지체 없이 파기(최대 2년)<br>동의를 거부할 수 있으나, 거부 시 E-BOOK을 받을 수 없습니다.</div>
+                <label class="ck"><input type="checkbox" class="ag" id="agMarketing"><span class="box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">마케팅 수신 동의(문자, 카카오톡, 이메일)</span><button type="button" class="v" data-t="t2">보기</button></label>
+                <div class="terms" id="t2">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자·이메일)<br>보유 기간: 동의일로부터 2년 또는 동의 철회 시까지<br>귀하는 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 무료 E-BOOK 및 관련 정보를 제공받을 수 없습니다. 받은 뒤에는 언제든 수신 거부할 수 있습니다.</div>
+              </div>
+            </div>
+          </div>
+          <div class="field opt"><label for="email">이메일로도 받을래요 (선택)</label><input class="in" id="email" type="email" maxlength="100" autocomplete="email" placeholder="example@gmail.com" enterkeyhint="done"></div>
+        </section>
+
+        <div class="hint" id="hint1" aria-live="polite"></div>
+      </div>
+      <div class="sh-foot">
+        <button class="btn on" id="next1" disabled>다음</button>
+        <button class="btn" id="sendCode" disabled>인증번호 받기</button>
+        <button class="btn" id="checkCode" disabled>확인</button>
+        <button class="btn" id="submit1" disabled>E-BOOK 받기</button>
+      </div>
+    </div>
+
+    <!-- 완료 -->
     <div id="s3" style="display:none">
+      <div class="done-ic"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" stroke="#191f28" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <h3 id="s3title">E-BOOK이 준비되었습니다.</h3>
-      <a class="main" id="pdfBtn2" href="#" data-track="ebook_open" style="display:block;text-align:center;text-decoration:none;background:var(--red)">E-BOOK 바로 읽기 (내 E-BOOK 페이지)</a>
-      <p class="center" style="font-size:13px;color:#777;margin-top:8px">나중에 다시 읽을 수 있게 이 페이지를 저장해 두세요.</p>
+      <p class="desc">나중에 다시 읽을 수 있게 이 페이지를 저장해 두세요.</p>
+      <a class="btn" id="pdfBtn2" href="#" data-track="ebook_open">E-BOOK 바로 읽기</a>
       <div class="ft">
         <b>혼자서 더 빠르게 바꾸고 싶다면</b>
         <p>이 책의 원칙을 실제 만남과 대화에 적용하는 <strong>패스트트랙</strong></p>
-        <a id="ftBtn" href="fasttrack.html?src=free_done" data-track="fasttrack_after">패스트트랙 보러가기 · 99,000원</a>
+        <a id="ftBtn" href="fasttrack.html?src=free_done" data-track="fasttrack_after"><span>패스트트랙 보러가기 · 99,000원</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m9 5 7 7-7 7" stroke="#b0b8c1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
-      <div class="dots"><i class="done"></i><s class="done"></s><i class="on"></i></div>
-      <button class="main" id="close3">확인</button>
+      <button class="btn gray" id="close3">확인</button>
     </div>
   </div>
 </div>
@@ -267,62 +337,128 @@ function track(type, target) {
 track("view", "free_landing");
 document.querySelectorAll("a[data-track]").forEach(a => a.addEventListener("click", () => track("click", a.dataset.track)));
 
+/* ===== 단계(한 화면에 한 질문) ===== */
+const BTN = { 1: "next1", 2: "sendCode", 3: "checkCode", 4: "submit1" };
+const LABEL = { next1: "다음", sendCode: "인증번호 받기", checkCode: "확인", submit1: "E-BOOK 받기" };
+let step = 1, token = null, timerId = null;
+const hint = (el, t, ok) => { el.textContent = t; el.className = "hint " + (ok ? "ok" : "err"); };
+const clearHint = () => hint($("hint1"), "", true);
+const phoneVal = () => $("phone").value.replace(/[^0-9]/g, "");
+const phoneOk = () => /^01[016789]\d{7,8}$/.test(phoneVal());
+/* 버튼 로딩: 같은 버튼을 흐린 색 + "확인 중…"으로. 성공하면 그대로 다음 화면, 실패할 때만 원래대로 */
+function busy(id, text) { const b = $(id); b.disabled = true; b.classList.add("busy"); b.textContent = text; }
+function unbusy(id) { const b = $(id); b.classList.remove("busy"); b.textContent = LABEL[id]; }
+
+function goStep(n) {
+  step = n;
+  document.querySelectorAll("#s1 .step").forEach(s => s.classList.toggle("on", +s.dataset.step === n));
+  Object.values(BTN).forEach(id => $(id).classList.toggle("on", id === BTN[n]));
+  unbusy(BTN[n]);
+  const sec = document.querySelector('#s1 .step[data-step="' + n + '"]');
+  (sec.querySelector(".field") || sec).after($("hint1"));  // 오류 문구는 입력칸 바로 아래
+  clearHint();
+  $("backBtn").classList.toggle("hide", n === 1);
+  $("barFill").style.width = (n * 25) + "%";
+  document.querySelectorAll("#s1 .step h3").forEach(h => h.removeAttribute("id"));
+  sec.querySelector("h3").id = "stepTitle";
+  if (n === 2 && !SMS_VERIFY) $("sendCode").textContent = "다음";
+  refreshStep();
+  const f = { 1: "name", 2: "phone", 3: "code" }[n];
+  if (f && $("modal").classList.contains("on")) setTimeout(() => { const el = $(f); el.focus(); const L = el.value.length; try { el.setSelectionRange(L, L); } catch (e) {} }, 60);
+}
+function refreshStep() {
+  $("next1").disabled = !$("name").value.trim();
+  if (!$("sendCode").classList.contains("busy")) $("sendCode").disabled = !phoneOk();
+  if (!$("checkCode").classList.contains("busy")) $("checkCode").disabled = $("code").value.length !== 6;
+  refresh1();
+}
+
 /* 팝업 열고 닫기 */
-$("openBtn").onclick = () => { $("modal").classList.add("on"); track("click", "cta_open"); };
+$("openBtn").onclick = () => { $("modal").classList.add("on"); track("click", "cta_open"); if ($("s1").style.display !== "none") goStep(step); };
 $("closeBtn").onclick = () => $("modal").classList.remove("on");
 $("close3").onclick = () => $("modal").classList.remove("on");
-document.getElementById("agTg").onclick = e => { e.preventDefault(); e.stopPropagation(); document.getElementById("agSub").classList.toggle("on"); };
-document.querySelectorAll(".v:not(.tg)").forEach(b => b.onclick = e => { e.preventDefault(); const t = $(b.dataset.t); t.style.display = t.style.display === "block" ? "none" : "block"; });
+$("modal").addEventListener("click", e => { if (e.target === $("modal")) $("modal").classList.remove("on"); });
+$("backBtn").onclick = () => { if (step === 4) goStep(SMS_VERIFY ? 3 : 2); else if (step > 1) goStep(step - 1); };
+document.getElementById("agTg").onclick = e => { e.preventDefault(); e.stopPropagation(); document.getElementById("agSub").classList.toggle("on"); e.currentTarget.closest(".ck").classList.toggle("agSubOn", $("agSub").classList.contains("on")); };
+document.querySelectorAll(".v:not(.tg)").forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation(); const t = $(b.dataset.t); t.style.display = t.style.display === "block" ? "none" : "block"; });
 
-/* STEP 1: 휴대폰 인증 */
-let token = null, timerId = null;
-const hint = (el, t, ok) => { el.textContent = t; el.className = "hint " + (ok ? "ok" : "err"); };
-const phoneVal = () => $("phone").value.replace(/[^0-9]/g, "");
-$("phone").addEventListener("input", () => { token = null; refresh1(); });
+/* STEP 1: 이름 */
+$("name").addEventListener("input", () => { clearHint(); refreshStep(); });
+$("next1").onclick = () => { if (!$("name").value.trim()) return hint($("hint1"), "이름을 입력해 주세요."); goStep(2); };
 
-$("sendCode").onclick = async () => {
+/* STEP 2: 휴대폰 번호 (010 미리 채움, 숫자만, 붙여넣은 010 중복 제거) */
+$("phone").addEventListener("input", () => {
+  const el = $("phone");
+  let d = el.value.replace(/[^0-9]/g, "");
+  if (d.length > 11 && d.startsWith("010010")) d = d.slice(3);
+  d = d.slice(0, 11);
+  if (el.value !== d) { el.value = d; try { el.setSelectionRange(d.length, d.length); } catch (e) {} }
+  token = null; clearHint(); refreshStep();
+});
+
+/* 인증번호 받기 (기존 sendCode 로직) — again=true 는 3단계의 "다시 받기" */
+async function sendCodeFlow(again) {
   const p = phoneVal();
   if (!/^01[016789]\d{7,8}$/.test(p)) return hint($("hint1"), "휴대전화 번호를 확인해 주세요.");
-  $("sendCode").disabled = true;
+  if (!SMS_VERIFY) return goStep(4);
+  if (token && !again) return goStep(4);  // 이미 인증한 번호면 바로 다음
+  if (again) { $("resend").disabled = true; } else busy("sendCode", "보내는 중…");
   const r = await api({ kind: "sendCode", phone: p }).catch(() => ({ ok: false, error: "잠시 후 다시 시도해 주세요." }));
-  $("sendCode").disabled = false;
-  if (r.skip) { SMS_VERIFY = false; $("sendCode").style.display = "none"; refresh1(); return hint($("hint1"), "지금은 문자 인증 없이 바로 신청할 수 있어요.", true); }
-  if (!r.ok) return hint($("hint1"), r.error || "발송 실패");
-  $("sendCode").textContent = "재전송"; $("codeRow").style.display = "flex"; $("code").value = ""; $("code").focus();
-  hint($("hint1"), ENDPOINT ? "인증번호를 문자로 보냈습니다." : "테스트 모드: 인증번호 000000", true);
+  $("resend").disabled = false;
+  if (r.skip) { SMS_VERIFY = false; return goStep(4); }
+  if (!r.ok) { if (!again) { unbusy("sendCode"); refreshStep(); } return hint($("hint1"), r.error || "발송 실패"); }
+  $("code").value = "";
+  if (!again) goStep(3); else { refreshStep(); $("code").focus(); }
+  hint($("hint1"), ENDPOINT ? (again ? "인증번호를 다시 보냈어요." : "인증번호를 문자로 보냈어요.") : "테스트 모드: 인증번호 000000", true);
   let left = 300; clearInterval(timerId);
   const tick = () => { $("timer").textContent = String(Math.floor(left / 60)).padStart(2, "0") + ":" + String(left % 60).padStart(2, "0"); if (left-- <= 0) { clearInterval(timerId); $("timer").textContent = "만료"; } };
   tick(); timerId = setInterval(tick, 1000);
-};
+}
+$("sendCode").onclick = () => sendCodeFlow(false);
+$("resend").onclick = () => sendCodeFlow(true);
+$("phone").addEventListener("keydown", e => { if (e.key === "Enter" && !$("sendCode").disabled) $("sendCode").click(); });
+$("name").addEventListener("keydown", e => { if (e.key === "Enter" && !$("next1").disabled) $("next1").click(); });
+
+/* STEP 3: 인증번호 — 6자리 입력되면 자동 확인 (기존 verifyCode 로직) */
+let verifying = false;
+$("code").addEventListener("input", () => {
+  const el = $("code"); const d = el.value.replace(/[^0-9]/g, "").slice(0, 6);
+  if (el.value !== d) el.value = d;
+  clearHint(); refreshStep();
+  if (d.length === 6 && !verifying) $("checkCode").click();
+});
 $("checkCode").onclick = async () => {
+  if (verifying || $("code").value.length !== 6) return;
+  verifying = true; busy("checkCode", "확인 중…");
   const r = await api({ kind: "verifyCode", phone: phoneVal(), code: $("code").value.trim() }).catch(() => ({ ok: false }));
-  if (!r.ok) return hint($("hint1"), r.error || "인증번호가 맞지 않습니다.");
+  verifying = false;
+  if (!r.ok) { unbusy("checkCode"); refreshStep(); hint($("hint1"), r.error || "인증번호가 맞지 않습니다."); $("code").select(); return; }
   token = r.token; clearInterval(timerId); $("timer").textContent = "";
-  $("codeRow").style.display = "none"; $("phone").readOnly = true; $("sendCode").disabled = true;
-  hint($("hint1"), "휴대전화 번호 인증이 완료되었습니다.", true); refresh1();
+  goStep(4);
 };
 
-/* 동의 */
+/* STEP 4: 동의 */
 const ags = [...document.querySelectorAll(".ag")];
-$("agAll").onchange = e => { ags.forEach(a => a.checked = e.target.checked); refresh1(); };
-ags.forEach(a => a.onchange = () => { $("agAll").checked = ags.every(x => x.checked); refresh1(); });
-$("name").addEventListener("input", refresh1);
-function refresh1() { $("submit1").disabled = !($("name").value.trim() && (SMS_VERIFY ? token : /^01[016789]\d{7,8}$/.test(phoneVal())) && ags.every(a => a.checked)); }
-if (!SMS_VERIFY) { $("sendCode").style.display = "none"; }
+$("agAll").onchange = e => { ags.forEach(a => a.checked = e.target.checked); clearHint(); refresh1(); };
+ags.forEach(a => a.onchange = () => { $("agAll").checked = ags.every(x => x.checked); clearHint(); refresh1(); });
+function refresh1() { if ($("submit1").classList.contains("busy")) return; $("submit1").disabled = !($("name").value.trim() && (SMS_VERIFY ? token : /^01[016789]\d{7,8}$/.test(phoneVal())) && ags.every(a => a.checked)); }
+$("email").addEventListener("input", clearHint);
 
 $("submit1").onclick = async () => {
-  $("submit1").disabled = true; $("submit1").textContent = "보내는 중…";
   const email = $("email").value.trim();
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { hint($("hint1"), "이메일 주소를 확인해 주세요. (비워둬도 됩니다)"); $("submit1").disabled = false; $("submit1").textContent = "E-BOOK 받아보기"; return; }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { hint($("hint1"), "이메일 주소를 확인해 주세요. (비워둬도 됩니다)"); return; }
+  busy("submit1", "보내는 중…");
   const r = await api({ kind: "lead", name: $("name").value.trim(), phone: phoneVal(), email, token: SMS_VERIFY ? token : undefined, agreePrivacy: true, agreeMarketing: true }).catch(() => ({ ok: false }));
-  if (!r.ok) { hint($("hint1"), r.error || "잠시 후 다시 시도해 주세요."); $("submit1").disabled = false; $("submit1").textContent = "E-BOOK 받아보기"; return; }
+  if (!r.ok) { unbusy("submit1"); refresh1(); hint($("hint1"), r.error || "잠시 후 다시 시도해 주세요."); return; }
   track("submit", "free_ebook");
   if (r.token) token = r.token;
   $("pdfBtn2").href = r.my || r.pdf || "#";
   try { if (r.my) localStorage.setItem("yanam_my", r.my); } catch (e) {}
   // 패스트트랙 버튼은 결제 전에 판매 페이지(fasttrack.html)를 보여 준다
   $("s1").style.display = "none"; $("s3").style.display = "block";
+  $("backBtn").classList.add("hide"); $("barFill").style.width = "100%";
 };
+goStep(1);
 
 </script>
 <script>

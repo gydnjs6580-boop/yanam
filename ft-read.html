@@ -5,35 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>패스트트랙 읽기 | 야심한 남자</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#111111">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="패스트트랙">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
   :root{--red:#e2483d;--gold:#d9b15f;--line:#e6e8ec;--sub:#6b6f76}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:#0e0f12;color:#f3f1ec;line-height:1.6;word-break:keep-all}
-  .wrap{max-width:440px;margin:0 auto;padding:44px 18px 40px}
-  h1{font-size:25px;font-weight:900;text-align:center;letter-spacing:-.02em}
-  h1 em{font-style:normal;color:var(--gold)}
-  .lead{color:#a3a7b0;text-align:center;font-size:14.5px;margin:8px 0 22px}
-  .card{background:#fff;color:#111;border-radius:18px;padding:22px 18px}
-  .lbl{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:#fff;color:#191f28;line-height:1.6;word-break:keep-all}
+  /* 공통(읽기 화면의 코드 창에서도 씀) */
   .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:14px;font:inherit;font-size:17px}
   .in:focus{outline:none;border-color:#111}
-  .code{letter-spacing:.45em;text-align:center;font-weight:800;margin-top:12px}
   .btn{display:block;width:100%;border:0;border-radius:12px;background:var(--red);color:#fff;padding:16px;font:inherit;font-size:17px;font-weight:800;cursor:pointer;margin-top:14px}
   .btn:disabled{background:#bbb}
   .help{font-size:13px;color:#777;margin-top:8px}
-  .err{color:#d32f2f;font-size:13.5px;margin-top:10px;min-height:18px}
-  .tips{margin-top:18px;font-size:13px;color:#a3a7b0}.tips li{margin:5px 0 5px 18px}
   .hide{display:none!important}
+  /* 로그인 (밝은 화면 · 한 화면에 한 가지) */
+  #login{--bg:#ffffff;--surface:#f2f4f6;--text:#191f28;--sub:#6b7684;--line:#e5e8eb;--primary:#e2483d;--primary-press:#c93b31;--primary-disabled:#f6c6c2;--err:#f04452;background:var(--bg);color:var(--text);min-height:100vh;font-size:16px;line-height:1.55}
+  #login .lg{max-width:480px;margin:0 auto;padding:0 22px calc(120px + env(safe-area-inset-bottom))}
+  #login .lnav{height:56px;display:flex;align-items:center;margin:0 -10px}
+  #login .back{width:44px;height:44px;border:0;background:none;border-radius:12px;display:grid;place-items:center;cursor:pointer}
+  #login .back:active{background:var(--surface)}
+  #login .title{font-size:25px;font-weight:700;line-height:1.35;letter-spacing:-.02em;margin-top:12px}
+  #login .lead{font-size:16px;color:var(--sub);margin-top:8px}
+  #login .lead b{color:var(--text);font-weight:600}
+  #login .field{margin-top:36px}
+  #login .lbl{display:block;font-size:14px;font-weight:600;color:var(--sub);margin-bottom:4px}
+  #login .in{height:56px;border:0;border-bottom:2px solid var(--line);border-radius:0;background:none;padding:0 2px;font-family:inherit;font-size:18px;font-weight:500;color:var(--text);transition:border-color .15s}
+  #login .in::placeholder{color:#b0b8c1;font-weight:400;letter-spacing:normal}
+  #login .in:focus{outline:none;border-bottom-color:var(--text)}
+  #login .in.code{font-size:26px;font-weight:700;letter-spacing:.4em}
+  #login .forgot{display:inline-block;margin-top:18px;background:none;border:0;padding:6px 0;color:var(--sub);text-decoration:underline;text-underline-offset:3px;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer}
+  #login .forgot:disabled{color:#b0b8c1;cursor:default}
+  #login .err{color:var(--err);font-size:14px;margin-top:12px;min-height:20px}
+  #login .tips{margin-top:40px;background:var(--surface);border-radius:16px;padding:16px 18px 16px 34px;font-size:13.5px;color:var(--sub);line-height:1.6}
+  #login .tips li{margin:4px 0}
+  #login .cta{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:16px 0 calc(12px + env(safe-area-inset-bottom));background:linear-gradient(rgba(255,255,255,0),#fff 22px)}
+  #login .cta .in-cta{max-width:480px;margin:0 auto;padding:0 20px}
+  #login .btn{display:flex;align-items:center;justify-content:center;height:56px;margin:0;padding:0;border-radius:14px;background:var(--primary);font-size:17px;font-weight:700;transition:background .15s}
+  #login .btn:active{background:var(--primary-press)}
+  #login .btn:disabled{background:var(--primary-disabled);cursor:default}
   /* 읽기 */
-  #reader{background:#2a2c31;min-height:100vh}
+  #reader{background:#2a2c31;color:#f3f1ec;min-height:100vh}
   .top{position:fixed;left:0;right:0;top:0;height:50px;background:#111;display:flex;align-items:center;gap:8px;padding:0 10px;z-index:10}
-  .top button{background:none;border:1px solid #3a3d44;color:#fff;border-radius:8px;padding:6px 10px;font:inherit;font-size:13.5px;cursor:pointer}
-  .seg{display:flex;border:1px solid #3a3d44;border-radius:8px;overflow:hidden;margin:0 auto}
-  .seg button{border:0;border-radius:0;padding:6px 14px}
+  .top button{flex:none;height:34px;background:#24262c;border:0;color:#fff;border-radius:10px;padding:0 12px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+  .top button:active{background:#33363d}
+  .seg{display:flex;background:#24262c;border-radius:10px;padding:3px;gap:2px;margin:0 auto}
+  .seg button{height:28px;border-radius:8px;padding:0 14px;background:none}
   .seg button.on{background:var(--gold);color:#111;font-weight:800}
   .bar{position:fixed;left:0;top:50px;height:3px;background:var(--red);z-index:10;width:0;transition:width .2s}
   .pages{max-width:820px;margin:0 auto;padding:58px 0 70px}
@@ -56,33 +74,41 @@
   .toc a{display:flex;justify-content:space-between;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);color:#111;text-decoration:none;font-size:14.5px}
   .toc a small{color:var(--sub);flex:none}
   .toc a.sec{font-weight:800;background:#f6f6f8;padding-left:6px}
-.forgot{display:block;margin:12px auto 0;background:none;border:0;color:#666;text-decoration:underline;font-size:14px;cursor:pointer}
 </style>
 </head>
 <body>
 
 <!-- 로그인 -->
-<div class="wrap" id="login">
-  <h1>패스트트랙 <em>읽기</em></h1>
-  <p class="lead" id="lead">결제하신 휴대폰 번호를 넣어 주세요.<br>한 번 열면 이 기기에서는 90일 동안 바로 열려요.</p>
-  <div class="card">
-    <label class="lbl" for="ph">결제한 휴대폰 번호</label>
-    <input class="in" id="ph" inputmode="numeric" value="010" placeholder="010" autocomplete="tel">
-    <button class="btn" id="go">패스트트랙 열기</button>
-    <div id="codeBox" class="hide">
-      <p class="help" id="codeHelp" style="margin-top:14px">이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)</p>
-      <input class="in code" id="code" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="● ● ● ● ● ●">
-      <button class="btn" id="verify">확인</button>
-      <button type="button" class="forgot" id="forgot">코드를 잊었어요</button>
+<div id="login">
+ <div class="lg">
+  <div class="lnav"><button type="button" class="back hide" id="backPh" aria-label="번호 바꾸기"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  <div id="phStep">
+    <h1 class="title">패스트트랙 읽기</h1>
+    <p class="lead" id="lead">결제하신 휴대폰 번호를 넣어 주세요.<br>한 번 열면 이 기기에서는 90일 동안 바로 열려요.</p>
+    <div class="field">
+      <label class="lbl" for="ph">결제한 휴대폰 번호</label>
+      <input class="in" id="ph" inputmode="numeric" value="010" placeholder="010" autocomplete="tel" enterkeyhint="go">
     </div>
-    <div class="err" id="err"></div>
+    <ul class="tips">
+      <li>새 휴대폰이나 PC에서 열 때는 결제하신 번호로 문자 인증을 한 번 받아요.</li>
+      <li>한 번호로 기기 3대까지 볼 수 있어요. 4번째 기기에서 열면 가장 오래된 기기는 자동으로 로그아웃돼요.</li>
+      <li>모든 쪽에 구매자 번호가 표시돼요. 공유는 삼가 주세요.</li>
+      <li>문의: 네이버 카페 「어트랙티버」</li>
+    </ul>
+    <div class="cta"><div class="in-cta"><button class="btn" id="go">패스트트랙 열기</button></div></div>
   </div>
-  <ul class="tips">
-    <li>새 휴대폰이나 PC에서 열 때는 결제하신 번호로 문자 인증을 한 번 받아요.</li>
-    <li>한 번호로 기기 3대까지 볼 수 있어요. 4번째 기기에서 열면 가장 오래된 기기는 자동으로 로그아웃돼요.</li>
-    <li>모든 쪽에 구매자 번호가 표시돼요. 공유는 삼가 주세요.</li>
-    <li>문의: 네이버 카페 「어트랙티버」</li>
-  </ul>
+  <div id="codeBox" class="hide">
+    <h1 class="title" id="codeTitle">처음 받은 열람 코드 6자리를 입력해 주세요</h1>
+    <p class="lead" id="codeHelp">이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)</p>
+    <div class="field">
+      <label class="lbl" for="code" id="codeLbl">열람 코드</label>
+      <input class="in code" id="code" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="6자리">
+    </div>
+    <button type="button" class="forgot" id="forgot">코드를 잊었어요</button>
+    <div class="cta"><div class="in-cta"><button class="btn" id="verify">확인</button></div></div>
+  </div>
+  <div class="err" id="err" role="alert"></div>
+ </div>
 </div>
 
 <!-- 읽기 -->
@@ -116,7 +142,7 @@ const fromPay = /from=pay/.test(location.search + location.hash);
 if (fromPay) $("lead").innerHTML = "결제가 완료되었어요! 결제하신 휴대폰 번호를 넣으면<br>바로 열려요.";
 
 /* ---- 로그인 ---- */
-$("ph").oninput = () => { let v = $("ph").value.replace(/\D/g, ""); if (v.length > 11 && v.startsWith("010")) v = v.slice(3); $("ph").value = v.slice(0, 11); }; // 010 위에 번호 전체를 붙여넣어도 정리
+$("ph").oninput = () => { let v = $("ph").value.replace(/\D/g, ""); if (v.length > 11 && /^01001[016789]/.test(v)) v = v.slice(3); $("ph").value = v.slice(0, 11); }; // 010 위에 번호 전체를 붙여넣어도 정리
 $("ph").onfocus = () => { const v = $("ph"); setTimeout(() => v.setSelectionRange(v.value.length, v.value.length), 0); }; // 010 뒤에 커서
 $("go").onclick = async () => {
   const phone = $("ph").value;
@@ -126,10 +152,20 @@ $("go").onclick = async () => {
   if (r.ok) { NEWCODE = r.code || ""; MAILED = r.mailed || ""; FIRST = !!r.first; $("go").textContent = "여는 중…"; return enter(r.token); } // 성공하면 버튼을 다시 빨갛게 되돌리지 않음(깜빡임 방지)
   if (r.need !== "code") { idle($("go"), "패스트트랙 열기"); return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요."; }
   if (r.sms) {
-    $("codeHelp").innerHTML = "새 기기에서 처음 여시네요. 결제하신 번호로 보낸 <b>문자 인증번호 6자리</b>를 넣어 주세요.";
+    $("codeTitle").textContent = "문자로 받은 인증번호 6자리를 입력해 주세요"; $("codeLbl").textContent = "인증번호";
+    $("codeHelp").innerHTML = "<b>" + phone.replace(/^(\d{3})(\d{3,4})(\d{4})$/, "$1-$2-$3") + "</b>(으)로 보냈어요. 새 기기에서 처음 열 때 한 번만 하면 돼요.";
     $("code").setAttribute("autocomplete", "one-time-code"); $("forgot").textContent = "인증번호 다시 받기"; $("forgot").dataset.sms = "1";
   }
-  $("go").classList.add("hide"); idle($("go"), "패스트트랙 열기"); $("codeBox").classList.remove("hide"); $("code").focus();
+  $("go").classList.add("hide"); idle($("go"), "패스트트랙 열기"); $("phStep").classList.add("hide"); $("backPh").classList.remove("hide"); $("codeBox").classList.remove("hide"); $("code").focus();
+};
+$("ph").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); if (!$("go").disabled) $("go").click(); } });
+$("backPh").onclick = () => { // 번호 바꾸기: 첫 화면으로
+  if ($("verify").disabled) return;
+  $("codeBox").classList.add("hide"); $("backPh").classList.add("hide"); $("phStep").classList.remove("hide"); $("go").classList.remove("hide");
+  $("code").value = ""; $("code").setAttribute("autocomplete", "off"); delete $("forgot").dataset.sms; $("forgot").textContent = "코드를 잊었어요";
+  $("codeTitle").textContent = "처음 받은 열람 코드 6자리를 입력해 주세요"; $("codeLbl").textContent = "열람 코드";
+  $("codeHelp").innerHTML = "이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)";
+  $("err").textContent = ""; $("err").style.color = ""; $("ph").focus();
 };
 $("code").oninput = () => { $("code").value = $("code").value.replace(/\D/g, ""); if ($("code").value.length === 6) verify(); };
 $("verify").onclick = () => verify();

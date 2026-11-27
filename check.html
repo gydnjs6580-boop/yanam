@@ -8,140 +8,190 @@
 <meta property="og:title" content="1분 연애 기초 진단 | 야심한 남자">
 <meta property="og:description" content="10개 질문으로 내 연애 유형과 먼저 고칠 것 3가지를 무료로 확인하세요.">
 <meta property="og:image" content="https://yt3.ggpht.com/pw5Seg4uBVsknZyVGKemULMm8S301eGLrpT6KOLolBIXeyqCNDEjFWmGWuGCs2Ogjbjbth6roQ=s800-c-k-c0x00ffffff-no-rj">
-<meta name="theme-color" content="#0e0f12">
+<meta name="theme-color" content="#ffffff">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-  :root{--bg:#0e0f12;--card:#17191f;--line:#2a2e37;--text:#f3f1ec;--sub:#a3a7b0;--accent:#d9b15f;--red:#e2483d}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);line-height:1.55;word-break:keep-all;min-height:100vh}
-  .top{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
-  .top img{width:30px;height:30px;border-radius:50%;background:#22252d}
-  .top b{font-size:15px}
-  .wrap{max-width:480px;margin:0 auto;padding:0 18px 40px}
-  /* 시작 화면 */
-  .intro{text-align:center;padding:48px 0 0}
-  .intro .chip{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
-  .intro h1{font-size:30px;font-weight:900;line-height:1.3;letter-spacing:-.03em;margin:18px 0 14px}
-  .intro h1 em{font-style:normal;color:var(--accent)}
-  .intro p{color:var(--sub);font-size:15.5px}
-  .gets{display:flex;flex-direction:column;gap:10px;margin:30px 0;text-align:left}
-  .get{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center;font-size:15px}
-  .get i{font-style:normal;flex:none;width:28px;height:28px;border-radius:50%;background:rgba(217,177,95,.16);color:var(--accent);display:grid;place-items:center;font-weight:900;font-size:13px}
-  .big{display:block;width:100%;border:0;border-radius:999px;background:var(--red);color:#fff;padding:17px 10px;font-size:19px;font-weight:900;font-family:inherit;cursor:pointer;box-shadow:0 8px 24px rgba(226,72,61,.35);text-align:center;text-decoration:none}
-  .big:disabled{background:#555;box-shadow:none;cursor:default}
-  .small{color:var(--sub);font-size:12.5px;text-align:center;margin-top:10px}
-  /* 질문 카드 */
-  .card{background:#fff;color:#111;border-radius:20px;padding:22px 18px;margin-top:22px}
-  .bar{display:flex;gap:4px;margin-bottom:16px}
-  .bar i{flex:1;height:4px;border-radius:2px;background:#e5e7eb}
-  .bar i.on{background:var(--red)}
-  .qn{font-size:13px;color:var(--red);font-weight:700}
-  .qt{font-size:21px;font-weight:800;line-height:1.4;margin:6px 0 6px;letter-spacing:-.02em}
-  .qs{font-size:13.5px;color:#777;margin-bottom:14px}
-  .opt{display:block;width:100%;text-align:left;border:1px solid #e3e6ea;background:#fff;border-radius:12px;padding:14px 16px;margin-bottom:8px;font-family:inherit;font-size:16px;color:#111;cursor:pointer}
-  .opt small{display:block;font-size:13px;color:#888;margin-top:2px}
-  .opt.on{border-color:#111;background:#f6f6f6;font-weight:700}
-  .nav{display:flex;gap:8px;margin-top:10px}
-  .nav button{flex:1;border:1px solid #ddd;background:#fff;border-radius:12px;padding:13px;font-family:inherit;font-size:15px;cursor:pointer;color:#333}
-  .warn{font-size:12.5px;color:var(--red);text-align:center;margin-top:12px}
+  :root{--bg:#ffffff;--surface:#f2f4f6;--text:#191f28;--sub:#6b7684;--line:#e5e8eb;--primary:#e2483d;--primary-press:#c93b31;--primary-disabled:#f6c6c2;--err:#f04452;--tint:#fdeeed}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.55;word-break:keep-all;min-height:100vh;padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+  body[data-step="result"]{padding-bottom:24px}
+  .hide{display:none!important}
+  .wrap{max-width:480px;margin:0 auto;padding:0 22px}
+  /* 상단 */
+  .top{max-width:480px;margin:0 auto;display:flex;align-items:center;gap:8px;height:56px;padding:0 22px}
+  .top img{width:28px;height:28px;border-radius:50%;background:var(--surface)}
+  .top b{font-size:15px;font-weight:700}
+  body[data-step="quiz"] .top,body[data-step="contact"] .top{display:none}
+  .navbar{display:flex;align-items:center;justify-content:space-between;height:56px;margin:0 -10px}
+  .back{width:44px;height:44px;border:0;background:none;border-radius:12px;display:grid;place-items:center;cursor:pointer}
+  .back:active{background:var(--surface)}
+  .step{font-size:14px;font-weight:600;color:var(--sub);padding-right:10px}
+  .prog{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin:0 -22px}
+  .prog i{display:block;height:100%;background:var(--primary);border-radius:0 2px 2px 0;transition:width .25s ease}
+  /* 제목 */
+  .title{font-size:25px;font-weight:700;line-height:1.35;letter-spacing:-.02em;margin-top:20px}
+  .desc{font-size:16px;color:var(--sub);margin-top:8px}
+  /* 시작 */
+  .chip{display:inline-block;background:var(--tint);color:var(--primary);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:700;margin-top:20px}
+  .intro .title{font-size:26px;margin-top:12px}
+  .intro .title em{font-style:normal;color:var(--primary)}
+  .gets{margin-top:32px;display:flex;flex-direction:column;gap:4px}
+  .get{display:flex;align-items:center;gap:14px;min-height:56px;font-size:17px;font-weight:500}
+  .get i{font-style:normal;flex:none;width:36px;height:36px;border-radius:12px;background:var(--surface);color:var(--text);display:grid;place-items:center;font-weight:700;font-size:15px}
+  /* 하단 고정 버튼 */
+  .cta{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:16px 0 calc(12px + env(safe-area-inset-bottom));background:linear-gradient(rgba(255,255,255,0),#fff 22px)}
+  .cta .in-cta{max-width:480px;margin:0 auto;padding:0 20px}
+  .note{font-size:13px;color:var(--sub);text-align:center;margin-bottom:10px}
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;height:56px;border:0;border-radius:14px;background:var(--primary);color:#fff;font-family:inherit;font-size:17px;font-weight:700;cursor:pointer;text-decoration:none;transition:background .15s}
+  .btn:active{background:var(--primary-press)}
+  .btn:disabled{background:var(--primary-disabled);cursor:default}
+  /* 질문 */
+  .qt{font-size:24px;font-weight:700;line-height:1.35;letter-spacing:-.02em;margin-top:20px}
+  .qs{font-size:15px;color:var(--sub);margin-top:8px}
+  #opts{margin-top:28px;display:flex;flex-direction:column;gap:10px}
+  .opt{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:60px;text-align:left;border:0;background:var(--surface);border-radius:16px;padding:16px 18px;font-family:inherit;font-size:17px;font-weight:500;color:var(--text);cursor:pointer;line-height:1.4;transition:background .12s,color .12s}
+  .opt::after{content:"";flex:none;width:24px;height:24px;border-radius:50%;background:#d1d6db url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 12.5l3.2 3.2L17 9' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat;transition:background-color .12s}
+  .opt:active{background:#e8ebee}
+  .opt.on{background:var(--tint);color:var(--primary);font-weight:700}
+  .opt.on::after{background-color:var(--primary)}
+  .warn{font-size:13px;color:var(--sub);margin-top:22px}
   /* 연락처 */
-  .lbl{font-size:14px;font-weight:700;margin:14px 0 6px;display:block}
-  .in{width:100%;border:1px solid #dde1e6;border-radius:10px;padding:13px;font-size:16px;font-family:inherit;color:#111;background:#fff}
-  .in:focus{outline:none;border-color:#111}
-  .hint{font-size:13px;margin-top:8px;min-height:18px;color:#d32f2f}
-  .agree{background:#f4f5f7;border-radius:10px;margin-top:14px;padding:4px 14px}
-  .agree label{display:flex;align-items:center;gap:10px;padding:10px 0;font-size:14.5px;cursor:pointer}
-  .agree label.all{font-weight:800;border-bottom:1px solid #e3e6ea}
-  .agree input{width:19px;height:19px;accent-color:#111;flex:none}
-  .agree .v{margin-left:auto;font-size:12px;color:#777;text-decoration:underline;background:none;border:0;cursor:pointer;font-family:inherit}
-  .agree .sub{display:none;padding-left:8px}.agree .sub.on{display:block}.agree .tg{text-decoration:none;font-size:15px}
-  .terms{display:none;font-size:12px;color:#666;background:#fff;border-radius:8px;padding:10px;margin:-4px 0 8px;line-height:1.6}
-  .main{width:100%;border:0;border-radius:12px;background:#2b2b2b;color:#fff;padding:16px;font-size:17px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:14px}
-  .main:disabled{background:#bdbdbd;cursor:default}
+  .field{margin-top:36px}
+  .lbl{display:block;font-size:14px;font-weight:600;color:var(--sub);margin-bottom:4px}
+  .lbl span{font-weight:400}
+  .in{width:100%;height:56px;border:0;border-bottom:2px solid var(--line);border-radius:0;background:none;padding:0 2px;font-family:inherit;font-size:18px;font-weight:500;color:var(--text);transition:border-color .15s}
+  .in::placeholder{color:#b0b8c1;font-weight:400}
+  .in:focus{outline:none;border-bottom-color:var(--text)}
+  .hint{font-size:14px;color:var(--err);min-height:0;margin-bottom:8px}
+  .hint:empty{display:none}
+  .agree{margin-top:28px}
+  .agree label{display:flex;align-items:center;gap:12px;min-height:48px;font-size:15px;cursor:pointer;color:var(--text)}
+  .agree label.all{min-height:64px;background:var(--surface);border-radius:16px;padding:0 16px;font-size:17px;font-weight:700}
+  .agree input{-webkit-appearance:none;appearance:none;flex:none;width:24px;height:24px;margin:0;border-radius:50%;background:#d1d6db url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 12.5l3.2 3.2L17 9' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat;cursor:pointer;transition:background-color .12s}
+  .agree input:checked{background-color:var(--primary)}
+  .agree input:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+  .agree .sub{display:none;padding:6px 16px 0}.agree .sub.on{display:block}
+  .agree .sub input{width:20px;height:20px}
+  .agree .v{margin-left:auto;flex:none;font-size:14px;color:var(--sub);background:none;border:0;cursor:pointer;font-family:inherit;padding:8px 0 8px 8px}
+  .agree .tg{font-size:14px;width:32px;height:32px;padding:0;border-radius:8px;display:grid;place-items:center;transition:transform .15s}
+  .terms{display:none;font-size:13px;color:var(--sub);background:var(--surface);border-radius:12px;padding:12px 14px;margin:0 0 8px;line-height:1.65}
+  .agree + .field{margin-top:28px}
   /* 결과 */
-  .res-type{text-align:center;padding:10px 0 4px}
-  .res-type span{font-size:14px;color:#777}
-  .res-type h2{font-size:28px;font-weight:900;color:var(--red);margin:4px 0 8px;letter-spacing:-.02em}
-  .res-type p{font-size:15.5px;line-height:1.7;color:#333}
-  .fix{border-top:1px solid #eee;margin-top:18px;padding-top:16px}
-  .fix h4{font-size:16px;margin-bottom:10px}
-  .fix li{list-style:none;display:flex;gap:10px;font-size:15px;padding:7px 0;line-height:1.5}
-  .fix li b{flex:none;width:24px;height:24px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;font-size:13px}
-  .ft{margin-top:14px;border:2px solid var(--accent);border-radius:14px;padding:16px;text-align:center;background:#fffaf0;color:#111}
-  .ft b{font-size:16px}.ft p{font-size:13.5px;color:#555;margin:6px 0 12px}
-  .ft a{display:block;background:#1a1407;color:#f3d48f;border-radius:10px;padding:13px;font-weight:800;text-decoration:none}
-  .hide{display:none}
-  .biz{margin-top:30px;font-size:11.5px;color:#6f737b;text-align:center;line-height:1.8}
+  .res-type{margin-top:16px}
+  .res-type span{font-size:15px;color:var(--sub);font-weight:500}
+  .res-type h2{font-size:28px;font-weight:700;color:var(--primary);margin:4px 0 12px;letter-spacing:-.02em;line-height:1.3}
+  .res-type p{font-size:16px;line-height:1.7;color:var(--text)}
+  .fix{background:var(--surface);border-radius:16px;margin-top:24px;padding:20px 18px 12px}
+  .fix h4{font-size:17px;font-weight:700;margin-bottom:8px}
+  .fix li{list-style:none;display:flex;gap:12px;font-size:16px;padding:8px 0;line-height:1.5}
+  .fix li b{flex:none;width:24px;height:24px;margin-top:1px;border-radius:50%;background:var(--text);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+  .rch{font-size:14px;color:var(--sub);margin:20px 0 12px;line-height:1.6}
+  .ft{margin-top:12px;border:1px solid var(--line);border-radius:16px;padding:20px 18px}
+  .ft b{font-size:17px;font-weight:700}.ft p{font-size:14.5px;color:var(--sub);margin:4px 0 14px}
+  .ft p strong{color:var(--text)}
+  .ft a{display:flex;align-items:center;justify-content:center;height:52px;background:var(--surface);color:var(--text);border-radius:14px;font-size:16px;font-weight:700;text-decoration:none}
+  .ft a:active{background:#e8ebee}
+  .small{color:var(--sub);font-size:12.5px;margin-top:16px}
+  body[data-step="quiz"] .foot,body[data-step="contact"] .foot{display:none}
+  .biz{margin-top:24px;padding:20px 0 8px;border-top:1px solid var(--line);font-size:11.5px;color:#8b95a1;line-height:1.8}
 </style>
 </head>
-<body>
+<body data-step="intro">
 <div class="top"><img src="https://yt3.ggpht.com/pw5Seg4uBVsknZyVGKemULMm8S301eGLrpT6KOLolBIXeyqCNDEjFWmGWuGCs2Ogjbjbth6roQ=s120-c-k-c0x00ffffff-no-rj" alt=""><b>야심한 남자</b></div>
 
 <div class="wrap">
   <!-- 시작 -->
   <section id="intro" class="intro">
     <span class="chip">1분 · 무료</span>
-    <h1>나는 왜<br><em>두 번째 만남</em>이 안 될까?</h1>
-    <p>질문 10개에 답하면<br>내 연애 유형과 먼저 고칠 것 3가지를 알려드려요.</p>
+    <h1 class="title">나는 왜<br><em>두 번째 만남</em>이 안 될까?</h1>
+    <p class="desc">질문 10개에 답하면 내 연애 유형과<br>먼저 고칠 것 3가지를 알려드려요.</p>
     <div class="gets">
       <div class="get"><i>1</i>내 연애 유형 진단 결과</div>
       <div class="get"><i>2</i>지금 바로 고칠 것 3가지</div>
       <div class="get"><i>3</i>무료 E-BOOK 함께 제공</div>
     </div>
-    <button class="big" id="startBtn">내 연애 진단 시작하기</button>
-    <p class="small">설문을 끝까지 완료해야 진단 결과를 받을 수 있어요.</p>
+    <div class="cta"><div class="in-cta">
+      <p class="note">설문을 끝까지 완료해야 진단 결과를 받을 수 있어요.</p>
+      <button class="btn" id="startBtn">내 연애 진단 시작하기</button>
+    </div></div>
   </section>
 
   <!-- 질문 -->
-  <section id="quiz" class="card hide">
-    <div class="bar" id="bar"></div>
-    <div class="qn" id="qn"></div>
+  <section id="quiz" class="hide">
+    <div class="prog" id="bar"></div>
+    <div class="navbar">
+      <button class="back" id="prevBtn" aria-label="이전"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span class="step" id="qn"></span>
+    </div>
     <div class="qt" id="qt"></div>
     <div class="qs" id="qs"></div>
     <div id="opts"></div>
-    <div class="nav"><button id="prevBtn">이전</button></div>
     <p class="warn">설문을 끝까지 완료해야 진단 결과를 받을 수 있어요.</p>
   </section>
 
-  <!-- 연락처 -->
-  <section id="contact" class="card hide">
-    <div class="bar" id="bar2"></div>
-    <div class="qt">진단 결과가 준비됐어요.</div>
-    <div class="qs">결과와 무료 E-BOOK을 받으실 분의 이름과 번호를 남겨 주세요. 신청하면 바로 결과를 보여드려요.</div>
-    <label class="lbl" for="name">이름</label>
-    <input class="in" id="name" maxlength="20" autocomplete="name">
-    <label class="lbl" for="phone">휴대전화 번호</label>
-    <input class="in" id="phone" inputmode="numeric" maxlength="11" placeholder="01012345678" autocomplete="tel">
-    <label class="lbl" for="email">이메일 <span style="font-weight:400;color:#888">(선택)</span></label>
-    <input class="in" id="email" type="email" maxlength="100" autocomplete="email" placeholder="example@gmail.com">
-    <div class="agree">
-      <label class="all"><input type="checkbox" id="agAll"> 마케팅 정보 수신 동의 <button type="button" class="v tg" id="agTg" aria-label="자세히">▾</button></label>
-          <div class="sub" id="agSub">
-      <label><input type="checkbox" class="ag" id="agPrivacy"> 마케팅 활용을 위한 개인정보 수집·이용 동의 <button type="button" class="v" data-t="t1">보기</button></label>
-      <div class="terms" id="t1">수집 항목: 이름, 휴대전화 번호, 이메일(선택), 진단 응답<br>이용 목적: 진단 결과·무료 E-BOOK 제공, 신청 확인<br>보유 기간: 목적 달성 또는 동의 철회 시 지체 없이 파기(최대 2년)<br>동의를 거부할 수 있으나, 거부 시 결과를 받을 수 없습니다.</div>
-      <label><input type="checkbox" class="ag" id="agMarketing"> 마케팅 수신 동의(문자, 카카오톡, 이메일) <button type="button" class="v" data-t="t2">보기</button></label>
-      <div class="terms" id="t2">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자·이메일)<br>보유 기간: 동의일로부터 2년 또는 동의 철회 시까지<br>귀하는 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 무료 E-BOOK 및 관련 정보를 제공받을 수 없습니다. 받은 뒤에는 언제든 수신 거부할 수 있습니다.</div>
-          </div>
+  <!-- 연락처: 이름 → 번호 → 동의 (한 화면에 하나씩) -->
+  <section id="contact" class="hide">
+    <div class="prog" id="bar2"></div>
+    <div class="navbar">
+      <button class="back" id="prevBtn2" aria-label="이전"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#191f28" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <span class="step" id="cn"></span>
     </div>
-    <div class="hint" id="hint"></div>
-    <button class="main" id="submitBtn" disabled>신청하고 진단 결과 보기</button>
-    <div class="nav"><button id="prevBtn2">이전</button></div>
+    <div class="cstep" id="c1">
+      <h2 class="title">진단 결과가 준비됐어요.<br>이름을 알려 주세요</h2>
+      <p class="desc">결과와 무료 E-BOOK을 받으실 분의 이름이에요.</p>
+      <div class="field">
+        <label class="lbl" for="name">이름</label>
+        <input class="in" id="name" maxlength="20" autocomplete="name" placeholder="이름" enterkeyhint="next">
+      </div>
+    </div>
+    <div class="cstep hide" id="c2">
+      <h2 class="title">휴대폰 번호를<br>알려 주세요</h2>
+      <p class="desc">신청하면 바로 결과를 보여드려요.</p>
+      <div class="field">
+        <label class="lbl" for="phone">휴대폰 번호</label>
+        <input class="in" id="phone" inputmode="numeric" value="010" placeholder="010" autocomplete="tel" enterkeyhint="next">
+      </div>
+    </div>
+    <div class="cstep hide" id="c3">
+      <h2 class="title">마지막으로<br>동의해 주세요</h2>
+      <p class="desc">동의하면 바로 진단 결과를 보여드려요.</p>
+      <div class="agree">
+        <label class="all"><input type="checkbox" id="agAll"> 전체 동의하기 <button type="button" class="v tg" id="agTg" aria-label="자세히"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="#6b7684" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></label>
+        <div class="sub on" id="agSub">
+          <label><input type="checkbox" class="ag" id="agPrivacy"> 마케팅 활용을 위한 개인정보 수집·이용 동의 <button type="button" class="v" data-t="t1">보기</button></label>
+          <div class="terms" id="t1">수집 항목: 이름, 휴대전화 번호, 이메일(선택), 진단 응답<br>이용 목적: 진단 결과·무료 E-BOOK 제공, 신청 확인<br>보유 기간: 목적 달성 또는 동의 철회 시 지체 없이 파기(최대 2년)<br>동의를 거부할 수 있으나, 거부 시 결과를 받을 수 없습니다.</div>
+          <label><input type="checkbox" class="ag" id="agMarketing"> 마케팅 수신 동의(문자, 카카오톡, 이메일) <button type="button" class="v" data-t="t2">보기</button></label>
+          <div class="terms" id="t2">수집 항목: 이름, 휴대전화 번호, 이메일(선택)<br>이용 목적: 신규 콘텐츠·강의·프로그램·할인 안내(카카오톡·문자·이메일)<br>보유 기간: 동의일로부터 2년 또는 동의 철회 시까지<br>귀하는 동의를 거부할 권리가 있습니다. 다만, 동의를 거부하실 경우 무료 E-BOOK 및 관련 정보를 제공받을 수 없습니다. 받은 뒤에는 언제든 수신 거부할 수 있습니다.</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="email">이메일 <span>(선택)</span></label>
+        <input class="in" id="email" type="email" maxlength="100" autocomplete="email" placeholder="example@gmail.com">
+      </div>
+    </div>
+    <div class="cta"><div class="in-cta">
+      <div class="hint" id="hint" role="alert"></div>
+      <button class="btn" id="nextBtn" disabled>다음</button>
+      <button class="btn hide" id="submitBtn" disabled>신청하고 진단 결과 보기</button>
+    </div></div>
   </section>
 
   <!-- 결과 -->
-  <section id="result" class="card hide">
+  <section id="result" class="hide">
     <div class="res-type"><span id="rName"></span><h2 id="rType"></h2><p id="rDesc"></p></div>
     <div class="fix"><h4>지금 바로 고칠 것 3가지</h4><ul id="rFix"></ul></div>
-    <p class="small" style="color:#555;margin-top:16px" id="rCh"></p>
-    <a class="big" id="myBtn" href="#" style="margin-top:10px">무료 E-BOOK 바로 읽기</a>
+    <p class="rch" id="rCh"></p>
+    <a class="btn" id="myBtn" href="#">무료 E-BOOK 바로 읽기</a>
     <div class="ft">
       <b>혼자서 더 빠르게 바꾸고 싶다면</b>
       <p>E-BOOK의 원본, <strong>패스트트랙</strong> 전체(1·2부 285쪽)</p>
       <a href="fasttrack.html?src=check_done" id="ftBtn">패스트트랙 보러가기 · 99,000원</a>
     </div>
   </section>
-  <p class="small">진단 결과는 참고용이며, 결과는 개인의 실천에 따라 다릅니다.</p>
-  <div class="biz">상호 라이프빌드업 · 대표 이원준 · 사업자등록번호 403-20-80889 · 통신판매업 신고 2019-서울중랑-1084<br>사업장 서울특별시 성동구 자동차시장1길 85 (JS빌딩) 9층 902호 · 전화 010-5410-7771<br>© 야심한 남자</div>
+  <div class="foot">
+    <p class="small">진단 결과는 참고용이며, 결과는 개인의 실천에 따라 다릅니다.</p>
+    <div class="biz">상호 라이프빌드업 · 대표 이원준 · 사업자등록번호 403-20-80889 · 통신판매업 신고 2019-서울중랑-1084<br>사업장 서울특별시 성동구 자동차시장1길 85 (JS빌딩) 9층 902호 · 전화 010-5410-7771<br>© 야심한 남자</div>
+  </div>
 </div>
 
 <script>
@@ -195,26 +245,26 @@ const VID = (() => { try { let v = localStorage.getItem("ynv"); if (!v) { v = Ma
 function track(type, target) { try { navigator.sendBeacon(ENDPOINT, new Blob([JSON.stringify({ kind: "event", type, target, src: SRC, vid: VID, ua: navigator.userAgent.slice(0, 120) })], { type: "text/plain" })); } catch (e) {} }
 track("view", "check_landing");
 
-const ans = []; let cur = 0;
-const show = id => ["intro", "quiz", "contact", "result"].forEach(x => $(x).classList.toggle("hide", x !== id));
-const bars = n => Array.from({ length: QUESTIONS.length + 1 }, (_, i) => `<i class="${i <= n ? "on" : ""}"></i>`).join("");
+const ans = []; let cur = 0, lock = false;
+const show = id => { ["intro", "quiz", "contact", "result"].forEach(x => $(x).classList.toggle("hide", x !== id)); document.body.dataset.step = id; };
+const bars = n => `<i style="width:${Math.round((n + 1) / (QUESTIONS.length + 1) * 100)}%"></i>`; // 얇은 진행 막대
 
 function draw() {
-  const q = QUESTIONS[cur];
+  const q = QUESTIONS[cur]; lock = false;
   $("bar").innerHTML = bars(cur);
-  $("qn").textContent = `질문 ${cur + 1} / ${QUESTIONS.length}`;
+  $("qn").textContent = `${cur + 1}/${QUESTIONS.length}`;
   $("qt").textContent = q.t; $("qs").textContent = q.s;
   $("opts").innerHTML = q.o.map((o, i) => `<button class="opt ${ans[cur] === i ? "on" : ""}" data-i="${i}">${o[0]}</button>`).join("");
   $("prevBtn").style.visibility = cur ? "visible" : "hidden";
   document.querySelectorAll(".opt").forEach(b => b.onclick = () => {
-    ans[cur] = +b.dataset.i; b.classList.add("on");
-    setTimeout(() => { if (cur < QUESTIONS.length - 1) { cur++; draw(); } else { track("click", "check_done_quiz"); $("bar2").innerHTML = bars(QUESTIONS.length); show("contact"); } }, 180);
+    if (lock) return; lock = true; // 빠른 연타로 질문이 건너뛰어지지 않게
+    ans[cur] = +b.dataset.i; document.querySelectorAll(".opt").forEach(x => x.classList.toggle("on", x === b));
+    setTimeout(() => { if (cur < QUESTIONS.length - 1) { cur++; draw(); } else { track("click", "check_done_quiz"); $("bar2").innerHTML = bars(QUESTIONS.length); show("contact"); cstep(1); } }, 180);
   });
   window.scrollTo(0, 0);
 }
 $("startBtn").onclick = () => { track("click", "check_start"); show("quiz"); draw(); };
 $("prevBtn").onclick = () => { if (cur) { cur--; draw(); } };
-$("prevBtn2").onclick = () => { show("quiz"); draw(); };
 
 function diagnose() {
   const sc = { m: 0, f: 0, s: 0, c: 0 };
@@ -226,25 +276,49 @@ function diagnose() {
   return tied.includes(pref) ? pref : tied[0];
 }
 
-/* 연락처 */
+/* 연락처: 1 이름 → 2 번호 → 3 동의 */
+let CS = 1;
 const phoneVal = () => $("phone").value.replace(/[^0-9]/g, "");
+const nameOk = () => !!$("name").value.trim(), phoneOk = () => /^01[016789]\d{7,8}$/.test(phoneVal());
+function cstep(n) {
+  CS = n; [1, 2, 3].forEach(i => $("c" + i).classList.toggle("hide", i !== n));
+  $("cn").textContent = n + "/3"; $("hint").textContent = "";
+  $("nextBtn").classList.toggle("hide", n === 3); $("submitBtn").classList.toggle("hide", n !== 3);
+  refresh(); window.scrollTo(0, 0);
+  const f = n === 1 ? $("name") : n === 2 ? $("phone") : null; if (f) f.focus();
+}
+$("prevBtn2").onclick = () => { if (CS > 1) cstep(CS - 1); else { show("quiz"); draw(); } };
+$("nextBtn").onclick = () => {
+  if (CS === 1) { if (!nameOk()) return $("hint").textContent = "이름을 입력해 주세요."; cstep(2); }
+  else if (CS === 2) { if (!phoneOk()) return $("hint").textContent = "휴대폰 번호를 확인해 주세요."; cstep(3); }
+};
+["name", "phone"].forEach(id => $(id).addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); $("nextBtn").click(); } }));
 const ags = [...document.querySelectorAll(".ag")];
-document.getElementById("agTg").onclick = e => { e.preventDefault(); e.stopPropagation(); document.getElementById("agSub").classList.toggle("on"); };
-document.querySelectorAll(".v:not(.tg)").forEach(b => b.onclick = e => { e.preventDefault(); const t = $(b.dataset.t); t.style.display = t.style.display === "block" ? "none" : "block"; });
+document.getElementById("agTg").onclick = e => { e.preventDefault(); e.stopPropagation(); document.getElementById("agSub").classList.toggle("on"); e.currentTarget.style.transform = document.getElementById("agSub").classList.contains("on") ? "" : "rotate(180deg)"; };
+document.querySelectorAll(".v:not(.tg)").forEach(b => b.onclick = e => { e.preventDefault(); const t = $(b.dataset.t); t.style.display = t.style.display === "block" ? "none" : "block"; b.textContent = t.style.display === "block" ? "닫기" : "보기"; });
 $("agAll").onchange = e => { ags.forEach(a => a.checked = e.target.checked); refresh(); };
 ags.forEach(a => a.onchange = () => { $("agAll").checked = ags.every(x => x.checked); refresh(); });
+$("phone").addEventListener("input", () => { let v = phoneVal(); if (v.length > 11 && /^01001[016789]/.test(v)) v = v.slice(3); $("phone").value = v.slice(0, 11); }); // 010 위에 번호 전체를 붙여넣어도 정리
+$("phone").addEventListener("focus", () => { const v = $("phone"); setTimeout(() => v.setSelectionRange(v.value.length, v.value.length), 0); }); // 010 뒤에 커서
 ["name", "phone"].forEach(id => $(id).addEventListener("input", refresh));
-function refresh() { $("submitBtn").disabled = !($("name").value.trim() && /^01[016789]\d{7,8}$/.test(phoneVal()) && ags.every(a => a.checked)); }
+function refresh() {
+  if ($("hint").textContent && (CS === 1 ? nameOk() : CS === 2 && phoneOk())) $("hint").textContent = "";
+  $("nextBtn").disabled = !(CS === 1 ? nameOk() : phoneOk());
+  if ($("submitBtn").textContent === "결과 만드는 중…") return; // 전송 중에는 다시 빨갛게 켜지지 않게
+  $("submitBtn").disabled = !(nameOk() && phoneOk() && ags.every(a => a.checked));
+}
 
 $("submitBtn").onclick = async () => {
   const email = $("email").value.trim();
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { $("hint").textContent = "이메일 주소를 확인해 주세요. (비워둬도 됩니다)"; return; }
+  $("hint").textContent = "";
   $("submitBtn").disabled = true; $("submitBtn").textContent = "결과 만드는 중…";
   const type = diagnose();
   const quiz = "유형: " + TYPES[type].name + " | " + ans.map((a, i) => `Q${i + 1}:${QUESTIONS[i].o[a][0]}`).join("; ");
   let r;
   try { r = await (await fetch(ENDPOINT, { method: "POST", body: JSON.stringify({ kind: "lead", name: $("name").value.trim(), phone: phoneVal(), email, agreePrivacy: true, agreeMarketing: true, quiz, src: SRC, vid: VID }) })).json(); } catch (e) { r = { ok: false }; }
-  if (!r.ok) { $("hint").textContent = r.error || "잠시 후 다시 시도해 주세요."; $("submitBtn").disabled = false; $("submitBtn").textContent = "신청하고 진단 결과 보기"; return; }
+  if (!r.ok) { $("hint").textContent = r.error || "잠시 후 다시 시도해 주세요."; $("submitBtn").textContent = "신청하고 진단 결과 보기"; refresh(); return; }
+  // 성공: 버튼은 '결과 만드는 중…'(비활성) 그대로 두고 바로 결과 화면으로
   track("submit", "check_lead_" + type);
   const T = TYPES[type];
   $("rName").textContent = $("name").value.trim() + "님의 연애 유형";
