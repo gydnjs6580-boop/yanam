@@ -67,7 +67,7 @@
   <p class="lead" id="lead">결제하신 휴대폰 번호를 넣어 주세요.<br>한 번 열면 이 기기에서는 90일 동안 바로 열려요.</p>
   <div class="card">
     <label class="lbl" for="ph">결제한 휴대폰 번호</label>
-    <input class="in" id="ph" inputmode="numeric" maxlength="11" placeholder="01012345678" autocomplete="tel">
+    <input class="in" id="ph" inputmode="numeric" value="010" placeholder="010" autocomplete="tel">
     <button class="btn" id="go">패스트트랙 열기</button>
     <div id="codeBox" class="hide">
       <p class="help" id="codeHelp" style="margin-top:14px">이 번호로 이미 연 적이 있어요. 처음 열 때 받은 <b>6자리 열람 코드</b>를 넣어 주세요. (캡처 사진이나 메일에 있어요)</p>
@@ -116,20 +116,20 @@ const fromPay = /from=pay/.test(location.search + location.hash);
 if (fromPay) $("lead").innerHTML = "결제가 완료되었어요! 결제하신 휴대폰 번호를 넣으면<br>바로 열려요.";
 
 /* ---- 로그인 ---- */
-$("ph").oninput = () => $("ph").value = $("ph").value.replace(/\D/g, "");
+$("ph").oninput = () => { let v = $("ph").value.replace(/\D/g, ""); if (v.length > 11 && v.startsWith("010")) v = v.slice(3); $("ph").value = v.slice(0, 11); }; // 010 위에 번호 전체를 붙여넣어도 정리
+$("ph").onfocus = () => { const v = $("ph"); setTimeout(() => v.setSelectionRange(v.value.length, v.value.length), 0); }; // 010 뒤에 커서
 $("go").onclick = async () => {
   const phone = $("ph").value;
   if (!/^01[016789]\d{7,8}$/.test(phone)) return $("err").textContent = "휴대폰 번호를 확인해 주세요.";
   busy($("go"), "확인 중…");
   const r = await api({ kind: "ftStart", phone, ua: navigator.userAgent });
-  idle($("go"), "패스트트랙 열기");
-  if (r.ok) { NEWCODE = r.code || ""; MAILED = r.mailed || ""; FIRST = !!r.first; return enter(r.token); }
-  if (r.need !== "code") return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요.";
+  if (r.ok) { NEWCODE = r.code || ""; MAILED = r.mailed || ""; FIRST = !!r.first; $("go").textContent = "여는 중…"; return enter(r.token); } // 성공하면 버튼을 다시 빨갛게 되돌리지 않음(깜빡임 방지)
+  if (r.need !== "code") { idle($("go"), "패스트트랙 열기"); return $("err").textContent = r.error || "잠시 후 다시 시도해 주세요."; }
   if (r.sms) {
     $("codeHelp").innerHTML = "새 기기에서 처음 여시네요. 결제하신 번호로 보낸 <b>문자 인증번호 6자리</b>를 넣어 주세요.";
     $("code").setAttribute("autocomplete", "one-time-code"); $("forgot").textContent = "인증번호 다시 받기"; $("forgot").dataset.sms = "1";
   }
-  $("go").classList.add("hide"); $("codeBox").classList.remove("hide"); $("code").focus();
+  $("go").classList.add("hide"); idle($("go"), "패스트트랙 열기"); $("codeBox").classList.remove("hide"); $("code").focus();
 };
 $("code").oninput = () => { $("code").value = $("code").value.replace(/\D/g, ""); if ($("code").value.length === 6) verify(); };
 $("verify").onclick = () => verify();
@@ -147,9 +147,8 @@ async function verify() {
   if ($("verify").disabled) return;
   busy($("verify"), "확인 중…");
   const r = await api({ kind: "ftCode", phone: $("ph").value, code: $("code").value, ua: navigator.userAgent });
-  idle($("verify"), "확인");
-  if (!r.ok) return $("err").textContent = r.error || "다시 시도해 주세요.";
-  enter(r.token);
+  if (!r.ok) { idle($("verify"), "확인"); return $("err").textContent = r.error || "다시 시도해 주세요."; }
+  $("verify").textContent = "여는 중…"; enter(r.token);
 }
 function busy(b, t) { b.disabled = true; b.textContent = t; $("err").textContent = ""; $("err").style.color = ""; }
 function idle(b, t) { b.disabled = false; b.textContent = t; }
@@ -169,7 +168,7 @@ async function enter(token) {
   if (NEWCODE) { showCode(true); NEWCODE = ""; }
   else if (!localStorage.getItem(LS + "_home") && !matchMedia("(display-mode: standalone)").matches && !navigator.standalone) setTimeout(homeTip, 2500);
 }
-function showLogin(msg) { $("reader").classList.add("hide"); $("login").classList.remove("hide"); if (msg) $("err").textContent = msg; }
+function showLogin(msg) { idle($("go"), "패스트트랙 열기"); idle($("verify"), "확인"); $("reader").classList.add("hide"); $("login").classList.remove("hide"); if (msg) $("err").textContent = msg; }
 function save() { localStorage.setItem(LS, JSON.stringify(S)); }
 
 /* ---- 읽기 ---- */
