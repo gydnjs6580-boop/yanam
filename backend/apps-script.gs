@@ -518,6 +518,7 @@ function ftReader_(d, cache) {
     case "ftOpen": {
       const ph = ftWho_(d.token);
       if (!ph) return out({ ok: false, relogin: true });
+      if (!ftBuyer_(ph)) return out({ ok: false, relogin: true, error: "결제가 취소되어 더 이상 열 수 없어요." }); // 환불·취소된 구매자는 기존 기기도 차단
       const key = ftKey_(); if (!key) return out({ ok: false, error: "준비 중이에요. 잠시 후 다시 열어 주세요." });
       const x = ftReadRow_(ph), r = x.r;
       if (!r) x.sh.appendRow([txt(ph), 1, 1, 1, 1, 1, KST(), KST()]);
