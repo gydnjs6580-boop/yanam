@@ -271,7 +271,7 @@ function payappFeedback_(p) {
       const ph = s(p.recvphone, 11).replace(/[^0-9]/g, ""), r = i < 0 ? sh.getLastRow() : i + 2;
       if (phoneOk(ph) && !TEST()) { const m = solapi_({ to: ph, from: prop("SMS_FROM"), text: "[야심한남자] 패스트트랙 구매 감사합니다.\n\n바로 읽기: " + FT_READ_URL + "\n\n이 문자를 보관해 두면 언제든 이어서 읽을 수 있어요." }); sh.getRange(r, 10).setValue(m.ok ? "읽기 문자 발송" : "문자 실패"); }
     }
-    else sh.getRange(i + 2, 1, 1, 9).setValues([row]); // 상태 갱신(결제완료·취소), 권한 칸은 유지
+    else if (i >= 0 && ok) sh.getRange(i + 2, 1, 1, 9).setValues([row]); // 검증된 통보만 상태 갱신(결제완료·취소), 권한 칸은 유지. 새 줄(i<0)은 위에서 이미 추가됨
   } finally { lock.releaseLock(); }
   return ContentService.createTextOutput("SUCCESS");
 }
